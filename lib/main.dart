@@ -15,12 +15,13 @@ class myApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           useMaterial3: true,
           primarySwatch: Colors.deepPurple,
           fontFamily: GoogleFonts.lato().fontFamily),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      initialRoute: "/login",
+      initialRoute: MyRoutes.homeRoute,
       routes: {
         "/": (context) => LoginPage(),
         MyRoutes.homeRoute: (context) => HomePage(),
