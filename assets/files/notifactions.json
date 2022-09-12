@@ -1,0 +1,94 @@
+{
+    "notification": [
+        {
+            "messageId": 101,
+            "userName": "Prasanna Nambiar",
+            "userRole": "Principal",
+            "messageTitle": "Engineers day is on 15th!",
+            "messageLabel": "Event",
+            "userMessage": "Event is on 15th of September!! CSI DBIT has planned to organize a 2 day event.",
+            "imageUrl": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8aGFja2F0aG9ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "13 Sep"
+        },
+        {
+            "messageId": 102,
+            "userName": "Prasad Sir",
+            "userRole": "HOD",
+            "messageTitle": "Notice regarding honors/minors!",
+            "messageLabel": "Academics",
+            "userMessage": "Students please make sure that you fill this form inorder to confirm your choice of course.",
+            "imageUrl": "https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "11 Sep"
+        },
+        {
+            "messageId": 103,
+            "userName": "Nilesh Ghavate",
+            "userRole": "Teacher",
+            "messageTitle": "Mini Project demonstration on 15th Sep!",
+            "messageLabel": "Academics",
+            "userMessage": "Tomorrow we'll be meeting at 11.15 to see what's the progress on the Dbit App.",
+            "imageUrl": "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "8 Sep"
+        },
+        {
+            "messageId": 104,
+            "userName": "Aruna Kumbalkar",
+            "userRole": "Teacher",
+            "messageTitle": "RSA Algorithm experiment is due on 13th of September.",
+            "messageLabel": "Academics",
+            "userMessage": "Students please make sure that you submit the following experiments by 13th of this month.",
+            "imageUrl": "https://images.unsplash.com/photo-1605711285791-0219e80e43a3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjV8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "7 Sep"
+        },
+        {
+            "messageId": 105,
+            "userName": "Bharat Sir",
+            "userRole": "T&P Officer",
+            "messageTitle": "Last placement session on this Sunday",
+            "messageLabel": "TPO",
+            "userMessage": "This Sunday we'll be having our last session of the Placement course.",
+            "imageUrl": "https://images.unsplash.com/photo-1513258496099-48168024aec0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzN8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "5 Sep"
+        },
+        {
+            "messageId": 106,
+            "userName": "Sunantha Ma'am",
+            "userRole": "Teacher",
+            "messageTitle": "Industrial visit to Pune",
+            "messageLabel": "Event",
+            "userMessage": "We are planning to keep an industrial to pune next week.",
+            "imageUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDB8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "29 Aug"
+        },
+        {
+            "messageId": 107,
+            "userName": "Shiv Negi",
+            "userRole": "Dean R&D",
+            "messageTitle": "Internship opportunities from IITB",
+            "messageLabel": "TPO",
+            "userMessage": "IITB is offering internship opportunities in the field of AI & ML. Interested students can send me your resume",
+            "imageUrl": "https://images.unsplash.com/photo-1564130987042-acbca1b51e8d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTB8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "26 Aug"
+        },
+        {
+            "messageId": 108,
+            "userName": "Vaishali ma'am",
+            "userRole": "Teacher",
+            "messageTitle": "Today's lecs have been cancelled!",
+            "messageLabel": "Urgent",
+            "userMessage": "Due to heavy rainfall, students are advised to not attend college today.",
+            "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDh8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "26 Aug"
+        },
+        {
+            "messageId": 109,
+            "userName": "Some Name",
+            "userRole": "Accounts",
+            "messageTitle": "Fees to be paid by 15th of Sept",
+            "messageLabel": "Accounts",
+            "userMessage": "Students are requested to pay the pending fees by 15th of September 2022.",
+            "imageUrl": "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTl8fHRlYWNoZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+            "dateOfExpiration": "25 Aug"
+        }
+    ]
+}
