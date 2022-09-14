@@ -11,7 +11,7 @@ class Item {
   final String messageLabel;
   final String userMessage;
   final String imageUrl;
-  final DateTime dateOfExpiration;
+  final DateTime dateOfCreation;
 
   Item(
       {required this.messageId,
@@ -21,34 +21,34 @@ class Item {
       required this.messageLabel,
       required this.userMessage,
       required this.imageUrl,
-      required this.dateOfExpiration});
+      required this.dateOfCreation});
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
-      messageId: map["messageId"],
+      messageId: map["message_id"],
       userName: map["userName"],
       userRole: map["userRole"],
-      messageTitle: map["messageTitle"],
-      messageLabel: map["messageLabel"],
-      userMessage: map["userMessage"],
-      imageUrl: map["imageUrl"],
-      dateOfExpiration: DateTime.parse(map["dateOfExpiration"]),
+      messageTitle: map["message_title"],
+      messageLabel: map["message_label_id"],
+      userMessage: map["user_message"],
+      imageUrl: map["image_url"],
+      dateOfCreation: DateTime.parse(map["dateOfCreation"]),
     );
   }
 
   toMap() => {
-        "messageId": messageId,
+        "message_id": messageId,
         "userName": userName,
         "userRole": userRole,
-        "messageTitle": messageTitle,
-        "messageLabel": messageLabel,
-        "userMessage": userMessage,
-        "imageUrl": imageUrl,
-        "ddateOfExpiration": dateOfExpiration,
+        "message_title": messageTitle,
+        "message_label": messageLabel,
+        "user_message": userMessage,
+        "image_url": imageUrl,
+        "dateOfCreation": dateOfCreation,
       };
 
   @override
   String toString() {
-    return 'Item(messageId: $messageId, userName: $userName, userRole: $userRole, messageTitle: $messageTitle, messageLabel: $messageLabel, userMessage: $userMessage, imageUrl: $imageUrl, dateOfExpiration: $dateOfExpiration)';
+    return 'Item(messageId: $messageId, userName: $userName, userRole: $userRole, messageTitle: $messageTitle, messageLabel: $messageLabel, userMessage: $userMessage, imageUrl: $imageUrl, dateOfCreation: $dateOfCreation)';
   }
 }

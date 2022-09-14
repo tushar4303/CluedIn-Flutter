@@ -62,7 +62,7 @@ class NotificationWidget extends StatelessWidget {
             ),
           ),
           trailing: Text(
-            Jiffy(item.dateOfExpiration).fromNow(),
+            Jiffy(item.dateOfCreation).fromNow(),
             textAlign: TextAlign.end,
             textScaleFactor: 0.8,
           ),
