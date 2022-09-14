@@ -4,7 +4,6 @@ import 'package:cluedin_app/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/item_widget.dart';
 import 'dart:convert';
-// import 'package:flutter/services.dart';
 import '../widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,7 +15,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final url = "https://json.extendsclass.com/bin/ed83bbd71629";
+  final url = "https://json.extendsclass.com/bin/dac8c9b9fcef";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
@@ -49,46 +48,47 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
-        // backgroundColor: Colors.amber,
         bottom: PreferredSize(
+
             // ignore: sort_child_properties_last
             child: Padding(
-                padding: const EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: ["Teacher", "Principal"].map((filterType) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: FilterChip(
-                          label: Text(filterType),
-                          selected: _filters.contains(filterType),
-                          elevation: 1,
-                          selectedColor: Color.fromARGB(153, 212, 207, 207),
-                          onSelected: ((value) {
-                            setState(() {
-                              if (value) {
-                                _filters.add(filterType);
-                              } else {
-                                _filters.removeWhere((name) {
-                                  return name == filterType;
-                                });
-                              }
-                              _filteredNotifications.clear();
-                              if (_filters.isEmpty) {
-                                _filteredNotifications
-                                    .addAll(NotificationModel.items!);
-                              } else {
-                                _filteredNotifications.addAll(NotificationModel
-                                    .items!
-                                    .where((notification) => _filters
-                                        .contains(notification.userRole)));
-                              }
-                            });
-                          })),
-                    );
-                  }).toList(),
-                )),
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: ["Teacher", "Principal"].map((filterType) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: FilterChip(
+                        label: Text(filterType),
+                        selected: _filters.contains(filterType),
+                        elevation: 1,
+                        selectedColor: Color.fromARGB(153, 212, 207, 207),
+                        onSelected: ((value) {
+                          setState(() {
+                            if (value) {
+                              _filters.add(filterType);
+                            } else {
+                              _filters.removeWhere((name) {
+                                return name == filterType;
+                              });
+                            }
+                            _filteredNotifications.clear();
+                            if (_filters.isEmpty) {
+                              _filteredNotifications
+                                  .addAll(NotificationModel.items!);
+                            } else {
+                              _filteredNotifications.addAll(NotificationModel
+                                  .items!
+                                  .where((notification) => _filters
+                                      .contains(notification.userRole)));
+                            }
+                          });
+                        })),
+                  );
+                }).toList(),
+              ),
+            ),
             preferredSize: Size(double.infinity, kToolbarHeight)),
       ),
       body: Padding(

@@ -29,6 +29,13 @@
             {
               "client_id": "205483583189-n6f4dsgj24vbj2fm4qikam14oi4odp2k.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "205483583189-6nr014rrmf085h4mt0nep8o8ftt58du9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cluedinApp"
+              }
             }
           ]
         }

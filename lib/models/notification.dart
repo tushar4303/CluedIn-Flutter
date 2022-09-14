@@ -11,7 +11,7 @@ class Item {
   final String messageLabel;
   final String userMessage;
   final String imageUrl;
-  final String dateOfExpiration;
+  final DateTime dateOfExpiration;
 
   Item(
       {required this.messageId,
@@ -32,7 +32,7 @@ class Item {
       messageLabel: map["messageLabel"],
       userMessage: map["userMessage"],
       imageUrl: map["imageUrl"],
-      dateOfExpiration: map["dateOfExpiration"],
+      dateOfExpiration: DateTime.parse(map["dateOfExpiration"]),
     );
   }
 

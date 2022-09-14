@@ -6,7 +6,12 @@ import 'package:cluedin_app/utils/routes.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+// Future<void> backgroundHandler(RemoteMessage message) async {
+//   print(message.data.toString());
+//   print(message.notification!.title);
+// }
+
+void main() async {
   runApp(myApp());
 }
 
