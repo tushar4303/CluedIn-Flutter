@@ -15,7 +15,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final url = "https://json.extendsclass.com/bin/dac8c9b9fcef";
+  final url = "http://localhost:4000/api/recieveMessage";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
