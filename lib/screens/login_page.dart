@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       await Future.delayed((Duration(seconds: 1)));
-      await Navigator.pushNamed(context, MyRoutes.homeRoute);
+      await Navigator.pushNamed(context, MyRoutes.notificationRoute);
       setState(() {
         changeButton = false;
       });
@@ -68,8 +68,16 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                             hintText: "Enter Username", labelText: "UserName"),
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Username cannot be empty";
+                          //   if (value!.isEmpty) {
+                          //     return "Username cannot be empty";
+                          //   }
+
+                          //   return null;
+                          // },
+                          if (value != "Tushar4303") {
+                            return "User doesn't exist";
+                          } else if (value!.isEmpty) {
+                            return "Please enter your UserName";
                           }
 
                           return null;
@@ -84,10 +92,18 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                             hintText: "Enter Password", labelText: "Password"),
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Password cannot be empty";
-                          } else if (value.length < 6) {
-                            return "Password length should be atleast 6";
+                          //   if (value!.isEmpty) {
+                          //     return "Password cannot be empty";
+                          //   } else if (value.length < 6) {
+                          //     return "Password length should be atleast 6";
+                          //   }
+
+                          //   return null;
+                          // },
+                          if (value != "admin123") {
+                            return "Incorrect UserName or Password";
+                          } else if (value!.isEmpty) {
+                            return "Please enter your Password";
                           }
 
                           return null;

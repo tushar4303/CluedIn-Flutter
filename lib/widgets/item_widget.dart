@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/screens/notification_detail.dart';
 
 class NotificationWidget extends StatelessWidget {
   const NotificationWidget({super.key, required this.item});
@@ -13,10 +14,18 @@ class NotificationWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: ListTile(
-          onTap: () {},
-          leading: CircleAvatar(
-              backgroundImage: NetworkImage(item.imageUrl),
-              child: const Text('DP')),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NotificationDetailsPage(item: item)));
+          },
+          leading: Hero(
+            tag: Key(item.messageId.toString()),
+            child: CircleAvatar(
+                backgroundImage: NetworkImage(item.imageUrl),
+                child: const Text('DP')),
+          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -28,7 +37,7 @@ class NotificationWidget extends StatelessWidget {
                 ),
                 Text(" @${item.userName}",
                     textScaleFactor: 0.95,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.w400)),
                 const SizedBox(
                   width: 16,
                 ),

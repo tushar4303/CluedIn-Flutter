@@ -13,6 +13,10 @@ class MyTheme {
       appBarTheme: AppBarTheme(color: Colors.white, elevation: 0.0));
 
   static ThemeData darkTheme(BuildContext context) => ThemeData(
-        brightness: Brightness.dark,
-      );
+      useMaterial3: true,
+      primarySwatch: Colors.deepPurple,
+      fontFamily: GoogleFonts.lato().fontFamily,
+      iconTheme: IconThemeData(color: Colors.black),
+      textTheme: Theme.of(context).textTheme,
+      appBarTheme: AppBarTheme(color: Colors.white, elevation: 0.0));
 }

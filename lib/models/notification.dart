@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class NotificationModel {
   static List<Item>? items;
 }
@@ -45,4 +46,9 @@ class Item {
         "imageUrl": imageUrl,
         "ddateOfExpiration": dateOfExpiration,
       };
+
+  @override
+  String toString() {
+    return 'Item(messageId: $messageId, userName: $userName, userRole: $userRole, messageTitle: $messageTitle, messageLabel: $messageLabel, userMessage: $userMessage, imageUrl: $imageUrl, dateOfExpiration: $dateOfExpiration)';
+  }
 }
