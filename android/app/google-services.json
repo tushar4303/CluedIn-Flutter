@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "24871109751",
+    "project_id": "cluedin-ab84f",
+    "storage_bucket": "cluedin-ab84f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24871109751:android:69860128d739c52b067272",
+        "android_client_info": {
+          "package_name": "com.example.cluedin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24871109751-tn56i2jcco4471biheo02d7jm3qimgnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp9SUCtPsX8mE7x_OlEG8vAKznH6-GKaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24871109751-tn56i2jcco4471biheo02d7jm3qimgnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,14 +4,19 @@ import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/utils/routes.dart';
 import 'package:cluedin_app/widgets/themes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-// Future<void> backgroundHandler(RemoteMessage message) async {
-//   print(message.data.toString());
-//   print(message.notification!.title);
-// }
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print(message.data.toString());
+  print(message.notification!.title);
+}
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(myApp());
 }
 
