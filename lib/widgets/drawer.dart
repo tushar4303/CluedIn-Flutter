@@ -8,6 +8,7 @@ class MyDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: const [
           DrawerHeader(
               padding: EdgeInsets.zero,
@@ -18,6 +19,11 @@ class MyDrawer extends StatelessWidget {
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: AssetImage("assets/images/pfp.JPG"),
                 ),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            "https://wallpapercave.com/wp/wp5728460.jpg"),
+                        fit: BoxFit.cover)),
               )),
           ListTile(
             leading: Icon(
