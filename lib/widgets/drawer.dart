@@ -17,12 +17,11 @@ class MyDrawer extends StatelessWidget {
                 accountName: Text("Tushar Padhy"),
                 accountEmail: Text("padhytushar4303@gmail.com"),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/pfp.JPG"),
+                  backgroundImage: AssetImage("assets/images/pfp.jpg"),
                 ),
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage(
-                            "https://wallpapercave.com/wp/wp5728460.jpg"),
+                        image: AssetImage("assets/images/background.png"),
                         fit: BoxFit.cover)),
               )),
           ListTile(

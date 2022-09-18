@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:cluedin_app/screens/notification_detail.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:intl/intl.dart';
 
 class NotificationWidget extends StatelessWidget {
   const NotificationWidget({super.key, required this.item});
@@ -34,12 +34,16 @@ class NotificationWidget extends StatelessWidget {
                 Text(
                   item.userRole,
                   style: const TextStyle(fontWeight: FontWeight.bold),
-                  textScaleFactor: 0.85,
+                  textScaleFactor: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  " @${item.userName}",
-                  textScaleFactor: 0.85,
-                  style: const TextStyle(fontWeight: FontWeight.w400),
+                Expanded(
+                  child: Text(
+                    " @${item.userName}",
+                    textScaleFactor: 1,
+                    style: const TextStyle(fontWeight: FontWeight.w400),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 const SizedBox(
                   width: 16,
@@ -59,10 +63,11 @@ class NotificationWidget extends StatelessWidget {
               item.userMessage,
               textScaleFactor: 0.9,
               maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           trailing: Text(
-            Jiffy(item.dateOfCreation).fromNow(),
+            DateFormat('MMM d, ' 'yy').format(item.dateOfcreation),
             textAlign: TextAlign.end,
             textScaleFactor: 0.8,
           ),

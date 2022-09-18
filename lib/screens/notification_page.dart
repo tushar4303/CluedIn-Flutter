@@ -15,7 +15,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final url = "http://localhost:4000/api/recieveMessage";
+  final url = "http://192.168.0.103:5000/api/recieveMessage";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
@@ -33,7 +33,7 @@ class _NotificationPageState extends State<NotificationPage> {
     final NotificationsJson = response.body;
 
     final decodedData = jsonDecode(NotificationsJson);
-    var notificationsData = decodedData["notification"];
+    var notificationsData = decodedData["notifications"];
     NotificationModel.items = List.from(notificationsData)
         .map<Item>((item) => Item.fromMap(item))
         .toList();
