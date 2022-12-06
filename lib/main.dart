@@ -6,6 +6,8 @@ import 'package:cluedin_app/utils/routes.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:cluedin_app/screens/phone.dart';
+import 'package:cluedin_app/screens/verify.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -26,16 +28,22 @@ class myApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
-      initialRoute: MyRoutes.notificationRoute,
+      // initialRoute: MyRoutes.notificationRoute,
+      initialRoute: 'phone',
       routes: {
-        "/": (context) => LoginPage(),
-        MyRoutes.notificationRoute: (context) => NotificationPage(),
+        // "/": (context) => LoginPage(),
+
+        // MyRoutes.notificationRoute: (context) => NotificationPage(),
         MyRoutes.loginRoute: (context) => LoginPage(),
+        'phone': (context) => MyPhone(),
+        'verify': (context) => MyVerify(),
+        'notification': (context) => NotificationPage(),
       },
+      // home: NotificationPage(),
     );
   }
 }

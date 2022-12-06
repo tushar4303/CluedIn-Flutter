@@ -42,7 +42,7 @@ class NotificationDetailsPage extends StatelessWidget {
                   child: Text(
                     item.messageTitle,
                     textScaleFactor: 1.5,
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
                 Padding(
