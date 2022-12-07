@@ -48,6 +48,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFFFFF),
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
@@ -55,7 +56,7 @@ class _NotificationPageState extends State<NotificationPage> {
           elevation: 0.3,
           // title: Text("Notifications"),
           title: Transform(
-            transform: Matrix4.translationValues(8.0, 10.0, 0.0),
+            transform: Matrix4.translationValues(8.0, 10.0, 0),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,50 +73,46 @@ class _NotificationPageState extends State<NotificationPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: ["Teacher", "Principal"].map((filterType) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Transform(
-                        transform: Matrix4.identity()..scale(0.85),
-                        child: FilterChip(
-                            checkmarkColor: Colors.black,
-                            label: Text(
-                              filterType,
-                              textScaleFactor: 1.1,
-                            ),
-                            // labelPadding: EdgeInsets.symmetric(
-                            //     horizontal: 4, vertical: 0),
-                            selected: _filters.contains(filterType),
-                            side: BorderSide(
-                                width: 1,
-                                color: Color.fromARGB(66, 75, 74, 74)),
-                            // surfaceTintColor: Colors.black,
+                    return Transform(
+                      transform: Matrix4.identity()..scale(0.85),
+                      child: FilterChip(
+                          checkmarkColor: Colors.black,
+                          label: Text(
+                            filterType,
+                            textScaleFactor: 1.1,
+                          ),
+                          // labelPadding: EdgeInsets.symmetric(
+                          //     horizontal: 4, vertical: 0),
+                          selected: _filters.contains(filterType),
+                          side: BorderSide(
+                              width: 1, color: Color.fromARGB(66, 75, 74, 74)),
+                          // surfaceTintColor: Colors.black,
 
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            selectedColor: Color.fromARGB(180, 224, 220, 220),
-                            onSelected: ((value) {
-                              setState(() {
-                                if (value) {
-                                  _filters.add(filterType);
-                                } else {
-                                  _filters.removeWhere((name) {
-                                    return name == filterType;
-                                  });
-                                }
-                                _filteredNotifications.clear();
-                                if (_filters.isEmpty) {
-                                  _filteredNotifications
-                                      .addAll(NotificationModel.items!);
-                                } else {
-                                  _filteredNotifications.addAll(
-                                      NotificationModel.items!.where(
-                                          (notification) => _filters.contains(
-                                              notification.userRole)));
-                                }
-                              });
-                            })),
-                      ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          selectedColor: Color.fromARGB(180, 224, 220, 220),
+                          onSelected: ((value) {
+                            setState(() {
+                              if (value) {
+                                _filters.add(filterType);
+                              } else {
+                                _filters.removeWhere((name) {
+                                  return name == filterType;
+                                });
+                              }
+                              _filteredNotifications.clear();
+                              if (_filters.isEmpty) {
+                                _filteredNotifications
+                                    .addAll(NotificationModel.items!);
+                              } else {
+                                _filteredNotifications.addAll(NotificationModel
+                                    .items!
+                                    .where((notification) => _filters
+                                        .contains(notification.userRole)));
+                              }
+                            });
+                          })),
                     );
                   }).toList(),
                 ),
@@ -158,7 +155,7 @@ class _NotificationPageState extends State<NotificationPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.explore), label: "Explore"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: "Settings"),
+                icon: Icon(Icons.account_circle), label: "Settings"),
           ]),
       drawer: MyDrawer(),
     );

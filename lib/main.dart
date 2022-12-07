@@ -7,6 +7,7 @@ import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/screens/phone.dart';
+import 'package:cluedin_app/screens/profile.dart';
 import 'package:cluedin_app/screens/verify.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -33,13 +34,14 @@ class myApp extends StatelessWidget {
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
       // initialRoute: MyRoutes.notificationRoute,
-      initialRoute: 'phone',
+      initialRoute: 'profile',
       routes: {
         // "/": (context) => LoginPage(),
 
         // MyRoutes.notificationRoute: (context) => NotificationPage(),
         MyRoutes.loginRoute: (context) => LoginPage(),
         'phone': (context) => MyPhone(),
+        'profile': (context) => MyProfile(),
         'verify': (context) => MyVerify(),
         'notification': (context) => NotificationPage(),
       },
