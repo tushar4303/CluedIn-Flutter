@@ -35,11 +35,11 @@ class MyProfile extends StatelessWidget {
                   radius: 36,
                 ),
                 title: Transform(
-                  transform: Matrix4.translationValues(-10, 1.0, 0.0),
+                  transform: Matrix4.translationValues(-10, 0.0, 0.0),
                   child: const Text("Tushar", style: TextStyle(fontSize: 18)),
                 ),
                 subtitle: Transform(
-                  transform: Matrix4.translationValues(-10, -1.0, 0.0),
+                  transform: Matrix4.translationValues(-10, -0.8, 0.0),
                   child: const Text("Show profile",
                       style: TextStyle(fontSize: 15)),
                 ),
@@ -47,7 +47,7 @@ class MyProfile extends StatelessWidget {
               ),
             ),
           ),
-          Divider(
+          const Divider(
             thickness: 2,
             indent: 24,
             endIndent: 24,
@@ -60,12 +60,12 @@ class MyProfile extends StatelessWidget {
               surfaceTintColor: Colors.transparent,
               child: Center(
                 child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(16),
                     onTap: () {},
-                    title: Text("Leave us a Feedback!"),
-                    subtitle:
-                        Text("Your feedback helps us to improve the product"),
-                    trailing: Icon(
+                    title: const Text("Leave us a Feedback!"),
+                    subtitle: const Text(
+                        "Your feedback helps us to improve the product"),
+                    trailing: const Icon(
                       Icons.store_mall_directory,
                       size: 32,
                     )),
@@ -74,7 +74,7 @@ class MyProfile extends StatelessWidget {
           ),
           Column(
             children: [
-              Divider(
+              const Divider(
                 thickness: 2,
                 indent: 24,
                 endIndent: 24,
@@ -83,14 +83,14 @@ class MyProfile extends StatelessWidget {
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {},
-                leading: Icon(Icons.share),
-                title: Text("Spread the word"),
-                subtitle: Text("Share the App with your friends"),
-                trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                leading: const Icon(Icons.share),
+                title: const Text("Spread the word"),
+                subtitle: const Text("Share the App with your friends"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              Divider(
+              const Divider(
                 thickness: 2,
                 indent: 24,
                 endIndent: 24,
@@ -99,14 +99,14 @@ class MyProfile extends StatelessWidget {
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {},
-                leading: Icon(Icons.star_border_outlined),
-                title: Text("Rate Us"),
-                subtitle: Text("Tell us what you think"),
-                trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                leading: const Icon(Icons.star_border_outlined),
+                title: const Text("Rate Us"),
+                subtitle: const Text("Tell us what you think"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              Divider(
+              const Divider(
                 thickness: 2,
                 indent: 24,
                 endIndent: 24,
@@ -115,14 +115,14 @@ class MyProfile extends StatelessWidget {
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {},
-                leading: Icon(Icons.info_outline),
-                title: Text("About CluedIn"),
-                subtitle: Text("V 1.0.0"),
-                trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                leading: const Icon(Icons.info_outline),
+                title: const Text("About CluedIn"),
+                subtitle: const Text("V 1.0.0"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              Divider(
+              const Divider(
                 thickness: 2,
                 indent: 24,
                 endIndent: 24,
@@ -131,26 +131,26 @@ class MyProfile extends StatelessWidget {
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (c) => MyPhone()),
+                      MaterialPageRoute(builder: (c) => const MyPhone()),
                       (r) => false);
                 },
-                leading: Icon(Icons.logout_outlined),
-                title: Text(
+                leading: const Icon(Icons.logout_outlined),
+                title: const Text(
                   "Logout",
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text(""),
-                trailing: Icon(
+                subtitle: const Text(""),
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 20,
                   color: Colors.black,
                 ),
               ),
-              Divider(
+              const Divider(
                 thickness: 2,
                 indent: 24,
                 endIndent: 24,

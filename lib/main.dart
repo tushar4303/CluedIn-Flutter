@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profile.dart';
-import 'package:cluedin_app/screens/verify.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -34,7 +34,7 @@ class myApp extends StatelessWidget {
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
       // initialRoute: MyRoutes.notificationRoute,
-      initialRoute: 'profile',
+      initialRoute: 'phone',
       routes: {
         // "/": (context) => LoginPage(),
 
@@ -42,7 +42,7 @@ class myApp extends StatelessWidget {
         MyRoutes.loginRoute: (context) => LoginPage(),
         'phone': (context) => MyPhone(),
         'profile': (context) => MyProfile(),
-        'verify': (context) => MyVerify(),
+
         'notification': (context) => NotificationPage(),
       },
       // home: NotificationPage(),

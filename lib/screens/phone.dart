@@ -1,11 +1,12 @@
+import 'package:cluedin_app/screens/verify.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyPhone extends StatefulWidget {
   const MyPhone({Key? key}) : super(key: key);
 
   static String verify = "";
-  static String yourNumber = "";
 
   @override
   State<MyPhone> createState() => _MyPhoneState();
@@ -13,14 +14,31 @@ class MyPhone extends StatefulWidget {
 
 class _MyPhoneState extends State<MyPhone> {
   TextEditingController countryController = TextEditingController();
+  TextEditingController numberLengthController = TextEditingController();
   var phone = "";
+
+  bool isEnabled = false;
 
   @override
   void initState() {
     // TODO: implement initState
     countryController.text = "+91";
+    // numberLengthController.addListener(() {
+    //   if (numberLengthController.text.length == 10) {
+    //     setState(() {
+    //       isEnabled = true;
+    //     });
+    //   }
+    // });
+
     super.initState();
   }
+
+  // void dispose() {
+  //   // Clean up the controller when the widget is disposed.
+  //   numberLengthController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -94,14 +112,24 @@ class _MyPhoneState extends State<MyPhone> {
                       width: 10,
                     ),
                     Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                      // controller: numberLengthController,
+                      maxLength: 10,
                       onChanged: (value) {
                         phone = value;
+                        setState(() {
+                          if (value.length > 9) {
+                            isEnabled = true;
+                          } else {
+                            isEnabled = false;
+                          }
+                        });
                       },
                       keyboardType: TextInputType.phone,
                       // ignore: prefer_const_constructors
                       decoration: InputDecoration(
                         border: InputBorder.none,
+                        counterText: '',
                         hintText: "Phone",
                       ),
                     ))
@@ -116,24 +144,38 @@ class _MyPhoneState extends State<MyPhone> {
                 height: 45,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                        disabledBackgroundColor:
+                            Color.fromRGBO(124, 77, 255, 0.65),
                         backgroundColor: Colors.deepPurpleAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
-                    onPressed: (() async {
-                      MyPhone.yourNumber = countryController.text + phone;
-                      await FirebaseAuth.instance.verifyPhoneNumber(
-                        phoneNumber: MyPhone.yourNumber,
-                        verificationCompleted:
-                            (PhoneAuthCredential credential) {},
-                        verificationFailed: (FirebaseAuthException e) {},
-                        codeSent: (String verificationId, int? resendToken) {
-                          MyPhone.verify = verificationId;
-                        },
-                        codeAutoRetrievalTimeout: (String verificationId) {},
-                      );
-                      // ignore: use_build_context_synchronously
-                      Navigator.pushNamed(context, 'verify');
-                    }),
+                    onPressed: isEnabled
+                        ? (() async {
+                            await FirebaseAuth.instance.verifyPhoneNumber(
+                              phoneNumber: countryController.text + phone,
+                              verificationCompleted:
+                                  (PhoneAuthCredential credential) {},
+                              verificationFailed: (FirebaseAuthException e) {
+                                if (e.code == 'invalid-phone-number') {
+                                  print(
+                                      'The provided phone number is not valid.');
+                                }
+                              },
+                              codeSent:
+                                  (String verificationId, int? resendToken) {
+                                MyPhone.verify = verificationId;
+                              },
+                              codeAutoRetrievalTimeout:
+                                  (String verificationId) {},
+                            );
+                            // ignore: use_build_context_synchronously
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) =>
+                                        MyVerify(phone: phone)));
+                          })
+                        : null,
                     child: const Text(
                       "Send the code",
                       style: TextStyle(color: Colors.white),

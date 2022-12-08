@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cluedin_app">
    <application
-        android:label="cluedin_app"
+        android:label="CluedIn"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

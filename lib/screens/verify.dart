@@ -7,14 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
 class MyVerify extends StatefulWidget {
-  const MyVerify({Key? key}) : super(key: key);
+  final String phone;
 
+  const MyVerify({Key? key, required this.phone}) : super(key: key);
   @override
   State<MyVerify> createState() => _MyVerifyState();
 }
 
 class _MyVerifyState extends State<MyVerify> {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  bool isEnabled = false;
 
   @override
   // ignore: duplicate_ignore
@@ -85,28 +87,29 @@ class _MyVerifyState extends State<MyVerify> {
               const SizedBox(
                 height: 8,
               ),
-              const Text(
-                'Please enter the OTP send to your number',
-                style: TextStyle(
-                  fontSize: 16,
+              // Text(
+              //   'Please enter the OTP sent to ${widget.phone}',
+              //   style: const TextStyle(fontSize: 16, color: Colors.black45),
+              //   textAlign: TextAlign.start,
+              // ),
+              RichText(
+                text: TextSpan(
+                  text: 'Please enter the OTP sent to ',
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: "${widget.phone} ",
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const TextSpan(
+                        text: "Edit",
+                        // recognizer:
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurpleAccent))
+                  ],
                 ),
-                textAlign: TextAlign.start,
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    'phone',
-                    (route) => false,
-                  );
-                },
-                child: const Text(
-                  "Edit",
-                  style: TextStyle(
-                      color: Colors.deepPurpleAccent,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+
               const SizedBox(
                 height: 24,
               ),
@@ -115,9 +118,16 @@ class _MyVerifyState extends State<MyVerify> {
                 // defaultPinTheme: defaultPinTheme,
                 // focusedPinTheme: focusedPinTheme,
                 // submittedPinTheme: submittedPinTheme,
-                onChanged: ((value) {
+                onChanged: (value) {
                   code = value;
-                }),
+                  setState(() {
+                    if (value.length > 5) {
+                      isEnabled = true;
+                    } else {
+                      isEnabled = false;
+                    }
+                  });
+                },
                 showCursor: true,
                 onCompleted: (pin) => print(pin),
               ),
@@ -129,26 +139,31 @@ class _MyVerifyState extends State<MyVerify> {
                 height: 45,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                        disabledBackgroundColor:
+                            Color.fromRGBO(124, 77, 255, 0.65),
                         backgroundColor: Colors.deepPurpleAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
-                    onPressed: () async {
-                      PhoneAuthCredential credential =
-                          PhoneAuthProvider.credential(
-                              verificationId: MyPhone.verify, smsCode: code);
+                    onPressed: isEnabled
+                        ? () async {
+                            PhoneAuthCredential credential =
+                                PhoneAuthProvider.credential(
+                                    verificationId: MyPhone.verify,
+                                    smsCode: code);
 
-                      // Sign the user in (or link) with the credential
-                      await auth.signInWithCredential(credential);
-                      // ignore: use_build_context_synchronously
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const NotificationPage(),
-                        ),
-                        (route) => false,
-                      );
-                    },
+                            // Sign the user in (or link) with the credential
+                            await auth.signInWithCredential(credential);
+                            // ignore: use_build_context_synchronously
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const NotificationPage(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        : null,
                     child: const Text(
                       "Verify",
                       style: TextStyle(color: Colors.white, fontSize: 14),
