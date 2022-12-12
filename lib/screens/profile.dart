@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +128,7 @@ class MyProfile extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 28,
           ),
           RichText(
@@ -151,7 +149,7 @@ class MyProfile extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 18,
           ),
           Row(
@@ -159,25 +157,25 @@ class MyProfile extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {},
-                child: Text(
+                child: const Text(
                   "About app",
                   style:
                       TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               const Text(
                 "|",
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
               GestureDetector(
                 onTap: () {},
-                child: Text(
+                child: const Text(
                   "Privacy policy",
                   style:
                       TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
@@ -185,11 +183,11 @@ class MyProfile extends StatelessWidget {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Text("Version 1.10.0"),
-          SizedBox(
+          const Text("Version 1.10.0"),
+          const SizedBox(
             height: 28,
           ),
         ]),

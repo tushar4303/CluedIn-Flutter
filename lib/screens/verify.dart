@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable, duplicate_ignore
-
 import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,6 +38,7 @@ class _MyVerifyState extends State<MyVerify> {
       borderRadius: BorderRadius.circular(8),
     );
 
+    // ignore: unused_local_variable
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration?.copyWith(
         color: const Color.fromRGBO(234, 239, 243, 1),
@@ -140,7 +139,7 @@ class _MyVerifyState extends State<MyVerify> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         disabledBackgroundColor:
-                            Color.fromRGBO(124, 77, 255, 0.65),
+                            const Color.fromRGBO(124, 77, 255, 0.65),
                         backgroundColor: Colors.deepPurpleAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
