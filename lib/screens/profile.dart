@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:cluedin_app/screens/phone.dart';
+import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/material.dart';
 
 class MyProfile extends StatelessWidget {
@@ -47,11 +50,7 @@ class MyProfile extends StatelessWidget {
               ),
             ),
           ),
-          const Divider(
-            thickness: 2,
-            indent: 24,
-            endIndent: 24,
-          ),
+          const CustomDivider(),
           Padding(
             padding:
                 const EdgeInsets.only(top: 8, bottom: 16, left: 16, right: 16),
@@ -74,12 +73,7 @@ class MyProfile extends StatelessWidget {
           ),
           Column(
             children: [
-              const Divider(
-                thickness: 2,
-                indent: 24,
-                endIndent: 24,
-                height: 0,
-              ),
+              const CustomDivider(),
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
@@ -90,12 +84,7 @@ class MyProfile extends StatelessWidget {
                 subtitle: const Text("Share the App with your friends"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              const Divider(
-                thickness: 2,
-                indent: 24,
-                endIndent: 24,
-                height: 0,
-              ),
+              const CustomDivider(),
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
@@ -106,12 +95,7 @@ class MyProfile extends StatelessWidget {
                 subtitle: const Text("Tell us what you think"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              const Divider(
-                thickness: 2,
-                indent: 24,
-                endIndent: 24,
-                height: 0,
-              ),
+              const CustomDivider(),
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
@@ -119,15 +103,10 @@ class MyProfile extends StatelessWidget {
                 onTap: () {},
                 leading: const Icon(Icons.info_outline),
                 title: const Text("About CluedIn"),
-                subtitle: const Text("V 1.0.0"),
+                subtitle: const Text("Know more about us"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
-              const Divider(
-                thickness: 2,
-                indent: 24,
-                endIndent: 24,
-                height: 0,
-              ),
+              const CustomDivider(),
               ListTile(
                 horizontalTitleGap: 0,
                 contentPadding:
@@ -143,20 +122,75 @@ class MyProfile extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ),
-                subtitle: const Text(""),
                 trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 20,
                   color: Colors.black,
                 ),
               ),
-              const Divider(
-                thickness: 2,
-                indent: 24,
-                endIndent: 24,
-                height: 0,
-              ),
             ],
+          ),
+          SizedBox(
+            height: 28,
+          ),
+          RichText(
+            text: const TextSpan(
+              text: 'Crafted with ',
+              style: TextStyle(fontSize: 14, color: Colors.black87),
+              children: <TextSpan>[
+                TextSpan(
+                    text: "💜 ",
+                    style: TextStyle(fontSize: 12, color: Colors.black87)),
+                TextSpan(
+                    text: "by ",
+                    style: TextStyle(fontSize: 14, color: Colors.black87)),
+                TextSpan(
+                    text: "CSI DBIT",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black54)),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 18,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  "About app",
+                  style:
+                      TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
+                ),
+              ),
+              SizedBox(
+                width: 6,
+              ),
+              const Text(
+                "|",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(
+                width: 6,
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  "Privacy policy",
+                  style:
+                      TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text("Version 1.10.0"),
+          SizedBox(
+            height: 28,
           ),
         ]),
       ),

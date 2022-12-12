@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types
 
+import 'package:cluedin_app/screens/events.dart';
 import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/utils/routes.dart';
@@ -34,7 +35,7 @@ class myApp extends StatelessWidget {
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
       // initialRoute: MyRoutes.notificationRoute,
-      initialRoute: 'phone',
+      initialRoute: 'profile',
       routes: {
         // "/": (context) => LoginPage(),
 
@@ -42,7 +43,7 @@ class myApp extends StatelessWidget {
         MyRoutes.loginRoute: (context) => LoginPage(),
         'phone': (context) => MyPhone(),
         'profile': (context) => MyProfile(),
-
+        'events': (context) => MyEvents(),
         'notification': (context) => NotificationPage(),
       },
       // home: NotificationPage(),

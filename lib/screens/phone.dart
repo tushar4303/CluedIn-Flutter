@@ -1,7 +1,11 @@
+import 'package:cluedin_app/models/validateUser.dart';
 import 'package:cluedin_app/screens/verify.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:cluedin_app/models/validateUser.dart';
 
 class MyPhone extends StatefulWidget {
   const MyPhone({Key? key}) : super(key: key);
@@ -14,7 +18,9 @@ class MyPhone extends StatefulWidget {
 
 class _MyPhoneState extends State<MyPhone> {
   TextEditingController countryController = TextEditingController();
-  TextEditingController numberLengthController = TextEditingController();
+  late TextEditingController numberController = TextEditingController();
+  String _error = '<none>';
+  bool _pending = false;
   var phone = "";
 
   bool isEnabled = false;
@@ -23,22 +29,9 @@ class _MyPhoneState extends State<MyPhone> {
   void initState() {
     // TODO: implement initState
     countryController.text = "+91";
-    // numberLengthController.addListener(() {
-    //   if (numberLengthController.text.length == 10) {
-    //     setState(() {
-    //       isEnabled = true;
-    //     });
-    //   }
-    // });
 
     super.initState();
   }
-
-  // void dispose() {
-  //   // Clean up the controller when the widget is disposed.
-  //   numberLengthController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +106,7 @@ class _MyPhoneState extends State<MyPhone> {
                     ),
                     Expanded(
                         child: TextFormField(
-                      // controller: numberLengthController,
+                      controller: numberController,
                       maxLength: 10,
                       onChanged: (value) {
                         phone = value;
@@ -126,8 +119,7 @@ class _MyPhoneState extends State<MyPhone> {
                         });
                       },
                       keyboardType: TextInputType.phone,
-                      // ignore: prefer_const_constructors
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         counterText: '',
                         hintText: "Phone",
@@ -145,36 +137,12 @@ class _MyPhoneState extends State<MyPhone> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         disabledBackgroundColor:
-                            Color.fromRGBO(124, 77, 255, 0.65),
+                            const Color.fromRGBO(124, 77, 255, 0.65),
                         backgroundColor: Colors.deepPurpleAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: isEnabled
-                        ? (() async {
-                            await FirebaseAuth.instance.verifyPhoneNumber(
-                              phoneNumber: countryController.text + phone,
-                              verificationCompleted:
-                                  (PhoneAuthCredential credential) {},
-                              verificationFailed: (FirebaseAuthException e) {
-                                if (e.code == 'invalid-phone-number') {
-                                  print(
-                                      'The provided phone number is not valid.');
-                                }
-                              },
-                              codeSent:
-                                  (String verificationId, int? resendToken) {
-                                MyPhone.verify = verificationId;
-                              },
-                              codeAutoRetrievalTimeout:
-                                  (String verificationId) {},
-                            );
-                            // ignore: use_build_context_synchronously
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        MyVerify(phone: phone)));
-                          })
+                        ? () => _httpPost(numberController.text)
                         : null,
                     child: const Text(
                       "Send the code",
@@ -186,5 +154,45 @@ class _MyPhoneState extends State<MyPhone> {
         ),
       ),
     );
+  }
+
+  Future<void> _httpPost(String number) async {
+    setState(() => _pending = true);
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('http://localhost:5000/api/app/authAppUser'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{'usermobno': number}),
+      );
+      // If the server did return a 201 CREATED response.
+
+      ValidateUser validateResponse =
+          ValidateUser.fromJson(json.decode(response.body));
+      if (validateResponse.success.toString() == "true") {
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: countryController.text + phone,
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {
+            if (e.code == 'invalid-phone-number') {
+              print('The provided phone number is not valid.');
+            }
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            MyPhone.verify = verificationId;
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+        // ignore: use_build_context_synchronously
+        Navigator.push(context,
+            CupertinoPageRoute(builder: (context) => MyVerify(phone: phone)));
+      } else {
+        print("User not registered");
+      }
+    } catch (e) {
+      setState(() => _error = 'Exception occured: $e');
+    }
+    setState(() => _pending = false);
   }
 }
