@@ -12,6 +12,8 @@ import 'package:cluedin_app/screens/profile.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'utils/globals.dart';
+
 Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString());
   print(message.notification!.title);
@@ -30,6 +32,7 @@ class myApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: snackbarKey,
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       theme: MyTheme.lightTheme(context),

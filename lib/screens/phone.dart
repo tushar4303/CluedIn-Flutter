@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../services/validate_user.dart';
+import 'package:cluedin_app/utils/globals.dart';
 
 class MyPhone extends StatefulWidget {
   const MyPhone({Key? key}) : super(key: key);
@@ -54,6 +55,8 @@ class _MyPhoneState extends State<MyPhone> {
         } else {
           setState(() => this._error =
               'User not registered. Contact the admin for getting yourself registered');
+          final SnackBar snackBar = SnackBar(content: Text(_error));
+          snackbarKey.currentState?.showSnackBar(snackBar);
         }
         //push
       }
@@ -150,6 +153,7 @@ class _MyPhoneState extends State<MyPhone> {
                           setState(() {
                             if (value.length > 9) {
                               isEnabled = true;
+                              FocusManager.instance.primaryFocus?.unfocus();
                             } else {
                               isEnabled = false;
                             }
