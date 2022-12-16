@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
+import '../utils/globals.dart';
+
 class MyVerify extends StatefulWidget {
   final String phone;
 
@@ -145,22 +147,29 @@ class _MyVerifyState extends State<MyVerify> {
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: isEnabled
                         ? () async {
-                            PhoneAuthCredential credential =
-                                PhoneAuthProvider.credential(
-                                    verificationId: MyPhone.verify,
-                                    smsCode: code);
+                            print("reached in verify before credential");
+                            try {
+                              PhoneAuthCredential credential =
+                                  PhoneAuthProvider.credential(
+                                      verificationId: MyPhone.verify,
+                                      smsCode: code);
 
-                            // Sign the user in (or link) with the credential
-                            await auth.signInWithCredential(credential);
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const NotificationPage(),
-                              ),
-                              (route) => false,
-                            );
+                              // Sign the user in (or link) with the credential
+                              await auth.signInWithCredential(credential);
+                              // ignore: use_build_context_synchronously
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const NotificationPage(),
+                                ),
+                                (route) => false,
+                              );
+                            } catch (e) {
+                              final SnackBar snackBar =
+                                  SnackBar(content: Text(e.toString()));
+                              snackbarKey.currentState?.showSnackBar(snackBar);
+                            }
                           }
                         : null,
                     child: const Text(

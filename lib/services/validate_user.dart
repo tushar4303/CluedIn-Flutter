@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class ValidateUser {
   Future<ValidateApiResponse?> apiCallLogin(Map<String, dynamic> param) async {
-    var url = Uri.parse('http://192.168.0.104:5000/api/app/authAppUser');
+    var url = Uri.parse('http://192.168.0.105:5000/api/app/authAppUser');
     var response = await http.post(url, body: param);
 
     print('Response status: ${response.statusCode}');
