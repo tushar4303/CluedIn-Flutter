@@ -9,69 +9,70 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.0,
-      margin: const EdgeInsets.symmetric(vertical: 0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-        ),
-        child: ListTile(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NotificationDetailsPage(item: item)));
-          },
-          leading: Hero(
-            tag: Key(item.messageId.toString()),
-            child: CircleAvatar(
-                backgroundImage: NetworkImage(item.imageUrl),
-                child: const Text('DP')),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Text(
-                  item.userRole,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  textScaleFactor: 1,
+    return SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.1155,
+      child: Expanded(
+        child: Card(
+          // color: Colors.amberAccent,
+          elevation: 0.0,
+          margin: const EdgeInsets.symmetric(vertical: 0),
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          NotificationDetailsPage(item: item)));
+            },
+            leading: Hero(
+              tag: Key(item.messageId.toString()),
+              child: CircleAvatar(
+                  backgroundImage: NetworkImage(item.imageUrl),
+                  child: const Text('DP')),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
-                Expanded(
-                  child: Text(
-                    " @${item.userName}",
-                    textScaleFactor: 1,
-                    style: const TextStyle(fontWeight: FontWeight.w400),
-                    overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: item.userRole,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, color: Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: " @${item.userName}",
+                        style: const TextStyle(fontWeight: FontWeight.w400),
+                      )
+                    ],
                   ),
                 ),
                 const SizedBox(
-                  width: 16,
+                  height: 1,
                 ),
-              ]),
-              const SizedBox(
-                height: 1,
-              ),
-              Text(item.messageTitle,
-                  textScaleFactor: 0.9,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              item.userMessage,
-              textScaleFactor: 0.9,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+                Text(item.messageTitle,
+                    textScaleFactor: 0.9,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(
+                    item.userMessage,
+                    textScaleFactor: 0.9,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ),
-          trailing: Text(
-            DateFormat('MMM d, ' 'yy').format(item.dateOfcreation),
-            textAlign: TextAlign.end,
-            textScaleFactor: 0.8,
+            trailing: Text(
+              DateFormat('MMM d, ' 'yy').format(item.dateOfcreation),
+              textAlign: TextAlign.end,
+              textScaleFactor: 0.8,
+            ),
           ),
         ),
       ),

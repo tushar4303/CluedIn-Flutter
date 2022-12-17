@@ -32,7 +32,6 @@ class _MyPhoneState extends State<MyPhone> {
       },
     ).then((value) async {
       if (value?.error != null) {
-        print("get data >>>>>> ${value?.error!}");
         setState(() => this._error = 'Error: ${value?.error!}');
       } else {
         if (value?.success == 'true') {
@@ -185,14 +184,12 @@ class _MyPhoneState extends State<MyPhone> {
                       onPressed: isEnabled
                           ? (() {
                               validate_user();
+                              // ignore: unnecessary_null_comparison
                               if (_error != null) {
-                                final snackBar = SnackBar(
-                                  content: Text(_error),
-                                  action: SnackBarAction(
-                                    label: "OK",
-                                    onPressed: () {},
-                                  ),
-                                );
+                                final SnackBar snackBar =
+                                    SnackBar(content: Text(_error));
+                                snackbarKey.currentState
+                                    ?.showSnackBar(snackBar);
                               }
                             })
                           : null,

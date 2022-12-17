@@ -4,7 +4,6 @@ import 'package:cluedin_app/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/item_widget.dart';
 import 'dart:convert';
-import '../widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationPage extends StatefulWidget {
@@ -15,7 +14,8 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final url = "https://json.extendsclass.com/bin/595354b2a1bc";
+  final url =
+      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/1202afb9493131554725bb8b8773b3cd95ca1106/notifications.json";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
@@ -52,7 +52,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
-          toolbarHeight: 96,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.135,
           elevation: 0.3,
           // title: Text("Notifications"),
           title: Transform(
@@ -145,19 +145,6 @@ class _NotificationPageState extends State<NotificationPage> {
         ],
       ),
       // ignore: prefer_const_literals_to_create_immutables
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.notifications), label: "Notifications"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.explore), label: "Explore"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle), label: "Settings"),
-          ]),
-      drawer: MyDrawer(),
     );
   }
 }

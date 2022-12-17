@@ -1,14 +1,8 @@
 // ignore_for_file: camel_case_types
-
-import 'package:cluedin_app/screens/events.dart';
-import 'package:cluedin_app/screens/notification_page.dart';
-import 'package:cluedin_app/screens/login_page.dart';
-import 'package:cluedin_app/utils/routes.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cluedin_app/screens/phone.dart';
-import 'package:cluedin_app/screens/profile.dart';
+import 'package:cluedin_app/utils/routes.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -31,24 +25,25 @@ class myApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       scaffoldMessengerKey: snackbarKey,
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
+      // routerConfig: router,
       // initialRoute: MyRoutes.notificationRoute,
-      initialRoute: 'profile',
-      routes: {
-        // "/": (context) => LoginPage(),
+      // initialRoute: 'notification',
+      // routes: {
+      //   // "/": (context) => LoginPage(),
 
-        // MyRoutes.notificationRoute: (context) => NotificationPage(),
-        MyRoutes.loginRoute: (context) => LoginPage(),
-        'phone': (context) => MyPhone(),
-        'profile': (context) => MyProfile(),
-        'events': (context) => MyEvents(),
-        'notification': (context) => NotificationPage(),
-      },
+      //   // MyRoutes.notificationRoute: (context) => NotificationPage(),
+      //   MyRoutes.loginRoute: (context) => LoginPage(),
+      //   'phone': (context) => MyPhone(),
+      //   'profile': (context) => MyProfile(),
+      //   'events': (context) => MyEvents(),
+      //   'notification': (context) => NotificationPage(),
+      // },
       // home: NotificationPage(),
     );
   }

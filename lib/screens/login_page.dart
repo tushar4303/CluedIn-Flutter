@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       await Future.delayed((Duration(seconds: 1)));
-      await Navigator.pushNamed(context, MyRoutes.notificationRoute);
+      // await Navigator.pushNamed(context, MyRoutes.notificationRoute);
       setState(() {
         changeButton = false;
       });
