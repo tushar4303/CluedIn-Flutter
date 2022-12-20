@@ -6,6 +6,7 @@ import 'package:cluedin_app/utils/routes.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'firebase_options.dart';
 import 'utils/globals.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -15,7 +16,9 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(myApp());
 }
@@ -26,26 +29,26 @@ class myApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      scaffoldMessengerKey: snackbarKey,
-      themeMode: ThemeMode.light,
-      debugShowCheckedModeBanner: false,
-      theme: MyTheme.lightTheme(context),
-      darkTheme: MyTheme.darkTheme(context),
-      // routerConfig: router,
-      // initialRoute: MyRoutes.notificationRoute,
-      // initialRoute: 'notification',
-      // routes: {
-      //   // "/": (context) => LoginPage(),
+        scaffoldMessengerKey: snackbarKey,
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        theme: MyTheme.lightTheme(context),
+        darkTheme: MyTheme.darkTheme(context),
+        routerConfig: router
+        // initialRoute: MyRoutes.notificationRoute,
+        // initialRoute: 'notification',
+        // routes: {
+        //   // "/": (context) => LoginPage(),
 
-      //   // MyRoutes.notificationRoute: (context) => NotificationPage(),
-      //   MyRoutes.loginRoute: (context) => LoginPage(),
-      //   'phone': (context) => MyPhone(),
-      //   'profile': (context) => MyProfile(),
-      //   'events': (context) => MyEvents(),
-      //   'notification': (context) => NotificationPage(),
-      // },
-      // home: NotificationPage(),
-    );
+        //   // MyRoutes.notificationRoute: (context) => NotificationPage(),
+        //   MyRoutes.loginRoute: (context) => LoginPage(),
+        //   'phone': (context) => MyPhone(),
+        //   'profile': (context) => MyProfile(),
+        //   'events': (context) => MyEvents(),
+        //   'notification': (context) => NotificationPage(),
+        // },
+        // home: NotificationPage(),
+        );
   }
 }
 
