@@ -144,7 +144,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                         });
                                   },
                                   label: Text("From"),
-                                  avatar: Icon(Icons.account_circle_rounded),
+                                  avatar: Icon(Icons.account_circle),
                                   visualDensity: VisualDensity(vertical: -1.5),
                                   side: BorderSide(
                                       width: 1,
