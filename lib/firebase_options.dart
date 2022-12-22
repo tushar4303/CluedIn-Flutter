@@ -54,8 +54,8 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBaF4mR5tiBqxZV_pSJAffV8HkvADcAHmU',
-    appId: '1:738513365262:android:a09fb5a9f74928a7c64f5f',
+    apiKey: 'AIzaSyB1vtjGnTm6aDOD9fh8OM4DBPfBoNpFebA',
+    appId: '1:738513365262:android:479941caddf06ddec64f5f',
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
     storageBucket: 'cluedin-79346.appspot.com',
@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
     storageBucket: 'cluedin-79346.appspot.com',
-    androidClientId: '738513365262-on6c2ddmsm3bo3voeclosq1pop6rp124.apps.googleusercontent.com',
+    androidClientId: '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
     iosClientId: '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );
@@ -78,7 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
     storageBucket: 'cluedin-79346.appspot.com',
-    androidClientId: '738513365262-on6c2ddmsm3bo3voeclosq1pop6rp124.apps.googleusercontent.com',
+    androidClientId: '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
     iosClientId: '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );

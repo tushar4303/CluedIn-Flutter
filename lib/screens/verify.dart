@@ -1,4 +1,4 @@
-import 'package:cluedin_app/screens/notification_page.dart';
+import 'package:cluedin_app/main.dart';
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -160,11 +160,12 @@ class _MyVerifyState extends State<MyVerify> {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const NotificationPage(),
+                                  builder: (BuildContext context) => HomePage(),
                                 ),
                                 (route) => false,
                               );
+                              // ignore: use_build_context_synchronously
+
                             } catch (e) {
                               final SnackBar snackBar =
                                   SnackBar(content: Text(e.toString()));

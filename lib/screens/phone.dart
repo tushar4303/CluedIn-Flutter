@@ -6,6 +6,8 @@ import '../services/validate_user.dart';
 import 'package:cluedin_app/utils/globals.dart';
 
 class MyPhone extends StatefulWidget {
+  static String yourNumber = '';
+
   const MyPhone({Key? key}) : super(key: key);
 
   static String verify = "";
@@ -35,22 +37,27 @@ class _MyPhoneState extends State<MyPhone> {
         setState(() => this._error = 'Error: ${value?.error!}');
       } else {
         if (value?.success == 'true') {
+          MyPhone.yourNumber = countryController.text + phone;
           await FirebaseAuth.instance.verifyPhoneNumber(
-            phoneNumber: countryController.text + phone,
+            phoneNumber: MyPhone.yourNumber,
             verificationCompleted: (PhoneAuthCredential credential) {},
             verificationFailed: (FirebaseAuthException e) {
               if (e.code == 'invalid-phone-number') {
                 setState(() => this._error = 'Error: ${e.code}');
+                print(countryController.text + phone);
               }
             },
             codeSent: (String verificationId, int? resendToken) {
               MyPhone.verify = verificationId;
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => MyVerify(phone: phone)));
             },
             codeAutoRetrievalTimeout: (String verificationId) {},
           );
           // ignore: use_build_context_synchronously
-          Navigator.push(context,
-              CupertinoPageRoute(builder: (context) => MyVerify(phone: phone)));
+
         } else {
           setState(() => this._error =
               'User not registered. Contact the admin for getting yourself registered');

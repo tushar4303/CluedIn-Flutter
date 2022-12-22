@@ -63,7 +63,7 @@ class _NotificationPageState extends State<NotificationPage> {
         elevation: 0.3,
         // title: Text("Notifications"),
         title: Transform(
-          transform: Matrix4.translationValues(8.0, 10.0, 0),
+          transform: Matrix4.translationValues(8.0, 16.0, 0),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +225,7 @@ class _NotificationPageState extends State<NotificationPage> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: (NotificationModel.items != null &&
                       NotificationModel.items!.isNotEmpty)
                   ? RefreshIndicator(

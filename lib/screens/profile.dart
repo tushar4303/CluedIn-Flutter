@@ -12,10 +12,10 @@ class MyProfile extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
-          toolbarHeight: 96,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.096,
           elevation: 0.3,
           title: Transform(
-            transform: Matrix4.translationValues(8.0, 10.0, 0),
+            transform: Matrix4.translationValues(8.0, 0.0, 0),
             child: const Text(
               "Profile",
               textAlign: TextAlign.left,
