@@ -2,7 +2,6 @@
 import 'package:cluedin_app/screens/events.dart';
 import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/screens/notification_page.dart';
-import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +37,7 @@ class myApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
-      home: MyPhone(),
+      home: HomePage(),
     );
   }
 }

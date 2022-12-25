@@ -19,37 +19,43 @@ class _NotificationPageState extends State<NotificationPage> {
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
+  late Future myfuture;
 
   @override
   void initState() {
     super.initState();
-    loadData();
+    myfuture = loadData();
   }
 
-  Future loadData() async {
-    await Future.delayed(Duration(seconds: 2));
-
+  Future<List<Item>?> loadData() async {
     final response = await http.get(Uri.parse(url));
 
-    final NotificationsJson = response.body;
+    try {
+      if (response.statusCode == 200) {
+        final NotificationsJson = response.body;
 
-    final decodedData = jsonDecode(NotificationsJson);
-    var notificationsData = decodedData["notifications"];
-    var labelsData = decodedData["labels"];
-    var senderRolesData = decodedData["senderRoles"];
+        final decodedData = jsonDecode(NotificationsJson);
+        var notificationsData = decodedData["notifications"];
+        var labelsData = decodedData["labels"];
+        var senderRolesData = decodedData["senderRoles"];
 
-    NotificationModel.labels = List.from(labelsData);
-    NotificationModel.senderRoles = List.from(senderRolesData);
+        NotificationModel.labels = List.from(labelsData);
+        NotificationModel.senderRoles = List.from(senderRolesData);
 
-    NotificationModel.items = List.from(notificationsData)
-        .map<Item>((item) => Item.fromMap(item))
-        .toList();
-    print(NotificationModel.items);
+        NotificationModel.items = List.from(notificationsData)
+            .map<Item>((item) => Item.fromMap(item))
+            .toList();
 
-    setState(() {
-      _filteredNotifications.clear();
-      _filteredNotifications.addAll(NotificationModel.items!);
-    });
+        setState(() {
+          _filteredNotifications.clear();
+          _filteredNotifications.addAll(NotificationModel.items!);
+        });
+
+        return NotificationModel.items;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override
@@ -75,17 +81,14 @@ class _NotificationPageState extends State<NotificationPage> {
                 style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
               ),
               SizedBox(
-                height: 8,
+                height: 4,
               ),
-              RefreshIndicator(
-                onRefresh: () async {
-                  await Future.delayed(Duration(milliseconds: 1500));
-                  loadData();
-                },
-                child: (NotificationModel.labels != null &&
-                        NotificationModel.labels!.isNotEmpty)
-                    ? SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+              (NotificationModel.labels != null &&
+                      NotificationModel.labels!.isNotEmpty)
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 16),
                         child: Row(
                           children: [
                             Transform(
@@ -125,7 +128,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: <Widget>[
-// rounded rectangle grey handle
+                                                    // rounded rectangle grey handle
                                                     Container(
                                                       width: 40.0,
                                                       height: 5.0,
@@ -211,12 +214,12 @@ class _NotificationPageState extends State<NotificationPage> {
                             ),
                           ],
                         ),
-                      )
-                    : Center(
-                        child: CircularProgressIndicator(
-                        color: Colors.white,
-                      )),
-              ),
+                      ),
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(
+                      color: Colors.white,
+                    )),
             ],
           ),
         ),
@@ -225,24 +228,47 @@ class _NotificationPageState extends State<NotificationPage> {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: (NotificationModel.items != null &&
-                      NotificationModel.items!.isNotEmpty)
-                  ? RefreshIndicator(
-                      onRefresh: () async {
-                        await Future.delayed(Duration(milliseconds: 1500));
-                        loadData();
-                      },
-                      child: ListView.builder(
-                          itemCount: _filteredNotifications.length,
-                          itemBuilder: (context, index) {
-                            return NotificationWidget(
-                              item: _filteredNotifications[index],
-                            );
-                          }),
-                    )
-                  : Center(child: CircularProgressIndicator()),
-            ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: FutureBuilder(
+                    future: myfuture,
+                    builder: ((context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              loadData();
+                            },
+                            child: ListView.builder(
+                                itemCount: _filteredNotifications.length,
+                                itemBuilder: (context, index) {
+                                  return NotificationWidget(
+                                    item: _filteredNotifications[index],
+                                  );
+                                }),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Column(
+                              children: [
+                                Text('${snapshot.error}'),
+                                ActionChip(
+                                  label: Text("Retry"),
+                                  backgroundColor: Colors.black,
+                                  onPressed: () {
+                                    loadData();
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      );
+                    }))),
           ),
         ],
       ),

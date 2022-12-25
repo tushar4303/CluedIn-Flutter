@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB1vtjGnTm6aDOD9fh8OM4DBPfBoNpFebA',
+    apiKey: 'AIzaSyBaF4mR5tiBqxZV_pSJAffV8HkvADcAHmU',
     appId: '1:738513365262:android:479941caddf06ddec64f5f',
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
