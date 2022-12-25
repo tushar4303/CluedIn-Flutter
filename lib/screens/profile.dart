@@ -1,5 +1,7 @@
 import 'package:cluedin_app/screens/phone.dart';
+import 'package:cluedin_app/screens/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyProfile extends StatelessWidget {
@@ -29,7 +31,12 @@ class MyProfile extends StatelessWidget {
             height: 90,
             child: Center(
               child: ListTile(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => ProfileDetails()));
+                },
                 leading: const CircleAvatar(
                   backgroundImage: NetworkImage(
                       'https://avatars.githubusercontent.com/u/88235295?s=400&u=2c6acf95bc514b8ca6115a6ff24822154a10ee7b&v=4'),
