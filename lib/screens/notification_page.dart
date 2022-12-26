@@ -1,10 +1,18 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:cluedin_app/models/notification.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/item_widget.dart';
+import 'package:flutter_svg/svg.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:retry/retry.dart';
+import '../widgets/offline.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -14,22 +22,51 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
+  StreamSubscription? internetconnection;
+  bool isoffline = false;
+  //set variable for Connectivity subscription listiner
   final url =
       "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/ed49b00d346e21c199e896c77186cc636437b4c4/notifications.json";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
-  late Future myfuture;
+  late Future<List<Item>?> myfuture;
 
   @override
   void initState() {
+    internetconnection = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // whenevery connection status is changed.
+      if (result == ConnectivityResult.none) {
+        //there is no any connection
+        setState(() {
+          isoffline = true;
+        });
+      } else if (result == ConnectivityResult.mobile) {
+        //connection is mobile data network
+        setState(() {
+          isoffline = false;
+        });
+      } else if (result == ConnectivityResult.wifi) {
+        //connection is from wifi
+        setState(() {
+          isoffline = false;
+        });
+      }
+    }); // using this listiner, you can get the medium of connection as well.
     super.initState();
     myfuture = loadData();
   }
 
   Future<List<Item>?> loadData() async {
-    final response = await http.get(Uri.parse(url));
-
+    final response = await retry(
+      // Make a GET request
+      () => http.get(Uri.parse(url)).timeout(Duration(seconds: 3)),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    print("inside future");
     try {
       if (response.statusCode == 200) {
         final NotificationsJson = response.body;
@@ -226,6 +263,10 @@ class _NotificationPageState extends State<NotificationPage> {
       ),
       body: Column(
         children: [
+          Container(
+            child: errmsg("No Internet Connection Available", isoffline),
+            //to show internet connection message on isoffline = true.
+          ),
           Expanded(
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -233,7 +274,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     future: myfuture,
                     builder: ((context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasError) {
                           return RefreshIndicator(
                             onRefresh: () async {
                               loadData();
@@ -246,20 +287,67 @@ class _NotificationPageState extends State<NotificationPage> {
                                   );
                                 }),
                           );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Column(
-                              children: [
-                                Text('${snapshot.error}'),
-                                ActionChip(
-                                  label: Text("Retry"),
-                                  backgroundColor: Colors.black,
+                        } else if (snapshot.hasData) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.035,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 0),
+                                child: SvgPicture.asset(
+                                  "assets/images/offline.svg",
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.45,
+                                ),
+                              ),
+                              Text(
+                                'Well this is awkward!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 30, 29, 29)),
+                              ),
+                              Text(
+                                'We dont seem to be connected...',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 30, 29, 29)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                      ),
+                                      visualDensity: VisualDensity.comfortable,
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.black)),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: Text(
+                                    "Try again",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   onPressed: () {
-                                    loadData();
+                                    setState(() {
+                                      myfuture = loadData();
+                                    });
                                   },
-                                )
-                              ],
-                            ),
+                                ),
+                              )
+                            ],
                           );
                         }
                       }
@@ -276,5 +364,7 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 }
+
+
 
 // ignore_for_file: prefer_const_constructors
