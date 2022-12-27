@@ -2,8 +2,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
-
 import 'package:cluedin_app/models/notification.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +58,10 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Future<List<Item>?> loadData() async {
-    final response = await retry(
+    final r = RetryOptions(maxAttempts: 3);
+    final response = await r.retry(
       // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(Duration(seconds: 3)),
+      () => http.get(Uri.parse(url)).timeout(Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -274,7 +273,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     future: myfuture,
                     builder: ((context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasError) {
+                        if (snapshot.hasData) {
                           return RefreshIndicator(
                             onRefresh: () async {
                               loadData();
@@ -287,7 +286,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   );
                                 }),
                           );
-                        } else if (snapshot.hasData) {
+                        } else if (snapshot.hasError) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,

@@ -51,6 +51,7 @@ dependencies:
   fluttertoast: ^8.1.2
   retry: ^3.1.0
   connectivity_plus: 
+  image_picker: ^0.8.6
 
 flutter_native_splash:
   color: "#ffffff"
