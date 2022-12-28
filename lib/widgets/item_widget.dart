@@ -14,11 +14,11 @@ class NotificationWidget extends StatelessWidget {
       tag: Key(item.messageId.toString()),
       child: SizedBox(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height * 0.1155,
+        // height: MediaQuery.of(context).size.height * 0.1155,
         child: Card(
           // color: Colors.amberAccent,
           elevation: 0.0,
-          margin: const EdgeInsets.symmetric(vertical: 0),
+          margin: const EdgeInsets.only(bottom: 12),
           child: ListTile(
             onTap: () {
               Navigator.push(

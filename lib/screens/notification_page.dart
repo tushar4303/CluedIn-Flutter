@@ -22,9 +22,10 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   StreamSubscription? internetconnection;
   bool isoffline = false;
+  bool showFrom = false;
   //set variable for Connectivity subscription listiner
   final url =
-      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/ed49b00d346e21c199e896c77186cc636437b4c4/notifications.json";
+      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/e56d65b028681c9beb3074657e9d81f0d33f5391/notifications.json";
 
   final _filters = [];
   final List<Item> _filteredNotifications = [];
@@ -97,7 +98,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -129,69 +130,79 @@ class _NotificationPageState extends State<NotificationPage> {
                           children: [
                             Transform(
                               transform: Matrix4.translationValues(0, -4, 0),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 16),
-                                child: ActionChip(
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(25.0),
+                              child: Visibility(
+                                visible: showFrom,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16),
+                                  child: ActionChip(
+                                    onPressed: () {
+                                      //if filtertype == Academics then call show modalbottomsheet
+
+                                      showModalBottomSheet(
+                                          useRootNavigator: true,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(25.0),
+                                            ),
                                           ),
-                                        ),
-                                        context: context,
-                                        builder: (builder) {
-                                          return SizedBox(
-                                            height: 350.0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topLeft: const Radius
-                                                              .circular(20.0),
-                                                          topRight: const Radius
-                                                              .circular(20.0))),
-                                              //content starts
+                                          context: context,
+                                          builder: (builder) {
+                                            return SizedBox(
+                                              height: 350.0,
                                               child: Container(
-                                                margin: EdgeInsets.only(
-                                                    right: 5.0,
-                                                    left: 5.0,
-                                                    top: 10.0),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    // rounded rectangle grey handle
-                                                    Container(
-                                                      width: 40.0,
-                                                      height: 5.0,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        color: Colors.grey,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: const Radius
+                                                                .circular(20.0),
+                                                            topRight: const Radius
+                                                                    .circular(
+                                                                20.0))),
+                                                //content starts
+                                                child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      right: 5.0,
+                                                      left: 5.0,
+                                                      top: 10.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: <Widget>[
+                                                      // rounded rectangle grey handle
+                                                      Container(
+                                                        width: 40.0,
+                                                        height: 5.0,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
+                                                          color: Colors.grey,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        });
-                                  },
-                                  label: Text("From"),
-                                  avatar: Icon(Icons.account_circle),
-                                  visualDensity: VisualDensity(vertical: -1.5),
-                                  side: BorderSide(
-                                      width: 1,
-                                      color: Color.fromARGB(66, 75, 74, 74)),
-                                  // surfaceTintColor: Colors.black,
+                                            );
+                                          });
+                                    },
+                                    label: Text("From"),
+                                    avatar: Icon(Icons.account_circle),
+                                    visualDensity:
+                                        VisualDensity(vertical: -1.5),
+                                    side: BorderSide(
+                                        width: 1,
+                                        color: Color.fromARGB(66, 75, 74, 74)),
+                                    // surfaceTintColor: Colors.black,
 
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -227,13 +238,25 @@ class _NotificationPageState extends State<NotificationPage> {
                                           setState(() {
                                             if (value) {
                                               _filters.add(filterType);
-                                              print(filterType);
+                                              print("after remove: $_filters");
                                             } else {
                                               _filters.removeWhere((name) {
+                                                print(
+                                                    "after remove: $_filters");
                                                 return name == filterType;
                                               });
                                             }
                                             _filteredNotifications.clear();
+                                            if (_filters
+                                                .contains("Academics")) {
+                                              setState(() {
+                                                showFrom = true;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                showFrom = false;
+                                              });
+                                            }
                                             if (_filters.isEmpty) {
                                               _filteredNotifications.addAll(
                                                   NotificationModel.items!);
@@ -278,13 +301,16 @@ class _NotificationPageState extends State<NotificationPage> {
                             onRefresh: () async {
                               loadData();
                             },
-                            child: ListView.builder(
-                                itemCount: _filteredNotifications.length,
-                                itemBuilder: (context, index) {
-                                  return NotificationWidget(
-                                    item: _filteredNotifications[index],
-                                  );
-                                }),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 50),
+                              child: ListView.builder(
+                                  itemCount: _filteredNotifications.length,
+                                  itemBuilder: (context, index) {
+                                    return NotificationWidget(
+                                      item: _filteredNotifications[index],
+                                    );
+                                  }),
+                            ),
                           );
                         } else if (snapshot.hasError) {
                           return Column(
