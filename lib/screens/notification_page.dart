@@ -28,6 +28,7 @@ class _NotificationPageState extends State<NotificationPage> {
       "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/e56d65b028681c9beb3074657e9d81f0d33f5391/notifications.json";
 
   final _filters = [];
+  final _senders = [];
   final List<Item> _filteredNotifications = [];
   late Future<List<Item>?> myfuture;
 
@@ -84,6 +85,8 @@ class _NotificationPageState extends State<NotificationPage> {
             .toList();
 
         setState(() {
+          _filters.clear();
+          showFrom = false;
           _filteredNotifications.clear();
           _filteredNotifications.addAll(NotificationModel.items!);
         });
@@ -139,6 +142,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                       //if filtertype == Academics then call show modalbottomsheet
 
                                       showModalBottomSheet(
+                                          enableDrag: true,
                                           useRootNavigator: true,
                                           isScrollControlled: true,
                                           shape: const RoundedRectangleBorder(
@@ -148,43 +152,96 @@ class _NotificationPageState extends State<NotificationPage> {
                                           ),
                                           context: context,
                                           builder: (builder) {
-                                            return SizedBox(
-                                              height: 350.0,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: const Radius
-                                                                .circular(20.0),
-                                                            topRight: const Radius
-                                                                    .circular(
-                                                                20.0))),
-                                                //content starts
+                                            return SingleChildScrollView(
+                                              child: SizedBox(
                                                 child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 5.0,
-                                                      left: 5.0,
-                                                      top: 10.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: <Widget>[
-                                                      // rounded rectangle grey handle
-                                                      Container(
-                                                        width: 40.0,
-                                                        height: 5.0,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
-                                                          color: Colors.grey,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.only(
+                                                          topLeft: const Radius
+                                                              .circular(20.0),
+                                                          topRight: const Radius
+                                                              .circular(20.0))),
+                                                  //content starts
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 5.0,
+                                                        left: 5.0,
+                                                        top: 10.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        // rounded rectangle grey handle
+                                                        Container(
+                                                          width: 40.0,
+                                                          height: 5.0,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        FutureBuilder(
+                                                          future: myfuture,
+                                                          builder: (BuildContext
+                                                                  context,
+                                                              snapshot) {
+                                                            if (snapshot
+                                                                    .connectionState ==
+                                                                ConnectionState
+                                                                    .done) {
+                                                              if (snapshot
+                                                                  .hasData) {
+                                                                return SingleChildScrollView(
+                                                                  child: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: (NotificationModel
+                                                                          .senderRoles!
+                                                                          .map(
+                                                                              (sender) {
+                                                                        return Column(
+                                                                          children: [
+                                                                            ListTile(
+                                                                              title: Text(sender),
+                                                                              trailing: Icon(Icons.done),
+                                                                              onTap: () {
+                                                                                // _senders.add(sender);
+                                                                                // print(_senders);
+                                                                              },
+                                                                            ),
+                                                                            Divider(),
+                                                                          ],
+                                                                        );
+                                                                      }).toList())),
+                                                                );
+                                                              } else if (snapshot
+                                                                  .hasError) {
+                                                                return Center(
+                                                                    child: Text(
+                                                                        "${snapshot.error}"));
+                                                              }
+                                                            }
+                                                            return Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            );
+                                                          },
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -238,11 +295,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                           setState(() {
                                             if (value) {
                                               _filters.add(filterType);
-                                              print("after remove: $_filters");
                                             } else {
                                               _filters.removeWhere((name) {
-                                                print(
-                                                    "after remove: $_filters");
                                                 return name == filterType;
                                               });
                                             }

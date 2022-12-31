@@ -6,7 +6,7 @@ Widget errmsg(String text, bool show) {
     //if error is true then show error message box
     return Container(
       padding: EdgeInsets.all(10.00),
-      margin: EdgeInsets.only(bottom: 10.00),
+      // margin: EdgeInsets.only(bottom: 10.00),
       color: Color.fromARGB(255, 1, 1, 1),
       child: Row(children: [
         Container(
