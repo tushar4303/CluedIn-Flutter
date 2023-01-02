@@ -67,8 +67,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
     storageBucket: 'cluedin-79346.appspot.com',
-    androidClientId: '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
-    iosClientId: '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
+    androidClientId:
+        '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
+    iosClientId:
+        '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );
 
@@ -78,8 +80,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738513365262',
     projectId: 'cluedin-79346',
     storageBucket: 'cluedin-79346.appspot.com',
-    androidClientId: '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
-    iosClientId: '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
+    androidClientId:
+        '738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com',
+    iosClientId:
+        '738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );
 }

@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:cluedin_app/widgets/item_widget.dart';
+import 'package:cluedin_app/widgets/notificationCard.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -56,10 +56,10 @@ class _NotificationPageState extends State<NotificationPage> {
       }
     }); // using this listiner, you can get the medium of connection as well.
     super.initState();
-    myfuture = loadData();
+    myfuture = loadNotifications();
   }
 
-  Future<List<Item>?> loadData() async {
+  Future<List<Item>?> loadNotifications() async {
     final r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
@@ -67,7 +67,6 @@ class _NotificationPageState extends State<NotificationPage> {
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
-    print("inside future");
     try {
       if (response.statusCode == 200) {
         final NotificationsJson = response.body;
@@ -86,6 +85,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
         setState(() {
           _filters.clear();
+          _senders.clear();
           showFrom = false;
           _filteredNotifications.clear();
           _filteredNotifications.addAll(NotificationModel.items!);
@@ -186,60 +186,118 @@ class _NotificationPageState extends State<NotificationPage> {
                                                             color: Colors.grey,
                                                           ),
                                                         ),
-                                                        FutureBuilder(
-                                                          future: myfuture,
-                                                          builder: (BuildContext
-                                                                  context,
-                                                              snapshot) {
-                                                            if (snapshot
-                                                                    .connectionState ==
-                                                                ConnectionState
-                                                                    .done) {
-                                                              if (snapshot
-                                                                  .hasData) {
-                                                                return SingleChildScrollView(
-                                                                  child: Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .start,
-                                                                      children: (NotificationModel
-                                                                          .senderRoles!
-                                                                          .map(
-                                                                              (sender) {
-                                                                        return Column(
-                                                                          children: [
-                                                                            ListTile(
-                                                                              title: Text(sender),
-                                                                              trailing: Icon(Icons.done),
-                                                                              onTap: () {
-                                                                                // _senders.add(sender);
-                                                                                // print(_senders);
-                                                                              },
-                                                                            ),
-                                                                            Divider(),
-                                                                          ],
-                                                                        );
-                                                                      }).toList())),
+                                                        SingleChildScrollView(
+                                                          child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: (NotificationModel
+                                                                  .senderRoles!
+                                                                  .map(
+                                                                      (sender) {
+                                                                return Column(
+                                                                  children: [
+                                                                    ListTile(
+                                                                      title: Text(
+                                                                          sender),
+                                                                      trailing:
+                                                                          Visibility(
+                                                                        visible:
+                                                                            _senders.contains(sender),
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .done,
+                                                                          color:
+                                                                              Colors.blueAccent,
+                                                                        ),
+                                                                      ),
+                                                                      onTap:
+                                                                          () {
+                                                                        setState(
+                                                                            () {
+                                                                          if (_senders
+                                                                              .contains(sender)) {
+                                                                            _senders.remove(sender);
+                                                                          } else {
+                                                                            _senders.add(sender);
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                    ),
+                                                                    Divider(),
+                                                                  ],
                                                                 );
-                                                              } else if (snapshot
-                                                                  .hasError) {
-                                                                return Center(
-                                                                    child: Text(
-                                                                        "${snapshot.error}"));
-                                                              }
-                                                            }
-                                                            return Center(
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            );
-                                                          },
-                                                        )
+                                                              }).toList())),
+                                                        ),
+                                                        // FutureBuilder(
+                                                        //   future: myfuture,
+                                                        //   builder: (BuildContext
+                                                        //           context,
+                                                        //       snapshot) {
+                                                        //     if (snapshot
+                                                        //             .connectionState ==
+                                                        //         ConnectionState
+                                                        //             .done) {
+                                                        //       if (snapshot
+                                                        //           .hasData) {
+                                                        //         return SingleChildScrollView(
+                                                        //           child: Column(
+                                                        //               crossAxisAlignment:
+                                                        //                   CrossAxisAlignment
+                                                        //                       .start,
+                                                        //               mainAxisAlignment:
+                                                        //                   MainAxisAlignment
+                                                        //                       .start,
+                                                        //               children: (NotificationModel
+                                                        //                   .senderRoles!
+                                                        //                   .map(
+                                                        //                       (sender) {
+                                                        //                 return Column(
+                                                        //                   children: [
+                                                        //                     ListTile(
+                                                        //                       title: Text(sender),
+                                                        //                       trailing: Visibility(
+                                                        //                         visible: _senders.contains(sender),
+                                                        //                         child: Icon(
+                                                        //                           Icons.done,
+                                                        //                           color: Colors.blueAccent,
+                                                        //                         ),
+                                                        //                       ),
+                                                        //                       onTap: () {
+                                                        //                         setState(() {
+                                                        //                           if (_senders.contains(sender)) {
+                                                        //                             _senders.remove(sender);
+                                                        //                           } else {
+                                                        //                             _senders.add(sender);
+                                                        //                           }
+                                                        //                         });
+                                                        //                       },
+                                                        //                     ),
+                                                        //                     Divider(),
+                                                        //                   ],
+                                                        //                 );
+                                                        //               }).toList())),
+                                                        //         );
+                                                        //       } else if (snapshot
+                                                        //           .hasError) {
+                                                        //         return Center(
+                                                        //             child: Text(
+                                                        //                 "${snapshot.error}"));
+                                                        //       }
+                                                        //     }
+                                                        //     return Center(
+                                                        //       child:
+                                                        //           CircularProgressIndicator(
+                                                        //         color: Colors
+                                                        //             .black,
+                                                        //       ),
+                                                        //     );
+                                                        //   },
+                                                        // )
                                                       ],
                                                     ),
                                                   ),
@@ -249,7 +307,10 @@ class _NotificationPageState extends State<NotificationPage> {
                                           });
                                     },
                                     label: Text("From"),
-                                    avatar: Icon(Icons.account_circle),
+                                    avatar: Icon(
+                                      Icons.account_circle,
+                                      color: Colors.black,
+                                    ),
                                     visualDensity:
                                         VisualDensity(vertical: -1.5),
                                     side: BorderSide(
@@ -353,7 +414,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         if (snapshot.hasData) {
                           return RefreshIndicator(
                             onRefresh: () async {
-                              loadData();
+                              loadNotifications();
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 50),
@@ -421,7 +482,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      myfuture = loadData();
+                                      myfuture = loadNotifications();
                                     });
                                   },
                                 ),

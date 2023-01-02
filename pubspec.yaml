@@ -47,10 +47,10 @@ dependencies:
   timeago_flutter: ^1.2.0
   navbar_router:
   flutter_svg: ^1.1.6
-  fluttertoast: ^8.1.2
   retry: ^3.1.0
   connectivity_plus: 
   image_picker: ^0.8.6
+  cached_network_image: ^3.2.3
   
 
 dev_dependencies:
