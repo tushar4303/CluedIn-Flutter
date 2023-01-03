@@ -59,6 +59,11 @@ class _MyEventsState extends State<MyEvents> {
     myfuture = loadEvents();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<List<Item>?> loadEvents() async {
     final r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
@@ -353,7 +358,8 @@ class _MyEventsState extends State<MyEvents> {
                               loadEvents();
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 50),
+                              padding:
+                                  const EdgeInsets.only(bottom: 54, top: 4),
                               child: GridView.builder(
                                 itemCount: _filteredEvents.length,
                                 itemBuilder: (context, index) {

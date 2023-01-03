@@ -59,6 +59,11 @@ class _NotificationPageState extends State<NotificationPage> {
     myfuture = loadNotifications();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<List<Item>?> loadNotifications() async {
     final r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
@@ -417,7 +422,7 @@ class _NotificationPageState extends State<NotificationPage> {
                               loadNotifications();
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 50),
+                              padding: const EdgeInsets.only(bottom: 54),
                               child: ListView.builder(
                                   itemCount: _filteredNotifications.length,
                                   itemBuilder: (context, index) {

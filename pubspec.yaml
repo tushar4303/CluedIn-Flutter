@@ -51,6 +51,7 @@ dependencies:
   connectivity_plus: 
   image_picker: ^0.8.6
   cached_network_image: ^3.2.3
+  url_launcher: ^6.1.7
   
 
 dev_dependencies:
