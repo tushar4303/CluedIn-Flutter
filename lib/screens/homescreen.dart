@@ -36,24 +36,28 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: PageView.builder(
-                itemBuilder: (context, index) {
-                  return CarouselCard(
-                    car: cars[index],
-                  );
-                },
-                itemCount: cars.length,
-                controller: PageController(initialPage: 1, viewportFraction: 1),
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPage = index;
-                  });
-                },
-              ),
+              child: Stack(alignment: Alignment.center, children: <Widget>[
+                PageView.builder(
+                  itemBuilder: (context, index) {
+                    return CarouselCard(
+                      car: cars[index],
+                    );
+                  },
+                  itemCount: cars.length,
+                  controller:
+                      PageController(initialPage: 1, viewportFraction: 1),
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentPage = index;
+                    });
+                  },
+                ),
+                Positioned(bottom: 0.0, child: updateIndicators()),
+              ]),
             ),
           ),
-          updateIndicators(),
-          utilityBar(),
+          const SizedBox(height: 16),
+          const utilityBar(),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 24),
             child: Column(
@@ -67,7 +71,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-          )
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.225,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PageView.builder(
+                itemBuilder: (context, index) {
+                  return ChapterCard();
+                },
+                itemCount: cars.length,
+                controller:
+                    PageController(initialPage: 2, viewportFraction: 0.4),
+                onPageChanged: (index) {
+                  setState(() {
+                    currentPage = index;
+                  });
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -75,21 +102,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget updateIndicators() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 16),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: cars.map(
           (car) {
             var index = cars.indexOf(car);
             return Container(
-              width: 6.0,
-              height: 6.0,
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              width: 5.0,
+              height: 5.0,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.85), //color of border
+                  width: 0.5, //width of border
+                ),
                 shape: BoxShape.circle,
                 color: currentPage == index
-                    ? const Color.fromARGB(255, 0, 0, 0)
-                    : const Color(0xFFA6AEBD),
+                    ? const Color.fromARGB(233, 255, 255, 255)
+                    : Colors.grey.withOpacity(0.5),
               ),
             );
           },
@@ -114,9 +145,9 @@ class utilityBar extends StatelessWidget {
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),
               blurRadius: 3,
-              offset: Offset(0.0, 0.75))
+              offset: const Offset(0.0, 0.75))
         ],
-        color: Color.fromRGBO(250, 250, 250, 1),
+        color: const Color.fromRGBO(250, 250, 250, 1),
         borderRadius: BorderRadius.circular(
           16.0,
         ),
@@ -125,107 +156,155 @@ class utilityBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(
-                    color: Colors.black12, //color of border
-                    width: 0.15, //width of border
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(
+                        color: Colors.black12, //color of border
+                        width: 0.15, //width of border
+                      ),
+                      color: const Color.fromRGBO(242, 242, 242, 1)),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        iconSize: 30,
+                        icon: const Icon(Icons.calendar_today),
+                        color: Colors.black.withOpacity(0.8),
+                        // tooltip: 'Increase volume by 10',
+                        onPressed: () async {
+                          final url = Uri.parse(
+                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
+                          if (!await launchUrl(url)) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  color: Color.fromRGBO(242, 242, 242, 1)),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: IconButton(
-                  iconSize: 38,
-                  icon: Icon(
-                    Icons.calendar_month_outlined,
-                    color: Colors.black.withOpacity(0.8),
-                  ),
-                  // tooltip: 'Increase volume by 10',
-                  onPressed: () async {
-                    final url = Uri.parse(
-                        'https://elearn.dbit.in/pluginfile.php/4006/mod_resource/content/1/DSA_CScheme_Syllabus.pdf');
-                    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-                      throw 'Could not launch $url';
-                    }
-                  },
                 ),
-              ),
+                const SizedBox(
+                  height: 6,
+                ),
+                const Text(
+                  "Timetable",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                )
+              ],
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(
-                    color: Colors.black12, //color of border
-                    width: 0.15, //width of border
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(
+                        color: Colors.black12, //color of border
+                        width: 0.15, //width of border
+                      ),
+                      color: const Color.fromRGBO(242, 242, 242, 1)),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        iconSize: 30,
+                        icon: const Icon(Icons.train),
+                        color: Colors.black.withOpacity(0.8),
+                        // tooltip: 'Increase volume by 10',
+                        onPressed: () async {
+                          final url = Uri.parse(
+                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
+                          if (!await launchUrl(url)) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  color: Color.fromRGBO(242, 242, 242, 1)),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: IconButton(
-                  iconSize: 38,
-                  icon: const Icon(Icons.train),
-                  color: Colors.black.withOpacity(0.8),
-                  // tooltip: 'Increase volume by 10',
-                  onPressed: () async {
-                    final url = Uri.parse(
-                        'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
-                    if (!await launchUrl(url)) {
-                      throw 'Could not launch $url';
-                    }
-                  },
                 ),
-              ),
+                const SizedBox(
+                  height: 6,
+                ),
+                const Text(
+                  "Concession",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                )
+              ],
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(
-                    color: Colors.black12, //color of border
-                    width: 0.15, //width of border
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(
+                        color: Colors.black12, //color of border
+                        width: 0.15, //width of border
+                      ),
+                      color: const Color.fromRGBO(242, 242, 242, 1)),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        iconSize: 30,
+                        icon: const Icon(Icons.library_books),
+                        color: Colors.black.withOpacity(0.8),
+                        // tooltip: 'Increase volume by 10',
+                        onPressed: () async {
+                          final url = Uri.parse(
+                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
+                          if (!await launchUrl(url)) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  color: Color.fromRGBO(242, 242, 242, 1)),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: IconButton(
-                  iconSize: 38,
-                  icon: const Icon(Icons.library_books),
-                  color: Colors.black.withOpacity(0.8),
-                  // tooltip: 'Increase volume by 10',
-                  onPressed: () async {
-                    final url = Uri.parse("https://elearn.dbit.in/");
-                    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-                      throw 'Could not launch $url';
-                    }
-                  },
                 ),
-              ),
+                const SizedBox(
+                  height: 6,
+                ),
+                const Text(
+                  "Moodle-Elearn",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                )
+              ],
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  border: Border.all(
-                    color: Colors.black12, //color of border
-                    width: 0.15, //width of border
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      border: Border.all(
+                        color: Colors.black12, //color of border
+                        width: 0.15, //width of border
+                      ),
+                      color: const Color.fromRGBO(242, 242, 242, 1)),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        iconSize: 30,
+                        icon: const Icon(Icons.web),
+                        color: Colors.black.withOpacity(0.8),
+                        // tooltip: 'Increase volume by 10',
+                        onPressed: () async {
+                          final url = Uri.parse(
+                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
+                          if (!await launchUrl(url)) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  color: Color.fromRGBO(242, 242, 242, 1)),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: IconButton(
-                  iconSize: 38,
-                  icon: const Icon(Icons.airplane_ticket),
-                  color: Colors.black.withOpacity(0.8),
-                  // tooltip: 'Increase volume by 10',
-                  onPressed: () async {
-                    final url = Uri.parse('https://blog.logrocket.com');
-                    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-                      throw 'Could not launch $url';
-                    }
-                  },
                 ),
-              ),
+                const SizedBox(
+                  height: 6,
+                ),
+                const Text(
+                  "Website",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                )
+              ],
             ),
           ],
         ),
@@ -234,8 +313,35 @@ class utilityBar extends StatelessWidget {
   }
 }
 
+class ChapterCard extends StatelessWidget {
+  ChapterCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+      ),
+      child: GestureDetector(
+        onTap: () {},
+        child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+            // child: CachedNetworkImage(
+            //   imageUrl: "https://csi.dbit.in/assets/img/CSI-DBIT.png",
+            //   fit: BoxFit.cover,
+            // ),
+            child: Image.asset(
+              "assets/images/placeholder.png",
+              fit: BoxFit.cover,
+            )),
+      ),
+    );
+  }
+}
+
 class CarouselCard extends StatelessWidget {
-  CarouselCard({required this.car});
+  CarouselCard({super.key, required this.car});
 
   TeslaCar car;
 
@@ -248,13 +354,11 @@ class CarouselCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {},
-        child: Container(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            child: CachedNetworkImage(
-              imageUrl: car.image,
-              fit: BoxFit.cover,
-            ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          child: CachedNetworkImage(
+            imageUrl: car.image,
+            fit: BoxFit.cover,
           ),
         ),
       ),

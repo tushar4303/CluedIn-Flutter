@@ -65,10 +65,10 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Future<List<Item>?> loadNotifications() async {
-    final r = RetryOptions(maxAttempts: 3);
+    final r = const RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(Duration(seconds: 2)),
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -106,7 +106,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -119,13 +119,13 @@ class _NotificationPageState extends State<NotificationPage> {
             // mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Notifications",
                 textAlign: TextAlign.left,
                 textScaleFactor: 1.3,
                 style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 4,
               ),
               (NotificationModel.labels != null &&
@@ -133,7 +133,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
-                        margin: EdgeInsets.only(bottom: 16),
+                        margin: const EdgeInsets.only(bottom: 16),
                         child: Row(
                           children: [
                             Transform(
@@ -143,182 +143,25 @@ class _NotificationPageState extends State<NotificationPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 16),
                                   child: ActionChip(
-                                    onPressed: () {
-                                      //if filtertype == Academics then call show modalbottomsheet
-
-                                      showModalBottomSheet(
-                                          enableDrag: true,
-                                          useRootNavigator: true,
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
                                           isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(25.0),
-                                            ),
-                                          ),
+                                          isDismissible: true,
+                                          useRootNavigator: true,
+                                          backgroundColor: Colors.transparent,
                                           context: context,
-                                          builder: (builder) {
-                                            return SingleChildScrollView(
-                                              child: SizedBox(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.only(
-                                                          topLeft: const Radius
-                                                              .circular(20.0),
-                                                          topRight: const Radius
-                                                              .circular(20.0))),
-                                                  //content starts
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 5.0,
-                                                        left: 5.0,
-                                                        top: 10.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: <Widget>[
-                                                        // rounded rectangle grey handle
-                                                        Container(
-                                                          width: 40.0,
-                                                          height: 5.0,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                        SingleChildScrollView(
-                                                          child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: (NotificationModel
-                                                                  .senderRoles!
-                                                                  .map(
-                                                                      (sender) {
-                                                                return Column(
-                                                                  children: [
-                                                                    ListTile(
-                                                                      title: Text(
-                                                                          sender),
-                                                                      trailing:
-                                                                          Visibility(
-                                                                        visible:
-                                                                            _senders.contains(sender),
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .done,
-                                                                          color:
-                                                                              Colors.blueAccent,
-                                                                        ),
-                                                                      ),
-                                                                      onTap:
-                                                                          () {
-                                                                        setState(
-                                                                            () {
-                                                                          if (_senders
-                                                                              .contains(sender)) {
-                                                                            _senders.remove(sender);
-                                                                          } else {
-                                                                            _senders.add(sender);
-                                                                          }
-                                                                        });
-                                                                      },
-                                                                    ),
-                                                                    Divider(),
-                                                                  ],
-                                                                );
-                                                              }).toList())),
-                                                        ),
-                                                        // FutureBuilder(
-                                                        //   future: myfuture,
-                                                        //   builder: (BuildContext
-                                                        //           context,
-                                                        //       snapshot) {
-                                                        //     if (snapshot
-                                                        //             .connectionState ==
-                                                        //         ConnectionState
-                                                        //             .done) {
-                                                        //       if (snapshot
-                                                        //           .hasData) {
-                                                        //         return SingleChildScrollView(
-                                                        //           child: Column(
-                                                        //               crossAxisAlignment:
-                                                        //                   CrossAxisAlignment
-                                                        //                       .start,
-                                                        //               mainAxisAlignment:
-                                                        //                   MainAxisAlignment
-                                                        //                       .start,
-                                                        //               children: (NotificationModel
-                                                        //                   .senderRoles!
-                                                        //                   .map(
-                                                        //                       (sender) {
-                                                        //                 return Column(
-                                                        //                   children: [
-                                                        //                     ListTile(
-                                                        //                       title: Text(sender),
-                                                        //                       trailing: Visibility(
-                                                        //                         visible: _senders.contains(sender),
-                                                        //                         child: Icon(
-                                                        //                           Icons.done,
-                                                        //                           color: Colors.blueAccent,
-                                                        //                         ),
-                                                        //                       ),
-                                                        //                       onTap: () {
-                                                        //                         setState(() {
-                                                        //                           if (_senders.contains(sender)) {
-                                                        //                             _senders.remove(sender);
-                                                        //                           } else {
-                                                        //                             _senders.add(sender);
-                                                        //                           }
-                                                        //                         });
-                                                        //                       },
-                                                        //                     ),
-                                                        //                     Divider(),
-                                                        //                   ],
-                                                        //                 );
-                                                        //               }).toList())),
-                                                        //         );
-                                                        //       } else if (snapshot
-                                                        //           .hasError) {
-                                                        //         return Center(
-                                                        //             child: Text(
-                                                        //                 "${snapshot.error}"));
-                                                        //       }
-                                                        //     }
-                                                        //     return Center(
-                                                        //       child:
-                                                        //           CircularProgressIndicator(
-                                                        //         color: Colors
-                                                        //             .black,
-                                                        //       ),
-                                                        //     );
-                                                        //   },
-                                                        // )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          });
+                                          builder: (context) =>
+                                              _showRoleFilterSheet(
+                                                  senders: _senders));
                                     },
-                                    label: Text("From"),
-                                    avatar: Icon(
+                                    label: const Text("From"),
+                                    avatar: const Icon(
                                       Icons.account_circle,
                                       color: Colors.black,
                                     ),
                                     visualDensity:
-                                        VisualDensity(vertical: -1.5),
-                                    side: BorderSide(
+                                        const VisualDensity(vertical: -1.5),
+                                    side: const BorderSide(
                                         width: 1,
                                         color: Color.fromARGB(66, 75, 74, 74)),
                                     // surfaceTintColor: Colors.black,
@@ -345,7 +188,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                         // labelPadding: EdgeInsets.symmetric(
                                         //     horizontal: 4, vertical: 0),
                                         selected: _filters.contains(filterType),
-                                        side: BorderSide(
+                                        side: const BorderSide(
                                             width: 1,
                                             color:
                                                 Color.fromARGB(66, 75, 74, 74)),
@@ -355,8 +198,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
-                                        selectedColor:
-                                            Color.fromARGB(180, 224, 220, 220),
+                                        selectedColor: const Color.fromARGB(
+                                            180, 224, 220, 220),
                                         onSelected: ((value) {
                                           setState(() {
                                             if (value) {
@@ -395,7 +238,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         ),
                       ),
                     )
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(
                       color: Colors.white,
                     )),
@@ -450,7 +293,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                       MediaQuery.of(context).size.height * 0.45,
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 'Well this is awkward!',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -458,7 +301,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                     fontWeight: FontWeight.w500,
                                     color: Color.fromARGB(255, 30, 29, 29)),
                               ),
-                              Text(
+                              const Text(
                                 'We dont seem to be connected...',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -481,7 +324,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                           MaterialStateProperty.all(
                                               Colors.black)),
                                   clipBehavior: Clip.hardEdge,
-                                  child: Text(
+                                  child: const Text(
                                     "Try again",
                                     style: TextStyle(color: Colors.white),
                                   ),
@@ -496,7 +339,7 @@ class _NotificationPageState extends State<NotificationPage> {
                           );
                         }
                       }
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.black,
                         ),
@@ -510,6 +353,68 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 }
 
+class _showRoleFilterSheet extends StatelessWidget {
+  const _showRoleFilterSheet({
+    Key? key,
+    required List senders,
+  })  : _senders = senders,
+        super(key: key);
 
+  final List _senders;
 
-// ignore_for_file: prefer_const_constructors
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+        expand: false,
+        key: UniqueKey(),
+        initialChildSize: 0.4,
+        maxChildSize: 0.6,
+        builder: (context, controller) => Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0))),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8, bottom: 8),
+                    width: 40.0,
+                    height: 5.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: NotificationModel.senderRoles!.length,
+                      controller: controller,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              visualDensity:
+                                  const VisualDensity(vertical: -2.5),
+                              title:
+                                  Text(NotificationModel.senderRoles![index]),
+                              trailing: Visibility(
+                                  visible: _senders.contains(
+                                      NotificationModel.senderRoles![index]),
+                                  child: const Icon(Icons.check)),
+                              onTap: () {},
+                            ),
+                            Divider(
+                              thickness: 0.5,
+                              color: Colors.grey.withOpacity(0.3),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ));
+  }
+}
