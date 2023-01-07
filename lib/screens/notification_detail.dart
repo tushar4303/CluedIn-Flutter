@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NotificationDetailsPage extends StatelessWidget {
   const NotificationDetailsPage({
@@ -116,7 +117,7 @@ class NotificationDetailsPage extends StatelessWidget {
                               imageUrl: notification.imageUrl,
                               placeholder: (context, url) {
                                 return Image.asset(
-                                  "assets/images/placeholder.png",
+                                  "assets/images/placeholder_landscape.png",
                                   fit: BoxFit.cover,
                                 );
                               },
@@ -146,35 +147,46 @@ class NotificationDetailsPage extends StatelessWidget {
                                     ClipRRect(
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10)),
-                                      child: Container(
+                                      child: Material(
                                         color: const Color.fromRGBO(
                                             242, 243, 245, 1),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16, horizontal: 24),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.insert_drive_file,
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            final url = Uri.parse(
+                                                notification.attachmentUrl);
+                                            if (!await launchUrl(url)) {
+                                              throw 'Could not launch $url';
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 16, horizontal: 24),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.insert_drive_file,
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                if (metadata.title != null)
+                                                  Text(
+                                                    metadata.title!,
+                                                    maxLines: 2,
+                                                    style: const TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            27, 96, 173, 1),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                              ],
                                             ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            if (metadata.title != null)
-                                              Text(
-                                                metadata.title!,
-                                                maxLines: 2,
-                                                style: const TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        27, 96, 173, 1),
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),

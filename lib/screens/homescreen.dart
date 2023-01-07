@@ -496,6 +496,12 @@ class CarouselCard extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: car.image,
             fit: BoxFit.cover,
+            placeholder: (context, url) {
+              return Image.asset(
+                "assets/images/placeholder_landscape.png",
+                fit: BoxFit.cover,
+              );
+            },
           ),
         ),
       ),
