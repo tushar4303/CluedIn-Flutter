@@ -119,20 +119,20 @@ class _MyEventsState extends State<MyEvents> {
             // mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Events",
                 textAlign: TextAlign.left,
                 textScaleFactor: 1.3,
                 style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 4,
               ),
               (EventModel.labels != null && EventModel.labels!.isNotEmpty)
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
-                        margin: EdgeInsets.only(bottom: 16),
+                        margin: const EdgeInsets.only(bottom: 16),
                         child: Row(
                           children: [
                             Transform(

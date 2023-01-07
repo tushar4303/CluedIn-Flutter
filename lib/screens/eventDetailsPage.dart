@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/events.dart';
 
@@ -122,14 +124,107 @@ class EventDetailsPage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (event.registrationFee.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            "Registration Fee: ${event.registrationFee}",
+                            textScaleFactor: 1.1,
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      if (event.attachmentUrl.isNotEmpty)
+                        AnyLinkPreview.isValidLink(event.attachmentUrl)
+                            ? AnyLinkPreview.builder(
+                                link: event.attachmentUrl,
+                                itemBuilder:
+                                    (context, metadata, imageProvider) =>
+                                        Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      child: Container(
+                                        color: const Color.fromRGBO(
+                                            242, 243, 245, 1),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16, horizontal: 24),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.insert_drive_file,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            if (metadata.title != null)
+                                              Text(
+                                                metadata.title!,
+                                                maxLines: 2,
+                                                style: const TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        27, 96, 173, 1),
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.only(top: 16),
                         child: Text(
                           event.eventDesc,
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16),
                         ),
-                      )
+                      ),
+
+                      if (event.registrationLink.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.black)),
+                                clipBehavior: Clip.hardEdge,
+                                child: const Text(
+                                  "Register Now!",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () async {
+                                  final url = Uri.parse(event.registrationLink);
+                                  if (!await launchUrl(url)) {
+                                    throw 'Could not launch $url';
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        )
                     ],
                   ),
                 ),

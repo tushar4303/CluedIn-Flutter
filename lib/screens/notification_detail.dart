@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -10,6 +11,8 @@ class NotificationDetailsPage extends StatelessWidget {
     required this.notification,
   }) : super(key: key);
   final Notifications notification;
+  final String _errorImage =
+      "https://i.ytimg.com/vi/z8wrRRR7_qU/maxresdefault.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +130,58 @@ class NotificationDetailsPage extends StatelessWidget {
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16),
                         ),
-                      )
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      if (notification.attachmentUrl.isNotEmpty)
+                        AnyLinkPreview.isValidLink(notification.attachmentUrl)
+                            ? AnyLinkPreview.builder(
+                                link: notification.attachmentUrl,
+                                itemBuilder:
+                                    (context, metadata, imageProvider) =>
+                                        Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      child: Container(
+                                        color: const Color.fromRGBO(
+                                            242, 243, 245, 1),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 16, horizontal: 24),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.insert_drive_file,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            if (metadata.title != null)
+                                              Text(
+                                                metadata.title!,
+                                                maxLines: 2,
+                                                style: const TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        27, 96, 173, 1),
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
                     ],
                   ),
                 ),

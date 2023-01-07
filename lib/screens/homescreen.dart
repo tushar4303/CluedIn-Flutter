@@ -1,6 +1,14 @@
+import 'dart:convert';
+import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cluedin_app/models/home.dart';
+import 'package:cluedin_app/screens/studentChapterPage.dart';
 import 'package:flutter/material.dart';
+import 'package:retry/retry.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
+import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +19,47 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
+  late Future<List<StudentChapters>?> myfuture;
+  final url =
+      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/29f7ab3d9c4cdca1ace7323fecf766cf1cc35fd0/homepage.json";
+
+  Future<List<StudentChapters>?> loadHomePage() async {
+    const r = RetryOptions(maxAttempts: 3);
+    final response = await r.retry(
+      // Make a GET request
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    try {
+      if (response.statusCode == 200) {
+        final HomePageJson = response.body;
+
+        final decodedData = jsonDecode(HomePageJson);
+        var studentChapters = decodedData["student_chapters"];
+
+        HomeModel.studentChapters = List.from(studentChapters)
+            .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
+            .toList();
+        print(HomeModel.studentChapters!.length);
+
+        return HomeModel.studentChapters;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    myfuture = loadHomePage();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   itemCount: cars.length,
                   controller:
-                      PageController(initialPage: 1, viewportFraction: 1),
+                      PageController(initialPage: 0, viewportFraction: 1),
                   onPageChanged: (index) {
                     setState(() {
                       currentPage = index;
@@ -79,17 +128,42 @@ class _HomeScreenState extends State<HomeScreen> {
             height: MediaQuery.of(context).size.height * 0.225,
             width: double.infinity,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: PageView.builder(
-                itemBuilder: (context, index) {
-                  return ChapterCard();
-                },
-                itemCount: cars.length,
-                controller:
-                    PageController(initialPage: 2, viewportFraction: 0.4),
-                onPageChanged: (index) {},
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: FutureBuilder(
+                  future: myfuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return PageView.builder(
+                          itemBuilder: (context, index) {
+                            return ChapterCard(
+                                chapter: HomeModel.studentChapters![index]);
+                          },
+                          itemCount: HomeModel.studentChapters!.length,
+                          controller: PageController(
+                              initialPage: 2, viewportFraction: 0.4),
+                          onPageChanged: (index) {},
+                        );
+                      } else if (snapshot.hasError) {
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              "Error: ${snapshot.error.toString()}",
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
+                    );
+                  },
+                )),
           ),
         ],
       ),
@@ -310,7 +384,9 @@ class utilityBar extends StatelessWidget {
 }
 
 class ChapterCard extends StatelessWidget {
-  ChapterCard({super.key});
+  ChapterCard({super.key, required this.chapter});
+
+  StudentChapters chapter;
 
   @override
   Widget build(BuildContext context) {
@@ -319,18 +395,83 @@ class ChapterCard extends StatelessWidget {
         left: 8.0,
         right: 8.0,
       ),
-      child: GestureDetector(
-        onTap: () {},
-        child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            // child: CachedNetworkImage(
-            //   imageUrl: "https://csi.dbit.in/assets/img/CSI-DBIT.png",
-            //   fit: BoxFit.cover,
-            // ),
-            child: Image.asset(
-              "assets/images/placeholder.png",
-              fit: BoxFit.cover,
-            )),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StudentChapterPage(
+                        chapter: chapter,
+                      )));
+        },
+        child: Stack(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 3,
+                        offset: const Offset(0.0, 0.75))
+                  ],
+                  color: const Color.fromRGBO(250, 250, 250, 1),
+                  borderRadius: BorderRadius.circular(
+                    16.0,
+                  ),
+                ),
+                child: Stack(children: <Widget>[
+                  CachedNetworkImage(
+                    imageUrl: chapter.logo,
+                    placeholder: (context, url) {
+                      return Image.asset(
+                        "assets/images/placeholder.png",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                  Positioned(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 45,
+                        // margin: EdgeInsets.only(bottom: 10),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            end: const Alignment(0.0, -1),
+                            begin: const Alignment(0.0, 0.8),
+                            colors: <Color>[
+                              Color.fromARGB(99, 0, 0, 0).withOpacity(0.4),
+                              Color.fromARGB(0, 0, 0, 0).withOpacity(0.0)
+                            ],
+                          ),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 8, bottom: 8),
+                            child: Text(
+                              textScaleFactor: 0.9,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              "Computer Society of India (CSI)",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
