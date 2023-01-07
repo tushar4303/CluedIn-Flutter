@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 class NotificationModel {
   static List<String>? labels;
   static List<String>? senderRoles;
-  static List<Item>? items;
+  static List<Notifications>? notifications;
 }
 
 class SenderRoles {
@@ -103,52 +103,60 @@ class Labels {
   int get hashCode => labels.hashCode;
 }
 
-class Item {
-  final int messageId;
-  final String userName;
-  final String userRole;
-  final String messageTitle;
-  final String messageLabel;
-  final String userMessage;
+class Notifications {
+  final int notificationId;
+  final String senderName;
+  final String senderRole;
+  final String senderProfilePic;
+  final String notificationTitle;
+  final String notificationLabel;
+  final String notificationMessage;
   final String imageUrl;
+  final String attachmentUrl;
   final DateTime dateOfcreation;
 
-  Item(
-      {required this.messageId,
-      required this.userName,
-      required this.userRole,
-      required this.messageTitle,
-      required this.messageLabel,
-      required this.userMessage,
+  Notifications(
+      {required this.notificationId,
+      required this.senderName,
+      required this.senderRole,
+      required this.senderProfilePic,
+      required this.notificationTitle,
+      required this.notificationLabel,
+      required this.notificationMessage,
       required this.imageUrl,
+      required this.attachmentUrl,
       required this.dateOfcreation});
 
-  factory Item.fromMap(Map<String, dynamic> map) {
-    return Item(
-      messageId: map["message_id"],
-      userName: map["userName"],
-      userRole: map["userRole"],
-      messageTitle: map["message_title"],
-      messageLabel: map["message_label"],
-      userMessage: map["user_message"],
-      imageUrl: map["image_url"],
-      dateOfcreation: DateTime.parse(map["dateOfcreation"]),
+  factory Notifications.fromMap(Map<String, dynamic> map) {
+    return Notifications(
+      notificationId: map["notification_id"],
+      senderName: map["senderName"],
+      senderRole: map["senderRole"],
+      senderProfilePic: map["senderProfilePic"],
+      notificationTitle: map["notification_title"],
+      notificationLabel: map["notification_label"],
+      notificationMessage: map["notification_message"],
+      imageUrl: map["image_url"] ?? "",
+      attachmentUrl: map["attachment_url"] ?? "",
+      dateOfcreation: DateTime.parse(map["dateOfCreation"]),
     );
   }
 
   toMap() => {
-        "message_id": messageId,
-        "userName": userName,
-        "userRole": userRole,
-        "message_title": messageTitle,
-        "message_label": messageLabel,
-        "user_message": userMessage,
+        "notification_id": notificationId,
+        "senderName": senderName,
+        "senderRole": senderRole,
+        "senderProfilePic": senderProfilePic,
+        "notification_title": notificationTitle,
+        "notification_label": notificationLabel,
+        "notification_message": notificationMessage,
         "image_url": imageUrl,
-        "dateOfcreation": dateOfcreation,
+        "attachment_url": attachmentUrl,
+        "dateOfCreation": dateOfcreation,
       };
 
   @override
   String toString() {
-    return 'Item(messageId: $messageId, userName: $userName, userRole: $userRole, messageTitle: $messageTitle, messageLabel: $messageLabel, userMessage: $userMessage, imageUrl: $imageUrl, dateOfcreation: $dateOfcreation)';
+    return 'Notifications(notificationId: $notificationId, senderName: $senderName, senderRole: $senderRole, senderProfilePic: $senderProfilePic, notificationTitle: $notificationTitle, notificationLabel: $notificationLabel, notificationMessage: $notificationMessage, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, dateOfcreation: $dateOfcreation)';
   }
 }

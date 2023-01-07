@@ -87,11 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: cars.length,
                 controller:
                     PageController(initialPage: 2, viewportFraction: 0.4),
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPage = index;
-                  });
-                },
+                onPageChanged: (index) {},
               ),
             ),
           ),
@@ -378,34 +374,32 @@ class TeslaCar {
 var cars = [
   TeslaCar(
       model: 'Roadster',
-      image: 'https://wallpaperaccess.com/full/1152734.jpg',
+      image:
+          'https://www.itcluster.ck.ua/wp-content/uploads/2019/03/661821a9442a8dbd824e89bd18c0fd2e_XL.jpg',
       description:
           'As an all-electric supercar, Roadster maximizes the potential of aerodynamic engineering—with record-setting performance and efficiency.'),
   TeslaCar(
       model: 'Model S',
-      image: 'https://wallpapershome.com/images/pages/pic_v/8763.jpeg',
+      image:
+          'https://ictframe.com/wp-content/uploads/Digital-Ocean-Summit-Nepal-2020.jpg',
       description:
           "Model S sets an industry standard for performance and safety. Tesla’s all-electric powertrain delivers unparalleled performance in all weather conditions."),
   TeslaCar(
       model: 'Model 3',
-      image: 'https://wallpapershome.com/images/pages/ico_v/20707.jpg',
+      image:
+          'https://stuff.co.za/wp-content/uploads/2021/04/ces-2021-anchor-desk3.jpg_ext-scaled.jpg',
       description:
           "Model 3 comes with the option of dual motor all-wheel drive, 20” Performance Wheels and Brakes and lowered suspension for total control, in all weather conditions."),
   TeslaCar(
       model: 'Model X',
       image:
-          'https://images.hdqwalls.com/download/tesla-model-x-front-4k-5x-1080x1920.jpg',
+          'https://www.iottechexpo.com/wp-content/uploads/2018/04/IoT-Tech-Expo-1-777x518.jpg',
       description:
           "Tesla’s all-electric powertrain delivers Dual Motor All-Wheel Drive, adaptive air suspension and the quickest acceleration of any SUV on the road—from zero to 60 mph in 2.6 seconds."),
   TeslaCar(
       model: 'Model Y',
       image:
-          'https://www.autocar.co.uk/sites/autocar.co.uk/files/images/car-reviews/first-drives/legacy/model_y_front_34_blue.jpg',
+          'https://www.techtalkthai.com/wp-content/uploads/2016/10/google_DevFest-Hackathon-PR.png',
       description:
           "Tesla All-Wheel Drive has two ultra-responsive, independent electric motors that digitally control torque to the front and rear wheels—for far better handling, traction and stability."),
-  TeslaCar(
-      model: 'Cyber Truck',
-      image: 'https://img.wallpapersafari.com/phone/750/1334/65/24/BAlZne.jpg',
-      description:
-          "The powerful drivetrain and low center of gravity provides extraordinary traction control and torque—enabling acceleration from 0-60 mph in as little as 2.9 seconds."),
 ];

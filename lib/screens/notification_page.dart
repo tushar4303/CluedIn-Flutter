@@ -25,12 +25,12 @@ class _NotificationPageState extends State<NotificationPage> {
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
   final url =
-      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/e56d65b028681c9beb3074657e9d81f0d33f5391/notifications.json";
+      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/e12f331a4c5ef087c9ef8c1cde4c69481095dcae/notifications.json";
 
   final _filters = [];
   final _senders = [];
-  final List<Item> _filteredNotifications = [];
-  late Future<List<Item>?> myfuture;
+  final List<Notifications> _filteredNotifications = [];
+  late Future<List<Notifications>?> myfuture;
 
   @override
   void initState() {
@@ -64,8 +64,8 @@ class _NotificationPageState extends State<NotificationPage> {
     super.dispose();
   }
 
-  Future<List<Item>?> loadNotifications() async {
-    final r = const RetryOptions(maxAttempts: 3);
+  Future<List<Notifications>?> loadNotifications() async {
+    const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
       () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
@@ -84,8 +84,9 @@ class _NotificationPageState extends State<NotificationPage> {
         NotificationModel.labels = List.from(labelsData);
         NotificationModel.senderRoles = List.from(senderRolesData);
 
-        NotificationModel.items = List.from(notificationsData)
-            .map<Item>((item) => Item.fromMap(item))
+        NotificationModel.notifications = List.from(notificationsData)
+            .map<Notifications>(
+                (notification) => Notifications.fromMap(notification))
             .toList();
 
         setState(() {
@@ -93,10 +94,10 @@ class _NotificationPageState extends State<NotificationPage> {
           _senders.clear();
           showFrom = false;
           _filteredNotifications.clear();
-          _filteredNotifications.addAll(NotificationModel.items!);
+          _filteredNotifications.addAll(NotificationModel.notifications!);
         });
 
-        return NotificationModel.items;
+        return NotificationModel.notifications;
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -222,13 +223,16 @@ class _NotificationPageState extends State<NotificationPage> {
                                             }
                                             if (_filters.isEmpty) {
                                               _filteredNotifications.addAll(
-                                                  NotificationModel.items!);
+                                                  NotificationModel
+                                                      .notifications!);
                                             } else {
                                               _filteredNotifications.addAll(
-                                                  NotificationModel.items!.where(
-                                                      (notification) => _filters
-                                                          .contains(notification
-                                                              .messageLabel)));
+                                                  NotificationModel
+                                                      .notifications!
+                                                      .where((notification) =>
+                                                          _filters.contains(
+                                                              notification
+                                                                  .notificationLabel)));
                                             }
                                           });
                                         })));
@@ -270,7 +274,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                   itemCount: _filteredNotifications.length,
                                   itemBuilder: (context, index) {
                                     return NotificationWidget(
-                                      item: _filteredNotifications[index],
+                                      notification:
+                                          _filteredNotifications[index],
                                     );
                                   }),
                             ),

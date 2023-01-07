@@ -1,15 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:cluedin_app/models/notification.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
 
-class NotificationDetailsPage extends StatelessWidget {
-  const NotificationDetailsPage({
+import '../models/events.dart';
+
+class EventDetailsPage extends StatelessWidget {
+  const EventDetailsPage({
     Key? key,
-    required this.notification,
+    required this.event,
   }) : super(key: key);
-  final Notifications notification;
+  final Events event;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class NotificationDetailsPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            notification.notificationLabel,
+                            event.eventLabel,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(30, 29, 29, 0.8)),
@@ -48,7 +49,7 @@ class NotificationDetailsPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        notification.notificationTitle,
+                        event.eventTitle,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 28,
@@ -62,8 +63,8 @@ class NotificationDetailsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    notification.senderProfilePic)),
+                                backgroundImage:
+                                    NetworkImage(event.senderProfilePic)),
                             const SizedBox(
                               width: 8,
                             ),
@@ -72,13 +73,13 @@ class NotificationDetailsPage extends StatelessWidget {
                               children: [
                                 RichText(
                                   text: TextSpan(
-                                    text: notification.senderRole,
+                                    text: event.senderRole,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black),
                                     children: <TextSpan>[
                                       TextSpan(
-                                        text: " @${notification.senderName}",
+                                        text: " @${event.senderName}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400),
                                       )
@@ -94,8 +95,7 @@ class NotificationDetailsPage extends StatelessWidget {
                                     const SizedBox(
                                       width: 2,
                                     ),
-                                    Text(timeago
-                                        .format(notification.dateOfcreation)),
+                                    Text(timeago.format(event.dateOfcreation)),
                                   ],
                                 ),
                               ],
@@ -103,14 +103,15 @@ class NotificationDetailsPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (notification.imageUrl.isNotEmpty)
-                        Padding(
+                      Hero(
+                        tag: Key(event.eventId.toString()),
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: ClipRRect(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(16)),
                             child: CachedNetworkImage(
-                              imageUrl: notification.imageUrl,
+                              imageUrl: event.imageUrl,
                               placeholder: (context, url) {
                                 return Image.asset(
                                   "assets/images/placeholder.png",
@@ -120,10 +121,11 @@ class NotificationDetailsPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                      ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Text(
-                          notification.notificationMessage,
+                          event.eventDesc,
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16),
                         ),

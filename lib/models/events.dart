@@ -1,84 +1,174 @@
 import 'dart:convert';
 
-class NotificationModel {
-  NotificationModel({
-    required this.notifications,
-  });
-  late final List<Notifications> notifications;
+import 'package:collection/collection.dart';
 
-  NotificationModel noficicationResponseFromJson(String str) =>
-      NotificationModel.fromJson(json.decode(str));
-
-  NotificationModel.fromJson(Map<String, dynamic> json) {
-    notifications = List.from(json['notifications'])
-        .map((e) => Notifications.fromJson(e))
-        .toList();
-  }
-
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['notifications'] = notifications.map((e) => e.toJson()).toList();
-    return _data;
-  }
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+class EventModel {
+  static List<String>? labels;
+  static List<String>? senderRoles;
+  static List<Events>? events;
 }
 
-class Notifications {
-  Notifications({
-    required this.notificationId,
-    required this.senderName,
-    required this.senderRole,
-    required this.notificationTitle,
-    required this.notificationLabel,
-    required this.tags,
-    required this.notificationDesc,
-    this.notificationBanner,
-    this.registrationLink,
-    required this.attachments,
-    required this.dateOfCreation,
-    required this.dateOfExpiration,
-  });
-  late final int notificationId;
-  late final String senderName;
-  late final String senderRole;
-  late final String notificationTitle;
-  late final String notificationLabel;
-  late final List<String> tags;
-  late final String notificationDesc;
-  late final String? notificationBanner;
-  late final String? registrationLink;
-  late final List<String> attachments;
-  late final String dateOfCreation;
-  late final String dateOfExpiration;
+class SenderRoles {
+  final List senderRoles;
 
-  Notifications.fromJson(Map<String, dynamic> json) {
-    notificationId = json['notification_id'];
-    senderName = json['senderName'];
-    senderRole = json['senderRole'];
-    notificationTitle = json['notification_title'];
-    notificationLabel = json['notification_label'];
-    tags = List.castFrom<dynamic, String>(json['tags']);
-    notificationDesc = json['notification_desc'];
-    notificationBanner = null;
-    registrationLink = null;
-    attachments = List.castFrom<dynamic, String>(json['attachments']);
-    dateOfCreation = json['dateOfCreation'];
-    dateOfExpiration = json['dateOfExpiration'];
+  SenderRoles(
+    this.senderRoles,
+  );
+
+  SenderRoles copyWith({
+    List? senderRoles,
+  }) {
+    return SenderRoles(
+      senderRoles ?? this.senderRoles,
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['notification_id'] = notificationId;
-    _data['senderName'] = senderName;
-    _data['senderRole'] = senderRole;
-    _data['notification_title'] = notificationTitle;
-    _data['notification_label'] = notificationLabel;
-    _data['tags'] = tags;
-    _data['notification_desc'] = notificationDesc;
-    _data['notification_banner'] = notificationBanner;
-    _data['registration_link'] = registrationLink;
-    _data['attachments'] = attachments;
-    _data['dateOfCreation'] = dateOfCreation;
-    _data['dateOfExpiration'] = dateOfExpiration;
-    return _data;
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'senderRoles': senderRoles,
+    };
+  }
+
+  factory SenderRoles.fromMap(Map<String, dynamic> map) {
+    return SenderRoles(List.from(
+      (map['senderRoles'] as List),
+    ));
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SenderRoles.fromJson(String source) =>
+      SenderRoles.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'SenderRoles(senderRoles: $senderRoles)';
+
+  @override
+  bool operator ==(covariant SenderRoles other) {
+    if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
+
+    return listEquals(other.senderRoles, senderRoles);
+  }
+
+  @override
+  int get hashCode => senderRoles.hashCode;
+}
+
+class Labels {
+  final List labels;
+
+  Labels(
+    this.labels,
+  );
+
+  Labels copyWith({
+    List? labels,
+  }) {
+    return Labels(
+      labels ?? this.labels,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'labels': labels,
+    };
+  }
+
+  factory Labels.fromMap(Map<String, dynamic> map) {
+    return Labels(List.from(
+      (map['labels'] as List),
+    ));
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Labels.fromJson(String source) =>
+      Labels.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'Labels(labels: $labels)';
+
+  @override
+  bool operator ==(covariant Labels other) {
+    if (identical(this, other)) return true;
+    final listEquals = const DeepCollectionEquality().equals;
+
+    return listEquals(other.labels, labels);
+  }
+
+  @override
+  int get hashCode => labels.hashCode;
+}
+
+class Events {
+  final int eventId;
+  final String senderName;
+  final String senderRole;
+  final String senderProfilePic;
+  final String eventTitle;
+  final String eventLabel;
+  final String eventDesc;
+  final String imageUrl;
+  final String attachmentUrl;
+  final String registrationLink;
+  final String registrationFee;
+  final DateTime dateOfcreation;
+  final DateTime dateOfexpiration;
+
+  Events(
+      {required this.eventId,
+      required this.senderName,
+      required this.senderRole,
+      required this.senderProfilePic,
+      required this.eventTitle,
+      required this.eventLabel,
+      required this.eventDesc,
+      required this.imageUrl,
+      required this.attachmentUrl,
+      required this.registrationLink,
+      required this.registrationFee,
+      required this.dateOfcreation,
+      required this.dateOfexpiration});
+
+  factory Events.fromMap(Map<String, dynamic> map) {
+    return Events(
+      eventId: map["event_id"],
+      senderName: map["senderName"],
+      senderRole: map["senderRole"],
+      senderProfilePic: map["senderProfilePic"],
+      eventTitle: map["event_title"],
+      eventLabel: map["event_label"],
+      eventDesc: map["event_desc"],
+      imageUrl: map["image_url"],
+      attachmentUrl: map["attachment_url"] ?? "",
+      registrationLink: map["registration_link"] ?? "",
+      registrationFee: map["registration_fee"] ?? "",
+      dateOfcreation: DateTime.parse(map["dateOfCreation"]),
+      dateOfexpiration: DateTime.parse(map["dateOfExpiration"]),
+    );
+  }
+
+  toMap() => {
+        "event_id": eventId,
+        "senderName": senderName,
+        "senderRole": senderRole,
+        "senderProfilePic": senderProfilePic,
+        "event_title": eventTitle,
+        "event_label": eventLabel,
+        "event_desc": eventDesc,
+        "image_url": imageUrl,
+        "attachment_url": attachmentUrl,
+        "registration_link": registrationLink,
+        "registration_fee": registrationFee,
+        "dateOfCreation": dateOfcreation,
+        "dateOfExpiration": dateOfexpiration,
+      };
+
+  @override
+  String toString() {
+    return 'Events(eventId: $eventId, senderName: $senderName, senderRole: $senderRole, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
   }
 }

@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/models/events.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,13 +24,14 @@ class _MyEventsState extends State<MyEvents> {
   bool isoffline = false;
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
+  // final url =
+  //     "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/53158d61ad2aa315bdade45f292dff9c234c7b4c/events.json";
   final url =
-      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/d805186a9b7fb95b8606fe2b2257fcadadb2a47c/events.json";
-
+      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/691c91bbce90892115b3f79815c47655b21bcee1/events.json";
   final _filters = [];
   final _senders = [];
-  final List<Item> _filteredEvents = [];
-  late Future<List<Item>?> myfuture;
+  final List<Events> _filteredEvents = [];
+  late Future<List<Events>?> myfuture;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _MyEventsState extends State<MyEvents> {
     super.dispose();
   }
 
-  Future<List<Item>?> loadEvents() async {
+  Future<List<Events>?> loadEvents() async {
     final r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
@@ -75,17 +76,16 @@ class _MyEventsState extends State<MyEvents> {
     try {
       if (response.statusCode == 200) {
         final EventsJson = response.body;
-
         final decodedData = jsonDecode(EventsJson);
         var eventsData = decodedData["events"];
         var labelsData = decodedData["labels"];
         var senderRolesData = decodedData["senderRoles"];
 
-        NotificationModel.labels = List.from(labelsData);
-        NotificationModel.senderRoles = List.from(senderRolesData);
+        EventModel.labels = List.from(labelsData);
+        EventModel.senderRoles = List.from(senderRolesData);
 
-        NotificationModel.items = List.from(eventsData)
-            .map<Item>((item) => Item.fromMap(item))
+        EventModel.events = List.from(eventsData)
+            .map<Events>((event) => Events.fromMap(event))
             .toList();
 
         setState(() {
@@ -93,10 +93,10 @@ class _MyEventsState extends State<MyEvents> {
           _senders.clear();
           showFrom = false;
           _filteredEvents.clear();
-          _filteredEvents.addAll(NotificationModel.items!);
+          _filteredEvents.addAll(EventModel.events!);
         });
 
-        return NotificationModel.items;
+        return EventModel.events;
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -128,8 +128,7 @@ class _MyEventsState extends State<MyEvents> {
               SizedBox(
                 height: 4,
               ),
-              (NotificationModel.labels != null &&
-                      NotificationModel.labels!.isNotEmpty)
+              (EventModel.labels != null && EventModel.labels!.isNotEmpty)
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
@@ -143,108 +142,16 @@ class _MyEventsState extends State<MyEvents> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 16),
                                   child: ActionChip(
-                                    onPressed: () {
-                                      //if filtertype == Academics then call show modalbottomsheet
-
-                                      showModalBottomSheet(
-                                          enableDrag: true,
-                                          useRootNavigator: true,
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
                                           isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(25.0),
-                                            ),
-                                          ),
+                                          isDismissible: true,
+                                          useRootNavigator: true,
+                                          backgroundColor: Colors.transparent,
                                           context: context,
-                                          builder: (builder) {
-                                            return SingleChildScrollView(
-                                              child: SizedBox(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius: BorderRadius.only(
-                                                          topLeft: const Radius
-                                                              .circular(20.0),
-                                                          topRight: const Radius
-                                                              .circular(20.0))),
-                                                  //content starts
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 5.0,
-                                                        left: 5.0,
-                                                        top: 10.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: <Widget>[
-                                                        // rounded rectangle grey handle
-                                                        Container(
-                                                          width: 40.0,
-                                                          height: 5.0,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                        SingleChildScrollView(
-                                                          child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: (NotificationModel
-                                                                  .senderRoles!
-                                                                  .map(
-                                                                      (sender) {
-                                                                return Column(
-                                                                  children: [
-                                                                    ListTile(
-                                                                      title: Text(
-                                                                          sender),
-                                                                      trailing:
-                                                                          Visibility(
-                                                                        visible:
-                                                                            _senders.contains(sender),
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .done,
-                                                                          color:
-                                                                              Colors.blueAccent,
-                                                                        ),
-                                                                      ),
-                                                                      onTap:
-                                                                          () {
-                                                                        setState(
-                                                                            () {
-                                                                          if (_senders
-                                                                              .contains(sender)) {
-                                                                            _senders.remove(sender);
-                                                                          } else {
-                                                                            _senders.add(sender);
-                                                                          }
-                                                                        });
-                                                                      },
-                                                                    ),
-                                                                    Divider(),
-                                                                  ],
-                                                                );
-                                                              }).toList())),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          });
+                                          builder: (context) =>
+                                              _showRoleFilterSheet(
+                                                  senders: _senders));
                                     },
                                     label: Text("From"),
                                     avatar: Icon(
@@ -267,8 +174,7 @@ class _MyEventsState extends State<MyEvents> {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children:
-                                  (NotificationModel.labels!.map((filterType) {
+                              children: (EventModel.labels!.map((filterType) {
                                 return Transform(
                                     transform: Matrix4.identity()..scale(0.85),
                                     child: FilterChip(
@@ -313,14 +219,15 @@ class _MyEventsState extends State<MyEvents> {
                                               });
                                             }
                                             if (_filters.isEmpty) {
-                                              _filteredEvents.addAll(
-                                                  NotificationModel.items!);
+                                              _filteredEvents
+                                                  .addAll(EventModel.events!);
                                             } else {
-                                              _filteredEvents.addAll(
-                                                  NotificationModel.items!.where(
-                                                      (notification) => _filters
-                                                          .contains(notification
-                                                              .messageLabel)));
+                                              _filteredEvents.addAll(EventModel
+                                                  .events!
+                                                  .where((notification) =>
+                                                      _filters.contains(
+                                                          notification
+                                                              .eventLabel)));
                                             }
                                           });
                                         })));
@@ -364,10 +271,11 @@ class _MyEventsState extends State<MyEvents> {
                                 itemCount: _filteredEvents.length,
                                 itemBuilder: (context, index) {
                                   return EventsWidget(
-                                      item: _filteredEvents[index]);
+                                    event: _filteredEvents[index],
+                                  );
                                 },
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
                                         crossAxisSpacing: 16.0,
                                         mainAxisSpacing: 12.0,
@@ -453,4 +361,67 @@ class _MyEventsState extends State<MyEvents> {
   }
 }
 
-// ignore_for_file: prefer_const_constructors
+class _showRoleFilterSheet extends StatelessWidget {
+  const _showRoleFilterSheet({
+    Key? key,
+    required List senders,
+  })  : _senders = senders,
+        super(key: key);
+
+  final List _senders;
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+        expand: false,
+        key: UniqueKey(),
+        initialChildSize: 0.4,
+        maxChildSize: 0.6,
+        builder: (context, controller) => Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0))),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8, bottom: 8),
+                    width: 40.0,
+                    height: 5.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: EventModel.senderRoles!.length,
+                      controller: controller,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              visualDensity:
+                                  const VisualDensity(vertical: -2.5),
+                              title: Text(EventModel.senderRoles![index]),
+                              trailing: Visibility(
+                                  visible: _senders
+                                      .contains(EventModel.senderRoles![index]),
+                                  child: const Icon(Icons.check)),
+                              onTap: () {},
+                            ),
+                            Divider(
+                              thickness: 0.5,
+                              color: Colors.grey.withOpacity(0.3),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ));
+  }
+}

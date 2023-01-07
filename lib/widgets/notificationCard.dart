@@ -5,13 +5,13 @@ import 'package:intl/intl.dart';
 import '../screens/notification_detail.dart';
 
 class NotificationWidget extends StatelessWidget {
-  const NotificationWidget({super.key, required this.item});
-  final Item item;
+  const NotificationWidget({super.key, required this.notification});
+  final Notifications notification;
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: Key(item.messageId.toString()),
+      tag: Key(notification.notificationId.toString()),
       child: SizedBox(
         width: double.infinity,
         // height: MediaQuery.of(context).size.height * 0.1155,
@@ -25,10 +25,10 @@ class NotificationWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          NotificationDetailsPage(item: item)));
+                          NotificationDetailsPage(notification: notification)));
             },
             leading: CircleAvatar(
-                backgroundImage: NetworkImage(item.imageUrl),
+                backgroundImage: NetworkImage(notification.senderProfilePic),
                 child: const Text('DP')),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,12 +37,12 @@ class NotificationWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(
-                    text: item.userRole,
+                    text: notification.senderRole,
                     style: const TextStyle(
                         fontWeight: FontWeight.w600, color: Colors.black),
                     children: <TextSpan>[
                       TextSpan(
-                        text: " @${item.userName}",
+                        text: " @${notification.senderName}",
                         style: const TextStyle(fontWeight: FontWeight.w400),
                       )
                     ],
@@ -51,7 +51,7 @@ class NotificationWidget extends StatelessWidget {
                 const SizedBox(
                   height: 1,
                 ),
-                Text(item.messageTitle,
+                Text(notification.notificationTitle,
                     textScaleFactor: 0.9,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -59,7 +59,7 @@ class NotificationWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(
-                    item.userMessage,
+                    notification.notificationMessage,
                     textScaleFactor: 0.9,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -68,7 +68,7 @@ class NotificationWidget extends StatelessWidget {
               ],
             ),
             trailing: Text(
-              DateFormat('MMM d, ' 'yy').format(item.dateOfcreation),
+              DateFormat('MMM d, ' 'yy').format(notification.dateOfcreation),
               textAlign: TextAlign.end,
               textScaleFactor: 0.8,
             ),
