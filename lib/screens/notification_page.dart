@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/notification.dart';
@@ -20,12 +18,22 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
+  List<Notifications> filter(
+      List<Notifications> notifications, laBels, senders) {
+    return notifications
+        .where((notification) =>
+            (laBels.isEmpty ||
+                laBels.contains(notification.notificationLabel)) &&
+            (senders.isEmpty || senders.contains(notification.senderRole)))
+        .toList();
+  }
+
   StreamSubscription? internetconnection;
   bool isoffline = false;
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
   final url =
-      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/e12f331a4c5ef087c9ef8c1cde4c69481095dcae/notifications.json";
+      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/06c30616cc8f59ee3e208a314fdb52436e76fbe7/notifications.json";
 
   final _filters = [];
   final _senders = [];
@@ -94,7 +102,9 @@ class _NotificationPageState extends State<NotificationPage> {
           _senders.clear();
           showFrom = false;
           _filteredNotifications.clear();
-          _filteredNotifications.addAll(NotificationModel.notifications!);
+
+          _filteredNotifications.addAll(
+              filter(NotificationModel.notifications!, _filters, _senders));
         });
 
         return NotificationModel.notifications;
@@ -152,8 +162,95 @@ class _NotificationPageState extends State<NotificationPage> {
                                           backgroundColor: Colors.transparent,
                                           context: context,
                                           builder: (context) =>
-                                              _showRoleFilterSheet(
-                                                  senders: _senders));
+                                              DraggableScrollableSheet(
+                                                  expand: false,
+                                                  key: UniqueKey(),
+                                                  initialChildSize: 0.4,
+                                                  maxChildSize: 0.6,
+                                                  builder:
+                                                      (context, controller) =>
+                                                          Container(
+                                                            decoration: const BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            20.0),
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            20.0))),
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  margin: const EdgeInsets
+                                                                          .only(
+                                                                      top: 8,
+                                                                      bottom:
+                                                                          8),
+                                                                  width: 40.0,
+                                                                  height: 5.0,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0),
+                                                                    color: Colors
+                                                                        .grey,
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: ListView
+                                                                      .builder(
+                                                                    itemCount: NotificationModel
+                                                                        .senderRoles!
+                                                                        .length,
+                                                                    controller:
+                                                                        controller,
+                                                                    itemBuilder:
+                                                                        (BuildContext
+                                                                                context,
+                                                                            int index) {
+                                                                      return Column(
+                                                                        children: [
+                                                                          ListTile(
+                                                                            visualDensity:
+                                                                                const VisualDensity(vertical: -2.5),
+                                                                            title:
+                                                                                Text(NotificationModel.senderRoles![index]),
+                                                                            selected:
+                                                                                _senders.contains(NotificationModel.senderRoles![index]),
+                                                                            selectedColor:
+                                                                                Colors.blueAccent,
+                                                                            onTap:
+                                                                                () {
+                                                                              setState(() {
+                                                                                if (!_senders.contains(NotificationModel.senderRoles![index])) {
+                                                                                  _senders.add(NotificationModel.senderRoles![index]);
+                                                                                } else {
+                                                                                  _senders.removeWhere((name) {
+                                                                                    return name == NotificationModel.senderRoles![index];
+                                                                                  });
+                                                                                }
+                                                                                _filteredNotifications.clear();
+                                                                                _filteredNotifications.addAll(filter(NotificationModel.notifications!, _filters, _senders));
+                                                                              });
+                                                                            },
+                                                                          ),
+                                                                          Divider(
+                                                                            thickness:
+                                                                                0.5,
+                                                                            color:
+                                                                                Colors.grey.withOpacity(0.3),
+                                                                          )
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )));
                                     },
                                     label: const Text("From"),
                                     avatar: const Icon(
@@ -186,8 +283,6 @@ class _NotificationPageState extends State<NotificationPage> {
                                           filterType,
                                           textScaleFactor: 1.1,
                                         ),
-                                        // labelPadding: EdgeInsets.symmetric(
-                                        //     horizontal: 4, vertical: 0),
                                         selected: _filters.contains(filterType),
                                         side: const BorderSide(
                                             width: 1,
@@ -204,36 +299,25 @@ class _NotificationPageState extends State<NotificationPage> {
                                         onSelected: ((value) {
                                           setState(() {
                                             if (value) {
+                                              _filters.clear();
                                               _filters.add(filterType);
                                             } else {
                                               _filters.removeWhere((name) {
                                                 return name == filterType;
                                               });
                                             }
+                                            print(_filters);
+
+                                            showFrom =
+                                                _filters.contains("Academics");
+
                                             _filteredNotifications.clear();
-                                            if (_filters
-                                                .contains("Academics")) {
-                                              setState(() {
-                                                showFrom = true;
-                                              });
-                                            } else {
-                                              setState(() {
-                                                showFrom = false;
-                                              });
-                                            }
-                                            if (_filters.isEmpty) {
-                                              _filteredNotifications.addAll(
-                                                  NotificationModel
-                                                      .notifications!);
-                                            } else {
-                                              _filteredNotifications.addAll(
-                                                  NotificationModel
-                                                      .notifications!
-                                                      .where((notification) =>
-                                                          _filters.contains(
-                                                              notification
-                                                                  .notificationLabel)));
-                                            }
+                                            _filteredNotifications.addAll(
+                                                filter(
+                                                    NotificationModel
+                                                        .notifications!,
+                                                    _filters,
+                                                    _senders));
                                           });
                                         })));
                               }).toList()),
@@ -355,71 +439,5 @@ class _NotificationPageState extends State<NotificationPage> {
       ),
       // ignore: prefer_const_literals_to_create_immutables
     );
-  }
-}
-
-class _showRoleFilterSheet extends StatelessWidget {
-  const _showRoleFilterSheet({
-    Key? key,
-    required List senders,
-  })  : _senders = senders,
-        super(key: key);
-
-  final List _senders;
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-        expand: false,
-        key: UniqueKey(),
-        initialChildSize: 0.4,
-        maxChildSize: 0.6,
-        builder: (context, controller) => Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0))),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 8, bottom: 8),
-                    width: 40.0,
-                    height: 5.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: NotificationModel.senderRoles!.length,
-                      controller: controller,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          children: [
-                            ListTile(
-                              visualDensity:
-                                  const VisualDensity(vertical: -2.5),
-                              title:
-                                  Text(NotificationModel.senderRoles![index]),
-                              trailing: Visibility(
-                                  visible: _senders.contains(
-                                      NotificationModel.senderRoles![index]),
-                                  child: const Icon(Icons.check)),
-                              onTap: () {},
-                            ),
-                            Divider(
-                              thickness: 0.5,
-                              color: Colors.grey.withOpacity(0.3),
-                            )
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ));
   }
 }

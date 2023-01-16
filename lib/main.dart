@@ -6,6 +6,7 @@ import 'package:cluedin_app/screens/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'utils/globals.dart';
@@ -16,12 +17,16 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.notification!.title);
 }
 
+// FlutterLocalNotificationsPlugin notificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     name: "CluedIn",
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(myApp());
 }
@@ -84,7 +89,7 @@ class HomePage extends StatelessWidget {
         return isExiting;
       },
       destinationAnimationCurve: Curves.fastOutSlowIn,
-      destinationAnimationDuration: 600,
+      destinationAnimationDuration: 700,
       decoration: NavbarDecoration(
           backgroundColor: Colors.white,
           selectedIconTheme: const IconThemeData(color: Colors.black),

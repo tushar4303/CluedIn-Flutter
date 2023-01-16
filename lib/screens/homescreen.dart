@@ -3,12 +3,15 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
 import 'package:cluedin_app/screens/studentChapterPage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:io';
+
+import '../notificationService/local_notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,10 +21,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  String fcmToken = "firebase token";
   int currentPage = 0;
   late Future<List<StudentChapters>?> myfuture;
   final url =
-      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/29f7ab3d9c4cdca1ace7323fecf766cf1cc35fd0/homepage.json";
+      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/aac4370dc27e48649a87ff3321b5505963414194/homepage.json";
 
   Future<List<StudentChapters>?> loadHomePage() async {
     const r = RetryOptions(maxAttempts: 3);
@@ -52,8 +57,69 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    print("le token");
+    getToken();
     super.initState();
     myfuture = loadHomePage();
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      print(message);
+      print("FirebaseMessaging.instance.getInitialMessage");
+    });
+
+    // 2. This method only call when App in forground it mean app must be opened
+    FirebaseMessaging.onMessage.listen(
+      (message) {
+        print(message);
+        print("FirebaseMessaging.onMessage.listen");
+        if (message.notification != null) {
+          print(message.data);
+          LocalNotificationService.createanddisplaynotification(message);
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => NotificationDetailsPage()));
+        }
+      },
+    );
+    // 3. This method only call when App in background and not terminated(not closed)
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (message) {
+        print("FirebaseMessaging.onMessageOpenedApp.listen");
+        if (message.notification != null) {
+          print(message.data);
+        }
+      },
+    );
+  }
+
+  getToken() async {
+    String? token = await _firebaseMessaging.getToken();
+    fcmToken = token!;
+    print("fcm token : $fcmToken");
+  }
+
+  requestingNotificationPermission() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("user granted permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("user granted provisional authorization");
+    } else {
+      print("user declined or has not accepted permisiion");
+    }
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   @override
@@ -448,16 +514,16 @@ class ChapterCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        child: const Align(
+                        child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(
-                            padding: EdgeInsets.only(left: 8, bottom: 8),
+                            padding: const EdgeInsets.only(left: 8, bottom: 8),
                             child: Text(
                               textScaleFactor: 0.9,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              "Computer Society of India (CSI)",
-                              style: TextStyle(
+                              chapter.title,
+                              style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500),

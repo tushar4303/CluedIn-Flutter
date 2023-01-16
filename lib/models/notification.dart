@@ -108,7 +108,7 @@ class Notifications {
   final String senderName;
   final String senderRole;
   final String senderProfilePic;
-  final String notificationTitle;
+  late final String notificationTitle;
   final String notificationLabel;
   final String notificationMessage;
   final String imageUrl;

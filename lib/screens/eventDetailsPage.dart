@@ -157,7 +157,9 @@ class EventDetailsPage extends StatelessWidget {
                                           onTap: () async {
                                             final url =
                                                 Uri.parse(event.attachmentUrl);
-                                            if (!await launchUrl(url)) {
+                                            if (!await launchUrl(url,
+                                                mode: LaunchMode
+                                                    .platformDefault)) {
                                               throw 'Could not launch $url';
                                             }
                                           },

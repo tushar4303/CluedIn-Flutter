@@ -12,6 +12,7 @@ class NotificationDetailsPage extends StatelessWidget {
     required this.notification,
   }) : super(key: key);
   final Notifications notification;
+
   final String _errorImage =
       "https://i.ytimg.com/vi/z8wrRRR7_qU/maxresdefault.jpg";
 
@@ -154,7 +155,9 @@ class NotificationDetailsPage extends StatelessWidget {
                                           onTap: () async {
                                             final url = Uri.parse(
                                                 notification.attachmentUrl);
-                                            if (!await launchUrl(url)) {
+                                            if (!await launchUrl(url,
+                                                mode: LaunchMode
+                                                    .platformDefault)) {
                                               throw 'Could not launch $url';
                                             }
                                           },
