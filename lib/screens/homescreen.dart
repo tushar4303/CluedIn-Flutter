@@ -205,9 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             return ChapterCard(
                                 chapter: HomeModel.studentChapters![index]);
                           },
+                          padEnds: false,
                           itemCount: HomeModel.studentChapters!.length,
                           controller: PageController(
-                              initialPage: 2, viewportFraction: 0.4),
+                              initialPage: 0, viewportFraction: 0.425),
                           onPageChanged: (index) {},
                         );
                       } else if (snapshot.hasError) {
@@ -472,52 +473,60 @@ class ChapterCard extends StatelessWidget {
         },
         child: Stack(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 3,
-                        offset: const Offset(0.0, 0.75))
-                  ],
-                  color: const Color.fromRGBO(250, 250, 250, 1),
-                  borderRadius: BorderRadius.circular(
-                    16.0,
-                  ),
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Color.fromARGB(75, 158, 158, 158).withOpacity(0.2),
+                      blurRadius: 0.65,
+                      offset: const Offset(0.25, 0.35))
+                ],
+                color: const Color.fromRGBO(250, 250, 250, 1),
+                borderRadius: BorderRadius.circular(
+                  16.0,
                 ),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 child: Stack(children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl: chapter.logo,
-                    placeholder: (context, url) {
-                      return Image.asset(
-                        "assets/images/placeholder.png",
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
+                  Positioned.fill(
+                      child: Image.asset(
+                    "assets/images/csi.png",
+                    fit: BoxFit.cover,
+                  )),
+                  // CachedNetworkImage(
+                  //   imageUrl: chapter.logo,
+                  //   placeholder: (context, url) {
+                  //     return Image.asset(
+                  //       "assets/images/placeholder.png",
+                  //       fit: BoxFit.cover,
+                  //     );
+                  //   },
+                  // ),
                   Positioned(
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: 45,
+                        height: 60,
                         // margin: EdgeInsets.only(bottom: 10),
                         width: double.infinity,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             end: const Alignment(0.0, -1),
-                            begin: const Alignment(0.0, 0.8),
+                            begin: const Alignment(0.0, 0.9),
                             colors: <Color>[
-                              Color.fromARGB(99, 0, 0, 0).withOpacity(0.4),
-                              Color.fromARGB(0, 0, 0, 0).withOpacity(0.0)
+                              Color.fromARGB(179, 179, 178, 178)
+                                  .withOpacity(0.25),
+                              Color.fromARGB(138, 230, 227, 227)
+                                  .withOpacity(0.0)
                             ],
                           ),
                         ),
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 8, bottom: 8),
+                            padding: const EdgeInsets.only(
+                                left: 12, bottom: 8, right: 10),
                             child: Text(
                               textScaleFactor: 0.9,
                               maxLines: 2,
@@ -525,7 +534,7 @@ class ChapterCard extends StatelessWidget {
                               chapter.title,
                               style: const TextStyle(
                                   fontSize: 13,
-                                  color: Colors.white,
+                                  color: Colors.black38,
                                   fontWeight: FontWeight.w500),
                             ),
                           ),
