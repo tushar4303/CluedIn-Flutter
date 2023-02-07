@@ -8,8 +8,10 @@ import '../utils/globals.dart';
 
 class MyVerify extends StatefulWidget {
   final String phone;
+  final String verificationId;
 
-  const MyVerify({Key? key, required this.phone}) : super(key: key);
+  const MyVerify({Key? key, required this.phone, required this.verificationId})
+      : super(key: key);
   @override
   State<MyVerify> createState() => _MyVerifyState();
 }
@@ -148,14 +150,19 @@ class _MyVerifyState extends State<MyVerify> {
                     onPressed: isEnabled
                         ? () async {
                             print("reached in verify before credential");
+
                             try {
                               PhoneAuthCredential credential =
                                   PhoneAuthProvider.credential(
-                                      verificationId: MyPhone.verify,
+                                      verificationId: widget.verificationId,
                                       smsCode: code);
+                              print("credential:$credential");
 
                               // Sign the user in (or link) with the credential
-                              await auth.signInWithCredential(credential);
+
+                              await FirebaseAuth.instance
+                                  .signInWithCredential(credential);
+
                               // ignore: use_build_context_synchronously
                               Navigator.pushAndRemoveUntil(
                                 context,
@@ -167,6 +174,7 @@ class _MyVerifyState extends State<MyVerify> {
                               // ignore: use_build_context_synchronously
 
                             } catch (e) {
+                              print(e.toString());
                               final SnackBar snackBar =
                                   SnackBar(content: Text(e.toString()));
                               snackbarKey.currentState?.showSnackBar(snackBar);

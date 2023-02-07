@@ -1,7 +1,10 @@
 import 'dart:io';
-
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileDetails extends StatefulWidget {
   const ProfileDetails({super.key});
@@ -115,8 +118,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
         CircleAvatar(
           backgroundImage: (_imageFile == null)
-              ? NetworkImage(
-                  'https://avatars.githubusercontent.com/u/88235295?s=400&u=2c6acf95bc514b8ca6115a6ff24822154a10ee7b&v=4')
+              ? const AssetImage("assets/images/people.png")
               : FileImage(_imageFile!) as ImageProvider,
           radius: 80,
         ),
@@ -250,6 +252,36 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     );
   }
 
+  upload(File imageFile) async {
+    // open a bytestream
+    var stream = http.ByteStream((imageFile.openRead()));
+    // get file length
+    var length = await imageFile.length();
+
+    // string to uri
+    var uri = Uri.parse("http://api Link");
+
+    // create multipart request
+    var request = http.MultipartRequest("POST", uri);
+
+    // multipart that takes file
+    var multipartFile = http.MultipartFile('file', stream, length,
+        filename: basename(imageFile.path));
+
+    // add file to multipart
+    request.files.add(multipartFile);
+    request.fields['mobno'] = "8104951731";
+
+    // send
+    var response = await request.send();
+    print(response.statusCode);
+
+    // listen for response
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+  }
+
   Future<void> _pickImageFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -261,6 +293,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() => this._imageFile = File(pickedFile.path));
+      upload(_imageFile!);
     }
   }
 }

@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "738513365262",
-    "project_id": "cluedin-79346",
-    "storage_bucket": "cluedin-79346.appspot.com"
+    "project_number": "100872515087",
+    "project_id": "cluedin-e47b2",
+    "storage_bucket": "cluedin-e47b2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:738513365262:android:479941caddf06ddec64f5f",
+        "mobilesdk_app_id": "1:100872515087:android:ba4af5a4003bf98486bd7a",
         "android_client_info": {
           "package_name": "com.example.cluedin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "738513365262-0nggp1bg9sknlncattmk1qukdg9fptk8.apps.googleusercontent.com",
+          "client_id": "100872515087-0f8us9qldl61s0mr1lovi66e9tkqqff8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.cluedin",
@@ -22,27 +22,27 @@
           }
         },
         {
-          "client_id": "738513365262-lpvi5no0hrkhdi9ut1udpi0mkuqcspcj.apps.googleusercontent.com",
+          "client_id": "100872515087-9h8041r65kvqh56rae58npu2a8ic3ci9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBaF4mR5tiBqxZV_pSJAffV8HkvADcAHmU"
+          "current_key": "AIzaSyCkhr-cCUjl4BoVYNIWnbDr5iCvPXn1uv0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "738513365262-lpvi5no0hrkhdi9ut1udpi0mkuqcspcj.apps.googleusercontent.com",
+              "client_id": "100872515087-9h8041r65kvqh56rae58npu2a8ic3ci9.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "738513365262-ufmgl73msvd7p76m92d09dclo1btap0t.apps.googleusercontent.com",
+              "client_id": "100872515087-5lhcp2un63e7knmevve8489mri5312eo.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.cluedinApp"
+                "bundle_id": "com.example.cluedin"
               }
             }
           ]

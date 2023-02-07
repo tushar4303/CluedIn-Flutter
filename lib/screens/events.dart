@@ -305,7 +305,7 @@ class _MyEventsState extends State<MyEvents> {
                                             print(_filters);
 
                                             showFrom =
-                                                _filters.contains("Academics");
+                                                _filters.contains("Technical");
 
                                             _filteredEvents.clear();
                                             _filteredEvents.addAll(filter(
@@ -320,7 +320,7 @@ class _MyEventsState extends State<MyEvents> {
                         ),
                       ),
                     )
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(
                       color: Colors.white,
                     )),

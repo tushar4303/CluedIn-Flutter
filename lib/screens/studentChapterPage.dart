@@ -88,14 +88,18 @@ class StudentChapterPage extends StatelessWidget {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(16)),
                             child: Center(
-                              child: CachedNetworkImage(
-                                imageUrl: chapter.coverPic,
-                                placeholder: (context, url) {
-                                  return Image.asset(
-                                    "assets/images/placeholder.png",
-                                    fit: BoxFit.cover,
-                                  );
-                                },
+                              // child: CachedNetworkImage(
+                              //   imageUrl: chapter.coverPic,
+                              //   placeholder: (context, url) {
+                              //     return Image.asset(
+                              //       "assets/images/placeholder.png",
+                              //       fit: BoxFit.cover,
+                              //     );
+                              //   },
+                              // ),
+                              child: Image.asset(
+                                "assets/images/csi.png",
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

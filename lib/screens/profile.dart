@@ -1,6 +1,7 @@
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -117,6 +118,7 @@ class MyProfile extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {
+                  FirebaseAuth.instance.signOut();
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (c) => const MyPhone()),
                       (r) => false);

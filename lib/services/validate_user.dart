@@ -3,9 +3,11 @@ import 'dart:convert';
 
 class ValidateUser {
   var _error = "";
+
   Future<ValidateApiResponse?> apiCallLogin(Map<String, dynamic> param) async {
-    var url = Uri.parse('http://192.168.0.105:5000/api/app/authAppUser');
+    var url = Uri.parse('http://10.42.0.69:5000/api/app/authAppUser');
     try {
+      print("hit k pehle");
       var response = await http.post(url, body: param);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -14,7 +16,7 @@ class ValidateUser {
       return ValidateApiResponse(
           success: data["success"], msg: data["msg"], error: data["error"]);
     } on Exception catch (e) {
-      _error = e.toString();
+      print(e.toString());
     }
 
     return ValidateApiResponse(error: _error);

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ui';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
 import 'package:cluedin_app/screens/studentChapterPage.dart';
@@ -27,6 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<StudentChapters>?> myfuture;
   final url =
       "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/aac4370dc27e48649a87ff3321b5505963414194/homepage.json";
+
+  DateTime today = DateTime.now();
+
+  void _onDaySelected(DateTime day, focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
 
   Future<List<StudentChapters>?> loadHomePage() async {
     const r = RetryOptions(maxAttempts: 3);
@@ -133,10 +141,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
-          toolbarHeight: MediaQuery.of(context).size.height * 0.096,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.076,
           // elevation: 0.3,
           title: Transform(
-            transform: Matrix4.translationValues(8.0, -5.6, 0),
+            transform: Matrix4.translationValues(8.0, 3.0, 0),
             child: const Text(
               "Home",
               textAlign: TextAlign.left,
@@ -144,95 +152,109 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
             ),
           )),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.20,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Stack(alignment: Alignment.center, children: <Widget>[
-                PageView.builder(
-                  itemBuilder: (context, index) {
-                    return CarouselCard(
-                      car: cars[index],
-                    );
-                  },
-                  itemCount: cars.length,
-                  controller:
-                      PageController(initialPage: 0, viewportFraction: 1),
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentPage = index;
-                    });
-                  },
-                ),
-                Positioned(bottom: 0.0, child: updateIndicators()),
-              ]),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const utilityBar(),
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: 24),
-            child: Column(
-              children: const <Widget>[
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Student Chapters",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.225,
-            width: double.infinity,
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: FutureBuilder(
-                  future: myfuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasData) {
-                        return PageView.builder(
-                          itemBuilder: (context, index) {
-                            return ChapterCard(
-                                chapter: HomeModel.studentChapters![index]);
-                          },
-                          padEnds: false,
-                          itemCount: HomeModel.studentChapters!.length,
-                          controller: PageController(
-                              initialPage: 0, viewportFraction: 0.425),
-                          onPageChanged: (index) {},
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 56),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.20,
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Stack(alignment: Alignment.center, children: <Widget>[
+                    PageView.builder(
+                      itemBuilder: (context, index) {
+                        return CarouselCard(
+                          car: cars[index],
                         );
-                      } else if (snapshot.hasError) {
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "Error: ${snapshot.error.toString()}",
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500),
-                            ),
+                      },
+                      itemCount: cars.length,
+                      controller:
+                          PageController(initialPage: 0, viewportFraction: 1),
+                      onPageChanged: (index) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                      },
+                    ),
+                    Positioned(bottom: 0.0, child: updateIndicators()),
+                  ]),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const utilityBar(),
+              const titlebar(
+                title: "Student Chapters",
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.225,
+                width: double.infinity,
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: FutureBuilder(
+                      future: myfuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            return PageView.builder(
+                              itemBuilder: (context, index) {
+                                return ChapterCard(
+                                    chapter: HomeModel.studentChapters![index]);
+                              },
+                              padEnds: false,
+                              itemCount: HomeModel.studentChapters!.length,
+                              controller: PageController(
+                                  initialPage: 0, viewportFraction: 0.425),
+                              onPageChanged: (index) {},
+                            );
+                          } else if (snapshot.hasError) {
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Error: ${snapshot.error.toString()}",
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
                           ),
                         );
-                      }
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.black,
-                      ),
-                    );
-                  },
-                )),
+                      },
+                    )),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              const titlebar(title: "What's new?"),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: TableCalendar(
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  focusedDay: today,
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  headerStyle: const HeaderStyle(
+                      formatButtonVisible: false, titleCentered: true),
+                  onDaySelected: _onDaySelected,
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              )
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -262,6 +284,25 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ).toList(),
+      ),
+    );
+  }
+}
+
+class titlebar extends StatelessWidget {
+  const titlebar({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 16, left: 24),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text(
+          title,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
       ),
     );
   }

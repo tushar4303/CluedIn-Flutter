@@ -2,6 +2,7 @@ import 'package:cluedin_app/screens/verify.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../main.dart';
 import '../services/validate_user.dart';
 import 'package:cluedin_app/utils/globals.dart';
 
@@ -21,12 +22,47 @@ class _MyPhoneState extends State<MyPhone> {
   late TextEditingController numberController = TextEditingController();
   String _error = '';
   var phone = "";
-
+  late final _verificationId;
   bool isEnabled = false;
 
   // ignore: non_constant_identifier_names
-  validate_user() {
+  validate_user() async {
     final service = ValidateUser();
+
+    MyPhone.yourNumber = countryController.text + phone;
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: MyPhone.yourNumber,
+      verificationCompleted: (PhoneAuthCredential credential) {
+        FirebaseAuth.instance.signInWithCredential(credential);
+
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomePage(),
+          ),
+          (route) => false,
+        );
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          setState(() => this._error = 'Error: ${e.code}');
+          print(countryController.text + phone);
+        }
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        _verificationId = verificationId;
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        _verificationId = verificationId;
+        // MyPhone.verify = verificationId;
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) =>
+                    MyVerify(phone: phone, verificationId: _verificationId)));
+      },
+    );
 
     service.apiCallLogin(
       {
@@ -40,21 +76,36 @@ class _MyPhoneState extends State<MyPhone> {
           MyPhone.yourNumber = countryController.text + phone;
           await FirebaseAuth.instance.verifyPhoneNumber(
             phoneNumber: MyPhone.yourNumber,
-            verificationCompleted: (PhoneAuthCredential credential) {},
+            verificationCompleted: (PhoneAuthCredential credential) {
+              FirebaseAuth.instance.signInWithCredential(credential);
+
+              // ignore: use_build_context_synchronously
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage(),
+                ),
+                (route) => false,
+              );
+            },
             verificationFailed: (FirebaseAuthException e) {
               if (e.code == 'invalid-phone-number') {
                 setState(() => this._error = 'Error: ${e.code}');
                 print(countryController.text + phone);
               }
             },
+            codeAutoRetrievalTimeout: (String verificationId) {
+              _verificationId = verificationId;
+            },
             codeSent: (String verificationId, int? resendToken) {
-              MyPhone.verify = verificationId;
+              _verificationId = verificationId;
+              // MyPhone.verify = verificationId;
               Navigator.push(
                   context,
                   CupertinoPageRoute(
-                      builder: (context) => MyVerify(phone: phone)));
+                      builder: (context) => MyVerify(
+                          phone: phone, verificationId: _verificationId)));
             },
-            codeAutoRetrievalTimeout: (String verificationId) {},
           );
           // ignore: use_build_context_synchronously
 
