@@ -5,6 +5,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class ProfileDetails extends StatefulWidget {
   const ProfileDetails({super.key});
@@ -16,6 +21,7 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   File? _imageFile;
   final _picker = ImagePicker();
+  late String _imageURL;
 
   @override
   Widget build(BuildContext context) {
@@ -109,17 +115,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Widget imageProfile(BuildContext context) {
     return Center(
       child: Stack(children: <Widget>[
-        // CircleAvatar(
-        //   radius: 80.0,
-        //   backgroundImage: _imageFile == null
-        //       ? AssetImage("assets/profile.jpeg")
-        //       : FileImage(File(_imageFile.path)),
-        // ),
-
         CircleAvatar(
-          backgroundImage: (_imageFile == null)
-              ? const AssetImage("assets/images/people.png")
-              : FileImage(_imageFile!) as ImageProvider,
+          backgroundImage: _imageURL == null
+              ? const NetworkImage(
+                  "https://avatars.githubusercontent.com/u/88235295?v=4")
+              : NetworkImage(_imageURL),
           radius: 80,
         ),
         Positioned(
@@ -252,40 +252,70 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     );
   }
 
-  upload(File imageFile) async {
-    // open a bytestream
-    var stream = http.ByteStream((imageFile.openRead()));
-    // get file length
-    var length = await imageFile.length();
+  Future uploadImage(File _image) async {
+    // Compress the image
+    var image = img.decodeImage(_image.readAsBytesSync());
+    var compressImage = img.copyResize(image!, width: 500, height: 500);
 
-    // string to uri
-    var uri = Uri.parse("http://api Link");
+    // Encode the compressed image as a PNG
+    var pngBytes = img.encodePng(compressImage);
 
-    // create multipart request
-    var request = http.MultipartRequest("POST", uri);
+    // Get the path for storing the compressed image on the device
+    var dir = await getTemporaryDirectory();
+    var file = File("${dir.path}/compressed_image.png");
 
-    // multipart that takes file
-    var multipartFile = http.MultipartFile('file', stream, length,
-        filename: basename(imageFile.path));
+    // Write the PNG bytes to the file
+    await file.writeAsBytes(pngBytes);
 
-    // add file to multipart
-    request.files.add(multipartFile);
-    request.fields['mobno'] = "8104951731";
+    // Create the multipart form data
+    var url = "YOUR_API_URL";
+    var mobno = "8104951731";
+    var request = http.MultipartRequest("POST", Uri.parse(url));
 
-    // send
+    // Create a MultipartFile from the compressed image
+    var fileData = await file.readAsBytes();
+    var fileMultipartFile = http.MultipartFile.fromBytes(
+      'image',
+      fileData,
+      filename: 'compressed_image.png',
+      contentType: MediaType.parse(lookupMimeType('png')!),
+    );
+
+    request.files.add(fileMultipartFile);
+    request.fields["mobno"] = mobno;
+
+    // Send the multipart form data request
     var response = await request.send();
-    print(response.statusCode);
 
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
+    // Get the response from the server
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
+
+    // Check the status code of the response
+    if (response.statusCode == 200) {
+      // Parse the response to get the image URL
+      var responseJSON = json.decode(responseString);
+      var imageURL = responseJSON["image_url"];
+
+      // Update the _imageURL variable with the new URL
+      setState(() {
+        _imageURL = imageURL;
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: "Failed to upload image",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+      );
+    }
   }
 
   Future<void> _pickImageFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() => this._imageFile = File(pickedFile.path));
+      uploadImage(_imageFile!);
     }
   }
 
@@ -293,7 +323,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() => this._imageFile = File(pickedFile.path));
-      upload(_imageFile!);
+      uploadImage(_imageFile!);
     }
   }
 }

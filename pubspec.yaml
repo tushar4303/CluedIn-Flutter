@@ -53,6 +53,7 @@ dependencies:
   url_launcher: ^6.1.7
   any_link_preview: ^3.0.0
   table_calendar: 
+  fluttertoast: ^8.1.2
   
 
 dev_dependencies:
