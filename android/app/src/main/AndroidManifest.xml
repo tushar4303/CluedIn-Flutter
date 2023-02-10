@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cluedin_app">
+
+  <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="CluedIn"
         android:name="${applicationName}"
@@ -33,17 +35,4 @@
         <meta-data  android:name="com.google.firebase.messaging.default_notification_channel_id"
                 android:value="@string/default_notification_channel_id" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <queries>
-  <!-- If your app checks for SMS support -->
-  <intent>
-    <action android:name="android.intent.action.VIEW" />
-    <data android:scheme="sms" />
-  </intent>
-  <!-- If your app checks for call support -->
-  <intent>
-    <action android:name="android.intent.action.VIEW" />
-    <data android:scheme="tel" />
-  </intent>
-</queries>
 </manifest>

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:convert';
@@ -11,8 +12,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
+import '../models/profile.dart';
+
 class ProfileDetails extends StatefulWidget {
-  const ProfileDetails({super.key});
+  const ProfileDetails({super.key, required this.userDetails});
+  final UserDetails userDetails;
 
   @override
   State<ProfileDetails> createState() => _ProfileDetailsState();
@@ -21,7 +25,8 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   File? _imageFile;
   final _picker = ImagePicker();
-  late String _imageURL;
+  String serverUrl = "http://cluedin.creast.in:5000/";
+  late String _imageURL = widget.userDetails.profilePic;
 
   @override
   Widget build(BuildContext context) {
@@ -47,31 +52,32 @@ class _ProfileDetailsState extends State<ProfileDetails> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                children: const [
+                children: [
                   Divider(),
                   ListTile(
                     leading: Icon(Icons.person),
-                    title: Text("Name",
+                    title: const Text("Name",
                         textScaleFactor: 0.9,
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      "Tushar Padhy",
+                      "${widget.userDetails.fname} ${widget.userDetails.lname}",
                       textScaleFactor: 1.2,
-                      style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
                   Divider(),
                   ListTile(
-                    leading: Icon(Icons.phone),
-                    title: Text("Phone",
+                    leading: const Icon(Icons.phone),
+                    title: const Text("Phone",
                         textScaleFactor: 0.9,
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      "8104951731",
+                      widget.userDetails.mobno,
                       textScaleFactor: 1.2,
                       style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -79,27 +85,28 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   Divider(),
                   ListTile(
                     leading: Icon(Icons.mail),
-                    title: Text("Email",
+                    title: const Text("Email",
                         textScaleFactor: 0.9,
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      "padhytushar4303@gmail.com",
+                      widget.userDetails.email,
                       textScaleFactor: 1.2,
-                      style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
                   Divider(),
                   ListTile(
                     leading: Icon(Icons.admin_panel_settings),
-                    title: Text("Branch",
+                    title: const Text("Branch",
                         textScaleFactor: 0.9,
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      "IT",
+                      widget.userDetails.branchName,
                       textScaleFactor: 1.2,
                       style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -254,8 +261,21 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
   Future uploadImage(File _image) async {
     // Compress the image
-    var image = img.decodeImage(_image.readAsBytesSync());
-    var compressImage = img.copyResize(image!, width: 500, height: 500);
+
+    final image = img.decodeImage(_image.readAsBytesSync());
+    final imageHeight = image!.height;
+    final imageWidth = image.width;
+
+    // Calculate the aspect ratio of the image
+    final aspectRatio = imageHeight / imageWidth;
+
+    // Calculate the new height and width of the image
+    final newHeight = (600 * aspectRatio).round();
+    final newWidth = 600;
+
+    // Resize the image to the new height and width
+    final compressImage =
+        img.copyResize(image, height: newHeight, width: newWidth);
 
     // Encode the compressed image as a PNG
     var pngBytes = img.encodePng(compressImage);
@@ -268,7 +288,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     await file.writeAsBytes(pngBytes);
 
     // Create the multipart form data
-    var url = "YOUR_API_URL";
+    var url = "http://cluedin.creast.in:5000/api/app/updateProfile";
     var mobno = "8104951731";
     var request = http.MultipartRequest("POST", Uri.parse(url));
 
@@ -295,12 +315,20 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     if (response.statusCode == 200) {
       // Parse the response to get the image URL
       var responseJSON = json.decode(responseString);
-      var imageURL = responseJSON["image_url"];
+
+      var imageURL = serverUrl + responseJSON["img_url"];
 
       // Update the _imageURL variable with the new URL
       setState(() {
         _imageURL = imageURL;
+        Hive.box('userBox').put('profilePic', imageURL);
       });
+      Fluttertoast.showToast(
+        msg: "Image updated successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+      );
     } else {
       Fluttertoast.showToast(
         msg: "Failed to upload image",

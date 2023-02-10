@@ -8,7 +8,9 @@ import 'package:cluedin_app/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
+import 'package:hive/hive.dart';
 import 'utils/globals.dart';
 import 'package:navbar_router/navbar_router.dart';
 
@@ -26,6 +28,7 @@ void main() async {
     name: "CluedIn",
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter();
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(myApp());
@@ -64,7 +67,7 @@ class HomePage extends StatelessWidget {
     NavbarItem(Icons.person, 'Profile'),
   ];
 
-  final Map<int, Map<String, Widget>> _routes = const {
+  final Map<int, Map<String, Widget>> _routes = {
     0: {
       '/': HomeScreen(),
     },

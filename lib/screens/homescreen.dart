@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:io';
-
 import '../notificationService/local_notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<List<StudentChapters>?> loadHomePage() async {
+  Future<List<StudentChapters>?> loadStudentChapters() async {
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
@@ -68,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
     print("le token");
     getToken();
     super.initState();
-    myfuture = loadHomePage();
+    myfuture = loadStudentChapters();
+
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       print(message);
       print("FirebaseMessaging.instance.getInitialMessage");

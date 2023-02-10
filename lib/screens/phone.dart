@@ -108,7 +108,6 @@ class _MyPhoneState extends State<MyPhone> {
             },
           );
           // ignore: use_build_context_synchronously
-
         } else {
           setState(() => this._error =
               'User not registered. Contact the admin for getting yourself registered');

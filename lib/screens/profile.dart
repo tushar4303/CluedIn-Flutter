@@ -1,12 +1,79 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:retry/retry.dart';
+import 'package:http/http.dart' as http;
+import 'package:cluedin_app/models/profile.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/profile.dart';
 
-class MyProfile extends StatelessWidget {
+class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
+
+  @override
+  State<MyProfile> createState() => _MyProfileState();
+}
+
+class _MyProfileState extends State<MyProfile> {
+  late Future _userDetailsFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadUserDetails();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _userDetailsFuture = loadUserDetails();
+  }
+
+  Future<void> loadUserDetails() async {
+    final queryParameters = {
+      'mobno': '8104951731',
+    };
+
+    final uri =
+        Uri.http('cluedin.creast.in:5000', '/api/app/profile', queryParameters);
+
+    const r = RetryOptions(maxAttempts: 3);
+    final response = await r.retry(
+      // Make a GET request
+      () => http.get(uri).timeout(const Duration(seconds: 2)),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+
+    if (response.statusCode == 200) {
+      final UserDetailsJson = response.body;
+
+      final userBox = await Hive.openBox('userBox');
+
+      final decodedData = jsonDecode(UserDetailsJson);
+      var userDetails = decodedData["data"];
+
+      userDetails = UserDetails.fromMap(userDetails);
+
+      await userBox.put('fname', userDetails.fname);
+      await userBox.put('lname', userDetails.lname);
+      await userBox.put('mobno', userDetails.mobno);
+      await userBox.put('email', userDetails.email);
+      await userBox.put('branchName', userDetails.branchName);
+      await userBox.put('profilePic',
+          'http://cluedin.creast.in:5000/' + userDetails.profilePic);
+    } else {
+      throw Exception('Failed to load user details');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +98,53 @@ class MyProfile extends StatelessWidget {
           SizedBox(
             height: 90,
             child: Center(
-              child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => ProfileDetails()));
-                },
-                leading: const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://avatars.githubusercontent.com/u/88235295?s=400&u=2c6acf95bc514b8ca6115a6ff24822154a10ee7b&v=4'),
-                  radius: 36,
-                ),
-                title: Transform(
-                  transform: Matrix4.translationValues(-10, 0.0, 0.0),
-                  child: const Text("Tushar", style: TextStyle(fontSize: 18)),
-                ),
-                subtitle: Transform(
-                  transform: Matrix4.translationValues(-10, -0.8, 0.0),
-                  child: const Text("Show profile",
-                      style: TextStyle(fontSize: 15)),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 20),
-              ),
-            ),
+                child: FutureBuilder(
+              future: _userDetailsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final userBox = Hive.box('userBox');
+                  final fname = userBox.get('fname');
+                  final lname = userBox.get('lname');
+                  final mobno = userBox.get('mobno');
+                  final email = userBox.get('email');
+                  final branchName = userBox.get('branchName');
+                  final profilePic = userBox.get('profilePic');
+                  final Details = UserDetails(
+                      fname: fname,
+                      lname: lname,
+                      mobno: mobno,
+                      email: email,
+                      branchName: branchName,
+                      profilePic: profilePic);
+
+                  final username = fname + lname;
+                  return ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => ProfileDetails(
+                                    userDetails: Details,
+                                  ))).then((_) {
+                        setState(() {});
+                      });
+                    },
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(profilePic),
+                      radius: 36,
+                    ),
+                    title: Text("$username", style: TextStyle(fontSize: 18)),
+                    subtitle:
+                        Text("Show profile", style: TextStyle(fontSize: 15)),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            )),
           ),
           const CustomDivider(),
           Padding(
