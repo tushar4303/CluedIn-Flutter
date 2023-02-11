@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../models/profile.dart';
 
@@ -260,32 +260,18 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   }
 
   Future uploadImage(File _image) async {
-    // Compress the image
+    final appDir = await getApplicationDocumentsDirectory();
+    final filePath = '${appDir.path}/${DateTime.now()}.png';
 
-    final image = img.decodeImage(_image.readAsBytesSync());
-    final imageHeight = image!.height;
-    final imageWidth = image.width;
-
-    // Calculate the aspect ratio of the image
-    final aspectRatio = imageHeight / imageWidth;
-
-    // Calculate the new height and width of the image
-    final newHeight = (600 * aspectRatio).round();
-    final newWidth = 600;
-
-    // Resize the image to the new height and width
-    final compressImage =
-        img.copyResize(image, height: newHeight, width: newWidth);
-
-    // Encode the compressed image as a PNG
-    var pngBytes = img.encodePng(compressImage);
-
-    // Get the path for storing the compressed image on the device
-    var dir = await getTemporaryDirectory();
-    var file = File("${dir.path}/compressed_image.png");
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      _image.absolute.path,
+      quality: 50,
+    );
 
     // Write the PNG bytes to the file
-    await file.writeAsBytes(pngBytes);
+    // await file.writeAsBytes(pngBytes);
+    File compressedImageFile = File(filePath)
+      ..writeAsBytesSync(compressedBytes!);
 
     // Create the multipart form data
     var url = "http://cluedin.creast.in:5000/api/app/updateProfile";
@@ -293,7 +279,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     var request = http.MultipartRequest("POST", Uri.parse(url));
 
     // Create a MultipartFile from the compressed image
-    var fileData = await file.readAsBytes();
+    var fileData = compressedImageFile.readAsBytesSync();
     var fileMultipartFile = http.MultipartFile.fromBytes(
       'image',
       fileData,
