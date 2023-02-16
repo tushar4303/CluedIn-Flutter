@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   String fcmToken = "firebase token";
   int currentPage = 0;
-  late Future<List<StudentChapters>?> myfuture;
+  late Future<HomeModel?> myfuture;
   final url =
       "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/aac4370dc27e48649a87ff3321b5505963414194/homepage.json";
 
@@ -35,7 +35,37 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<List<StudentChapters>?> loadStudentChapters() async {
+  // Future<List<StudentChapters>?> loadStudentChapters() async {
+  //   const r = RetryOptions(maxAttempts: 3);
+  //   final response = await r.retry(
+  //     // Make a GET request
+  //     () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
+  //     // Retry on SocketException or TimeoutException
+  //     retryIf: (e) => e is SocketException || e is TimeoutException,
+  //   );
+  //   try {
+  //     if (response.statusCode == 200) {
+  //       final HomePageJson = response.body;
+
+  //       final decodedData = jsonDecode(HomePageJson);
+  //       var studentChapters = decodedData["student_chapters"];
+  //       final List<dynamic> slidesList = decodedData["featured_carousel"];
+  //       List<CarouselSlide> carouselSlides =
+  //           slidesList.map((slide) => CarouselSlide.fromJson(slide)).toList();
+
+  //       HomeModel.studentChapters = List.from(studentChapters)
+  //           .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
+  //           .toList();
+  //       print(HomeModel.studentChapters!.length);
+
+  //       return HomeModel.studentChapters;
+  //     }
+  //   } catch (e) {
+  //     throw Exception(e.toString());
+  //   }
+  // }
+
+  Future<HomeModel> loadHomePageData() async {
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
@@ -46,20 +76,29 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       if (response.statusCode == 200) {
         final HomePageJson = response.body;
-
         final decodedData = jsonDecode(HomePageJson);
-        var studentChapters = decodedData["student_chapters"];
 
-        HomeModel.studentChapters = List.from(studentChapters)
-            .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
-            .toList();
-        print(HomeModel.studentChapters!.length);
+        // Load student chapters
+        final studentChaptersJson = decodedData["student_chapters"];
+        final studentChapters =
+            List<Map<String, dynamic>>.from(studentChaptersJson)
+                .map((chapter) => StudentChapters.fromMap(chapter))
+                .toList();
+        HomeModel.studentChapters = studentChapters;
 
-        return HomeModel.studentChapters;
+        // Load carousel
+        final List<dynamic> slidesList = decodedData["featured_carousel"];
+        final carouselSlides =
+            slidesList.map((slide) => CarouselSlide.fromJson(slide)).toList();
+        final carousel = CarouselModel(slides: carouselSlides);
+        HomeModel.carousel = carousel;
+
+        return HomeModel();
       }
     } catch (e) {
       throw Exception(e.toString());
     }
+    return HomeModel();
   }
 
   @override
@@ -67,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print("le token");
     getToken();
     super.initState();
-    myfuture = loadStudentChapters();
+    myfuture = loadHomePageData();
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       print(message);
