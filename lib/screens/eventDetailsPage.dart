@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +13,63 @@ class EventDetailsPage extends StatelessWidget {
     required this.event,
   }) : super(key: key);
   final Events event;
+
+  RichText get timerDisplay {
+    Duration duration = event.dateOfexpiration.difference(DateTime.now());
+    var sent_at = DateFormat('MMM d, ' 'yy').format(event.dateOfcreation);
+    if (duration.isNegative) {
+      return RichText(
+        text: TextSpan(
+          children: [
+            const TextSpan(
+                text: 'ENDED', style: TextStyle(color: Colors.black)),
+            TextSpan(text: '|', style: TextStyle(color: Colors.grey[400])),
+            TextSpan(
+                text: ' $sent_at', style: const TextStyle(color: Colors.black)),
+          ],
+        ),
+      );
+    }
+    if (duration.inHours > 24) {
+      return RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+                text: 'Ends in ${duration.inDays}D ',
+                style: const TextStyle(color: Colors.black, fontSize: 18)),
+            TextSpan(
+                text: '|',
+                style: TextStyle(color: Colors.grey[600], fontSize: 18)),
+            TextSpan(
+                text: ' $sent_at',
+                style: const TextStyle(color: Colors.black, fontSize: 18)),
+          ],
+        ),
+      );
+    }
+
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text:
+                'Ends in ${duration.inDays}D ${duration.inHours.remainder(24)}H ${twoDigitMinutes}M ${twoDigitSeconds}S ',
+            style: const TextStyle(color: Colors.black, fontSize: 18),
+          ),
+          TextSpan(
+            text: '|',
+            style: TextStyle(color: Colors.grey[400], fontSize: 18),
+          ),
+          TextSpan(
+              text: ' $sent_at',
+              style: const TextStyle(color: Colors.black, fontSize: 18)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,57 +111,10 @@ class EventDetailsPage extends StatelessWidget {
                         event.eventTitle,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
-                            fontSize: 28,
+                            fontSize: 32,
                             color: Color.fromARGB(255, 30, 29, 29)),
                       ),
-                      //start
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(event.senderProfilePic)),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                RichText(
-                                  text: TextSpan(
-                                    text: event.senderRole,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: " @${event.senderName}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_outlined,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(
-                                      width: 2,
-                                    ),
-                                    Text(timeago.format(event.dateOfcreation)),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                      timerDisplay,
                       Hero(
                         tag: Key(event.eventId.toString()),
                         child: Padding(
@@ -135,7 +145,7 @@ class EventDetailsPage extends StatelessWidget {
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                         ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
                       if (event.attachmentUrl.isNotEmpty)
@@ -207,10 +217,10 @@ class EventDetailsPage extends StatelessWidget {
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
-
                       if (event.registrationLink.isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.only(
+                              top: 16, left: 16, right: 16, bottom: 8),
                           child: Center(
                             child: SizedBox(
                               width: double.infinity,
@@ -237,7 +247,66 @@ class EventDetailsPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                        )
+                        ),
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      Divider(
+                        thickness: 0.5,
+                        color: Colors.grey[400]!.withOpacity(0.5),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(event.senderProfilePic),
+                              radius: 24,
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: event.senderRole,
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: " @${event.senderName}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  event.organizedBy,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        thickness: 0.5,
+                        color: Colors.grey[400]!.withOpacity(0.5),
+                      ),
+                      const SizedBox(
+                        height: 48,
+                      ),
                     ],
                   ),
                 ),

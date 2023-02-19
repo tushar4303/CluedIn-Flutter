@@ -5,55 +5,55 @@ import 'package:collection/collection.dart';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class EventModel {
   static List<String>? labels;
-  static List<String>? senderRoles;
+  static List<String>? organizers;
   static List<Events>? events;
 }
 
-class SenderRoles {
-  final List senderRoles;
+class Organizers {
+  final List organizers;
 
-  SenderRoles(
-    this.senderRoles,
+  Organizers(
+    this.organizers,
   );
 
-  SenderRoles copyWith({
+  Organizers copyWith({
     List? senderRoles,
   }) {
-    return SenderRoles(
-      senderRoles ?? this.senderRoles,
+    return Organizers(
+      senderRoles ?? this.organizers,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'senderRoles': senderRoles,
+      'organizers': organizers,
     };
   }
 
-  factory SenderRoles.fromMap(Map<String, dynamic> map) {
-    return SenderRoles(List.from(
-      (map['senderRoles'] as List),
+  factory Organizers.fromMap(Map<String, dynamic> map) {
+    return Organizers(List.from(
+      (map['organizers'] as List),
     ));
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SenderRoles.fromJson(String source) =>
-      SenderRoles.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Organizers.fromJson(String source) =>
+      Organizers.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'SenderRoles(senderRoles: $senderRoles)';
+  String toString() => 'SenderRoles(senderRoles: $organizers)';
 
   @override
-  bool operator ==(covariant SenderRoles other) {
+  bool operator ==(covariant Organizers other) {
     if (identical(this, other)) return true;
     final listEquals = const DeepCollectionEquality().equals;
 
-    return listEquals(other.senderRoles, senderRoles);
+    return listEquals(other.organizers, organizers);
   }
 
   @override
-  int get hashCode => senderRoles.hashCode;
+  int get hashCode => organizers.hashCode;
 }
 
 class Labels {
@@ -107,6 +107,7 @@ class Events {
   final int eventId;
   final String senderName;
   final String senderRole;
+  final String organizedBy;
   final String senderProfilePic;
   final String eventTitle;
   final String eventLabel;
@@ -122,6 +123,7 @@ class Events {
       {required this.eventId,
       required this.senderName,
       required this.senderRole,
+      required this.organizedBy,
       required this.senderProfilePic,
       required this.eventTitle,
       required this.eventLabel,
@@ -138,6 +140,7 @@ class Events {
       eventId: map["event_id"],
       senderName: map["senderName"],
       senderRole: map["senderRole"],
+      organizedBy: map["OrganizedBy"],
       senderProfilePic: map["senderProfilePic"],
       eventTitle: map["event_title"],
       eventLabel: map["event_label"],
@@ -155,6 +158,7 @@ class Events {
         "event_id": eventId,
         "senderName": senderName,
         "senderRole": senderRole,
+        "OrganizedBy": organizedBy,
         "senderProfilePic": senderProfilePic,
         "event_title": eventTitle,
         "event_label": eventLabel,
@@ -169,6 +173,6 @@ class Events {
 
   @override
   String toString() {
-    return 'Events(eventId: $eventId, senderName: $senderName, senderRole: $senderRole, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
+    return 'Events(eventId: $eventId, senderName: $senderName, senderRole: $senderRole, organizedBy: $organizedBy, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
   }
 }

@@ -6,7 +6,7 @@ class Label extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 24, top: 12, bottom: 24),
+      margin: const EdgeInsets.only(left: 24, top: 12, bottom: 24),
       decoration: const BoxDecoration(
           color: Color.fromRGBO(240, 221, 245, 1),
           borderRadius: BorderRadius.all(Radius.circular(10))),

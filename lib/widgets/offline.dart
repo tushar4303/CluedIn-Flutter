@@ -5,18 +5,18 @@ Widget errmsg(String text, bool show) {
   if (show == true) {
     //if error is true then show error message box
     return Container(
-      padding: EdgeInsets.all(10.00),
+      padding: const EdgeInsets.all(10.00),
       // margin: EdgeInsets.only(bottom: 10.00),
-      color: Color.fromARGB(255, 1, 1, 1),
+      color: const Color.fromARGB(255, 1, 1, 1),
       child: Row(children: [
         Container(
-          margin: EdgeInsets.only(right: 6.00),
-          child: Icon(Icons.info, color: Colors.white),
+          margin: const EdgeInsets.only(right: 6.00),
+          child: const Icon(Icons.info, color: Colors.white),
         ), // icon for error message
 
         Text(
           text,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         //show error message text
       ]),

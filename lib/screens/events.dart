@@ -32,10 +32,9 @@ class _MyEventsState extends State<MyEvents> {
   bool isoffline = false;
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
-  // final url =
-  //     "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/53158d61ad2aa315bdade45f292dff9c234c7b4c/events.json";
+
   final url =
-      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/91efc3020bdc3bc60403b42a61f48c52cc894478/events.json";
+      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/c0d85afebeaeda716b7034d06c62413dd9a9a7c7/events.json";
   final _filters = [];
   final _senders = [];
   final List<Events> _filteredEvents = [];
@@ -74,10 +73,10 @@ class _MyEventsState extends State<MyEvents> {
   }
 
   Future<List<Events>?> loadEvents() async {
-    final r = RetryOptions(maxAttempts: 3);
+    const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(Duration(seconds: 2)),
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -87,10 +86,10 @@ class _MyEventsState extends State<MyEvents> {
         final decodedData = jsonDecode(EventsJson);
         var eventsData = decodedData["events"];
         var labelsData = decodedData["labels"];
-        var senderRolesData = decodedData["senderRoles"];
+        var organizersData = decodedData["organizers"];
 
         EventModel.labels = List.from(labelsData);
-        EventModel.senderRoles = List.from(senderRolesData);
+        EventModel.organizers = List.from(organizersData);
 
         EventModel.events = List.from(eventsData)
             .map<Events>((event) => Events.fromMap(event))
@@ -116,7 +115,7 @@ class _MyEventsState extends State<MyEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -201,7 +200,7 @@ class _MyEventsState extends State<MyEvents> {
                                                                   child: ListView
                                                                       .builder(
                                                                     itemCount: EventModel
-                                                                        .senderRoles!
+                                                                        .organizers!
                                                                         .length,
                                                                     controller:
                                                                         controller,
@@ -215,17 +214,19 @@ class _MyEventsState extends State<MyEvents> {
                                                                             visualDensity:
                                                                                 const VisualDensity(vertical: -2.5),
                                                                             title:
-                                                                                Text(EventModel.senderRoles![index]),
-                                                                            trailing:
-                                                                                Visibility(visible: _senders.contains(EventModel.senderRoles![index]), child: const Icon(Icons.check)),
+                                                                                Text(EventModel.organizers![index]),
+                                                                            selected:
+                                                                                _senders.contains(EventModel.organizers![index]),
+                                                                            selectedColor:
+                                                                                Colors.blueAccent,
                                                                             onTap:
                                                                                 () {
                                                                               setState(() {
-                                                                                if (!_senders.contains(EventModel.senderRoles![index])) {
-                                                                                  _senders.add(EventModel.senderRoles![index]);
+                                                                                if (!_senders.contains(EventModel.organizers![index])) {
+                                                                                  _senders.add(EventModel.organizers![index]);
                                                                                 } else {
                                                                                   _senders.removeWhere((name) {
-                                                                                    return name == EventModel.senderRoles![index];
+                                                                                    return name == EventModel.organizers![index];
                                                                                   });
                                                                                 }
                                                                                 _filteredEvents.clear();
@@ -248,14 +249,14 @@ class _MyEventsState extends State<MyEvents> {
                                                             ),
                                                           )));
                                     },
-                                    label: Text("From"),
-                                    avatar: Icon(
+                                    label: const Text("From"),
+                                    avatar: const Icon(
                                       Icons.auto_awesome,
                                       color: Colors.black,
                                     ),
                                     visualDensity:
-                                        VisualDensity(vertical: -1.5),
-                                    side: BorderSide(
+                                        const VisualDensity(vertical: -1.5),
+                                    side: const BorderSide(
                                         width: 1,
                                         color: Color.fromARGB(66, 75, 74, 74)),
                                     // surfaceTintColor: Colors.black,
@@ -296,6 +297,7 @@ class _MyEventsState extends State<MyEvents> {
                                         onSelected: ((value) {
                                           setState(() {
                                             if (value) {
+                                              _filters.clear();
                                               _filters.add(filterType);
                                             } else {
                                               _filters.removeWhere((name) {
@@ -384,7 +386,7 @@ class _MyEventsState extends State<MyEvents> {
                                       MediaQuery.of(context).size.height * 0.45,
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 'Well this is awkward!',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -392,7 +394,7 @@ class _MyEventsState extends State<MyEvents> {
                                     fontWeight: FontWeight.w500,
                                     color: Color.fromARGB(255, 30, 29, 29)),
                               ),
-                              Text(
+                              const Text(
                                 'We dont seem to be connected...',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -415,7 +417,7 @@ class _MyEventsState extends State<MyEvents> {
                                           MaterialStateProperty.all(
                                               Colors.black)),
                                   clipBehavior: Clip.hardEdge,
-                                  child: Text(
+                                  child: const Text(
                                     "Try again",
                                     style: TextStyle(color: Colors.white),
                                   ),
@@ -430,7 +432,7 @@ class _MyEventsState extends State<MyEvents> {
                           );
                         }
                       }
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.black,
                         ),

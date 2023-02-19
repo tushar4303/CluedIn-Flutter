@@ -53,9 +53,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  Divider(),
+                  const Divider(),
                   ListTile(
-                    leading: Icon(Icons.person),
+                    leading: const Icon(Icons.person),
                     title: const Text("Name",
                         textScaleFactor: 0.9,
                         style: TextStyle(
@@ -68,7 +68,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListTile(
                     leading: const Icon(Icons.phone),
                     title: const Text("Phone",
@@ -79,12 +79,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     subtitle: Text(
                       widget.userDetails.mobno,
                       textScaleFactor: 1.2,
-                      style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListTile(
-                    leading: Icon(Icons.mail),
+                    leading: const Icon(Icons.mail),
                     title: const Text("Email",
                         textScaleFactor: 0.9,
                         style: TextStyle(
@@ -97,9 +98,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListTile(
-                    leading: Icon(Icons.admin_panel_settings),
+                    leading: const Icon(Icons.admin_panel_settings),
                     title: const Text("Branch",
                         textScaleFactor: 0.9,
                         style: TextStyle(
@@ -108,10 +109,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     subtitle: Text(
                       widget.userDetails.branchName,
                       textScaleFactor: 1.2,
-                      style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 30, 29, 29)),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                 ],
               ),
             ),

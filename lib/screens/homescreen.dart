@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
   late Future<HomeModel?> myfuture;
   final url =
-      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/aac4370dc27e48649a87ff3321b5505963414194/homepage.json";
+      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/2395d2e80e0dc64ef6403d5d5fdcaa9255ec6760/homepage.json";
 
   DateTime today = DateTime.now();
 
@@ -35,36 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Future<List<StudentChapters>?> loadStudentChapters() async {
-  //   const r = RetryOptions(maxAttempts: 3);
-  //   final response = await r.retry(
-  //     // Make a GET request
-  //     () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
-  //     // Retry on SocketException or TimeoutException
-  //     retryIf: (e) => e is SocketException || e is TimeoutException,
-  //   );
-  //   try {
-  //     if (response.statusCode == 200) {
-  //       final HomePageJson = response.body;
-
-  //       final decodedData = jsonDecode(HomePageJson);
-  //       var studentChapters = decodedData["student_chapters"];
-  //       final List<dynamic> slidesList = decodedData["featured_carousel"];
-  //       List<CarouselSlide> carouselSlides =
-  //           slidesList.map((slide) => CarouselSlide.fromJson(slide)).toList();
-
-  //       HomeModel.studentChapters = List.from(studentChapters)
-  //           .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
-  //           .toList();
-  //       print(HomeModel.studentChapters!.length);
-
-  //       return HomeModel.studentChapters;
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   }
-  // }
-
   Future<HomeModel> loadHomePageData() async {
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
@@ -73,32 +43,39 @@ class _HomeScreenState extends State<HomeScreen> {
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
+
     try {
       if (response.statusCode == 200) {
         final HomePageJson = response.body;
         final decodedData = jsonDecode(HomePageJson);
 
         // Load student chapters
-        final studentChaptersJson = decodedData["student_chapters"];
-        final studentChapters =
-            List<Map<String, dynamic>>.from(studentChaptersJson)
-                .map((chapter) => StudentChapters.fromMap(chapter))
-                .toList();
-        HomeModel.studentChapters = studentChapters;
-
-        // Load carousel
         final List<dynamic> slidesList = decodedData["featured_carousel"];
         final carouselSlides =
             slidesList.map((slide) => CarouselSlide.fromJson(slide)).toList();
         final carousel = CarouselModel(slides: carouselSlides);
-        HomeModel.carousel = carousel;
+        print(carousel.slides.length);
 
-        return HomeModel();
+        final studentChaptersJson = decodedData["student_chapters"];
+        final studentChapters = List.from(studentChaptersJson)
+            .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
+            .toList();
+        // print(studentChapters.length);
+
+        // Load carousel
+
+        final homeModel = HomeModel(
+          studentChapters: studentChapters,
+          carousel: carousel,
+        );
+
+        return homeModel;
       }
     } catch (e) {
       throw Exception(e.toString());
     }
-    return HomeModel();
+
+    throw Exception('Failed to load home page data');
   }
 
   @override
@@ -106,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print("le token");
     getToken();
     super.initState();
+
     myfuture = loadHomePageData();
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
@@ -140,7 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
   getToken() async {
     String? token = await _firebaseMessaging.getToken();
     fcmToken = token!;
-    print("fcm token : $fcmToken");
   }
 
   requestingNotificationPermission() async {
@@ -202,22 +179,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Stack(alignment: Alignment.center, children: <Widget>[
-                    PageView.builder(
-                      itemBuilder: (context, index) {
-                        return CarouselCard(
-                          car: cars[index],
+                    FutureBuilder(
+                      future: myfuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            final carousel = snapshot.data!.carousel;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                PageView.builder(
+                                  itemCount: carousel!.slides.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return CarouselCard(
+                                      slide: carousel.slides[index],
+                                    );
+                                  },
+                                  onPageChanged: (int index) {
+                                    setState(() {
+                                      currentPage = index;
+                                    });
+                                  },
+                                ),
+                                Positioned(
+                                  bottom: 0.0,
+                                  child: updateIndicators(
+                                    carousel.slides.length,
+                                    currentPage,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Error: ${snapshot.error.toString()}",
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
                         );
                       },
-                      itemCount: cars.length,
-                      controller:
-                          PageController(initialPage: 0, viewportFraction: 1),
-                      onPageChanged: (index) {
-                        setState(() {
-                          currentPage = index;
-                        });
-                      },
                     ),
-                    Positioned(bottom: 0.0, child: updateIndicators()),
                   ]),
                 ),
               ),
@@ -242,10 +256,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             return PageView.builder(
                               itemBuilder: (context, index) {
                                 return ChapterCard(
-                                    chapter: HomeModel.studentChapters![index]);
+                                    chapter:
+                                        snapshot.data!.studentChapters![index]);
                               },
                               padEnds: false,
-                              itemCount: HomeModel.studentChapters!.length,
+                              itemCount: snapshot.data!.studentChapters!.length,
                               controller: PageController(
                                   initialPage: 0, viewportFraction: 0.425),
                               onPageChanged: (index) {},
@@ -298,14 +313,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget updateIndicators() {
+  Widget updateIndicators(int length, int currentPage) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: cars.map(
-          (car) {
-            var index = cars.indexOf(car);
+        children: List.generate(
+          length,
+          (index) {
             return Container(
               width: 5.0,
               height: 5.0,
@@ -322,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           },
-        ).toList(),
+        ),
       ),
     );
   }
@@ -364,7 +379,7 @@ class utilityBar extends StatelessWidget {
               blurRadius: 3,
               offset: const Offset(0.0, 0.75))
         ],
-        color: const Color.fromRGBO(250, 250, 250, 1),
+        color: const Color.fromRGBO(251, 251, 252, 1),
         borderRadius: BorderRadius.circular(
           16.0,
         ),
@@ -633,9 +648,9 @@ class ChapterCard extends StatelessWidget {
 }
 
 class CarouselCard extends StatelessWidget {
-  CarouselCard({super.key, required this.car});
+  const CarouselCard({Key? key, required this.slide}) : super(key: key);
 
-  TeslaCar car;
+  final CarouselSlide slide;
 
   @override
   Widget build(BuildContext context) {
@@ -645,11 +660,16 @@ class CarouselCard extends StatelessWidget {
         right: 8.0,
       ),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () async {
+          final url = Uri.parse(slide.redirectUrl);
+          if (!await launchUrl(url)) {
+            throw 'Could not launch $url';
+          }
+        },
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           child: CachedNetworkImage(
-            imageUrl: car.image,
+            imageUrl: slide.photoUrl,
             fit: BoxFit.cover,
             placeholder: (context, url) {
               return Image.asset(
@@ -663,45 +683,3 @@ class CarouselCard extends StatelessWidget {
     );
   }
 }
-
-class TeslaCar {
-  TeslaCar(
-      {required this.model, required this.image, required this.description});
-
-  String model;
-  String image;
-  String description;
-}
-
-var cars = [
-  TeslaCar(
-      model: 'Roadster',
-      image:
-          'https://www.itcluster.ck.ua/wp-content/uploads/2019/03/661821a9442a8dbd824e89bd18c0fd2e_XL.jpg',
-      description:
-          'As an all-electric supercar, Roadster maximizes the potential of aerodynamic engineering—with record-setting performance and efficiency.'),
-  TeslaCar(
-      model: 'Model S',
-      image:
-          'https://ictframe.com/wp-content/uploads/Digital-Ocean-Summit-Nepal-2020.jpg',
-      description:
-          "Model S sets an industry standard for performance and safety. Tesla’s all-electric powertrain delivers unparalleled performance in all weather conditions."),
-  TeslaCar(
-      model: 'Model 3',
-      image:
-          'https://stuff.co.za/wp-content/uploads/2021/04/ces-2021-anchor-desk3.jpg_ext-scaled.jpg',
-      description:
-          "Model 3 comes with the option of dual motor all-wheel drive, 20” Performance Wheels and Brakes and lowered suspension for total control, in all weather conditions."),
-  TeslaCar(
-      model: 'Model X',
-      image:
-          'https://www.iottechexpo.com/wp-content/uploads/2018/04/IoT-Tech-Expo-1-777x518.jpg',
-      description:
-          "Tesla’s all-electric powertrain delivers Dual Motor All-Wheel Drive, adaptive air suspension and the quickest acceleration of any SUV on the road—from zero to 60 mph in 2.6 seconds."),
-  TeslaCar(
-      model: 'Model Y',
-      image:
-          'https://www.techtalkthai.com/wp-content/uploads/2016/10/google_DevFest-Hackathon-PR.png',
-      description:
-          "Tesla All-Wheel Drive has two ultra-responsive, independent electric motors that digitally control torque to the front and rear wheels—for far better handling, traction and stability."),
-];

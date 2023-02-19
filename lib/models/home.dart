@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class HomeModel {
-  static List<StudentChapters>? studentChapters;
-  static CarouselModel? carousel;
+  final List<StudentChapters>? studentChapters;
+  final CarouselModel? carousel;
+
+  HomeModel({required this.studentChapters, required this.carousel});
 }
 
 class StudentChapters {
@@ -81,9 +83,9 @@ class CarouselSlide {
 
   factory CarouselSlide.fromJson(Map<String, dynamic> json) {
     return CarouselSlide(
-      event: json['event'],
-      photoUrl: json['photo_url'],
-      redirectUrl: json['redirect_url'],
+      event: json['event_name'],
+      photoUrl: json['photo_link'],
+      redirectUrl: json['redirect_link'],
     );
   }
 

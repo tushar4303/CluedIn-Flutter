@@ -16,7 +16,7 @@ class NotificationWidget extends StatelessWidget {
         width: double.infinity,
         // height: MediaQuery.of(context).size.height * 0.1155,
         child: Card(
-          // color: Colors.amberAccent,
+          color: Colors.transparent,
           elevation: 0.0,
           margin: const EdgeInsets.only(bottom: 12),
           child: ListTile(
@@ -28,8 +28,8 @@ class NotificationWidget extends StatelessWidget {
                           NotificationDetailsPage(notification: notification)));
             },
             leading: CircleAvatar(
-                backgroundImage: NetworkImage(notification.senderProfilePic),
-                child: const Text('DP')),
+              backgroundImage: NetworkImage(notification.senderProfilePic),
+            ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

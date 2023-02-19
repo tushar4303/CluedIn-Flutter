@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
-import 'package:hive/hive.dart';
 import 'utils/globals.dart';
 import 'package:navbar_router/navbar_router.dart';
 
@@ -94,7 +93,7 @@ class HomePage extends StatelessWidget {
       destinationAnimationCurve: Curves.fastOutSlowIn,
       destinationAnimationDuration: 700,
       decoration: NavbarDecoration(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromRGBO(251, 251, 252, 1),
           selectedIconTheme: const IconThemeData(color: Colors.black),
           navbarType: BottomNavigationBarType.fixed,
           elevation: 18,

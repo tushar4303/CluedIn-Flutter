@@ -2,6 +2,7 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
+// ignore: depend_on_referenced_packages
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,9 +13,6 @@ class NotificationDetailsPage extends StatelessWidget {
     required this.notification,
   }) : super(key: key);
   final Notifications notification;
-
-  final String _errorImage =
-      "https://i.ytimg.com/vi/z8wrRRR7_qU/maxresdefault.jpg";
 
   @override
   Widget build(BuildContext context) {
