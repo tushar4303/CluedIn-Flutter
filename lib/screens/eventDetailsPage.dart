@@ -269,33 +269,39 @@ class EventDetailsPage extends StatelessWidget {
                             const SizedBox(
                               width: 16,
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                RichText(
-                                  text: TextSpan(
-                                    text: event.senderRole,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      text: event.senderRole,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: " @${event.senderName}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    event.organizedBy,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: " @${event.senderName}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400),
-                                      )
-                                    ],
+                                        fontWeight: FontWeight.w400),
                                   ),
-                                ),
-                                Text(
-                                  event.organizedBy,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
+                                ],
+                              ),
                             )
                           ],
                         ),

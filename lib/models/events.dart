@@ -20,7 +20,7 @@ class Organizers {
     List? senderRoles,
   }) {
     return Organizers(
-      senderRoles ?? this.organizers,
+      senderRoles ?? organizers,
     );
   }
 

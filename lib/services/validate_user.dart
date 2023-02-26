@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ValidateUser {
-  var _error = "";
+  final _error = "";
 
   Future<ValidateApiResponse?> apiCallLogin(Map<String, dynamic> param) async {
     var url = Uri.parse('http://10.42.0.69:5000/api/app/authAppUser');

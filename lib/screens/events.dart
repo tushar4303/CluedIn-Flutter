@@ -24,7 +24,7 @@ class _MyEventsState extends State<MyEvents> {
     return events
         .where((event) =>
             (laBels.isEmpty || laBels.contains(event.eventLabel)) &&
-            (senders.isEmpty || senders.contains(event.senderRole)))
+            (senders.isEmpty || senders.contains(event.organizedBy)))
         .toList();
   }
 
@@ -34,7 +34,7 @@ class _MyEventsState extends State<MyEvents> {
   //set variable for Connectivity subscription listiner
 
   final url =
-      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/c0d85afebeaeda716b7034d06c62413dd9a9a7c7/events.json";
+      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/9352579f1a97a046a7a9917b2e9a596f4ddc4ee0/events.json";
   final _filters = [];
   final _senders = [];
   final List<Events> _filteredEvents = [];
@@ -110,6 +110,7 @@ class _MyEventsState extends State<MyEvents> {
     } catch (e) {
       throw Exception(e.toString());
     }
+    return null;
   }
 
   @override

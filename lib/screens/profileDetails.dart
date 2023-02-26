@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path/path.dart';
-import 'package:async/async.dart';
+// import 'package:path/path.dart';
+// import 'package:async/async.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -152,8 +152,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(20.0),
-                                topRight: const Radius.circular(20.0))),
+                                topLeft: Radius.circular(20.0),
+                                topRight: Radius.circular(20.0))),
                         //content starts
                         child: Container(
                           margin: const EdgeInsets.only(
@@ -330,7 +330,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Future<void> _pickImageFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() => this._imageFile = File(pickedFile.path));
+      setState(() => _imageFile = File(pickedFile.path));
       uploadImage(_imageFile!);
     }
   }
@@ -338,7 +338,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Future<void> _pickImageFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
-      setState(() => this._imageFile = File(pickedFile.path));
+      setState(() => _imageFile = File(pickedFile.path));
       uploadImage(_imageFile!);
     }
   }

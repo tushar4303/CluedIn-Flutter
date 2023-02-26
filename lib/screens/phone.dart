@@ -22,7 +22,7 @@ class _MyPhoneState extends State<MyPhone> {
   late TextEditingController numberController = TextEditingController();
   String _error = '';
   var phone = "";
-  late final _verificationId;
+  late final String _verificationId;
   bool isEnabled = false;
 
   // ignore: non_constant_identifier_names
@@ -46,7 +46,7 @@ class _MyPhoneState extends State<MyPhone> {
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
-          setState(() => this._error = 'Error: ${e.code}');
+          setState(() => _error = 'Error: ${e.code}');
           print(countryController.text + phone);
         }
       },
@@ -70,7 +70,7 @@ class _MyPhoneState extends State<MyPhone> {
       },
     ).then((value) async {
       if (value?.error != null) {
-        setState(() => this._error = 'Error: ${value?.error!}');
+        setState(() => _error = 'Error: ${value?.error!}');
       } else {
         if (value?.success == 'true') {
           MyPhone.yourNumber = countryController.text + phone;
@@ -90,7 +90,7 @@ class _MyPhoneState extends State<MyPhone> {
             },
             verificationFailed: (FirebaseAuthException e) {
               if (e.code == 'invalid-phone-number') {
-                setState(() => this._error = 'Error: ${e.code}');
+                setState(() => _error = 'Error: ${e.code}');
                 print(countryController.text + phone);
               }
             },
@@ -109,7 +109,7 @@ class _MyPhoneState extends State<MyPhone> {
           );
           // ignore: use_build_context_synchronously
         } else {
-          setState(() => this._error =
+          setState(() => _error =
               'User not registered. Contact the admin for getting yourself registered');
           final SnackBar snackBar = SnackBar(content: Text(_error));
           snackbarKey.currentState?.showSnackBar(snackBar);

@@ -112,6 +112,7 @@ class _NotificationPageState extends State<NotificationPage> {
     } catch (e) {
       throw Exception(e.toString());
     }
+    return null;
   }
 
   @override

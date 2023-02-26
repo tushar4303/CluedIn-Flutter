@@ -23,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   String fcmToken = "firebase token";
   int currentPage = 0;
+  late PageController _pageController;
+  late final CarouselModel carousel;
+
   late Future<HomeModel?> myfuture;
   final url =
       "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/2395d2e80e0dc64ef6403d5d5fdcaa9255ec6760/homepage.json";
@@ -53,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final List<dynamic> slidesList = decodedData["featured_carousel"];
         final carouselSlides =
             slidesList.map((slide) => CarouselSlide.fromJson(slide)).toList();
-        final carousel = CarouselModel(slides: carouselSlides);
+        carousel = CarouselModel(slides: carouselSlides);
         print(carousel.slides.length);
 
         final studentChaptersJson = decodedData["student_chapters"];
@@ -83,8 +86,20 @@ class _HomeScreenState extends State<HomeScreen> {
     print("le token");
     getToken();
     super.initState();
-
     myfuture = loadHomePageData();
+    _pageController = PageController(initialPage: 0);
+    Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (_pageController.page == carousel.slides.length - 1) {
+        // _pageController.jumpToPage(0);
+        _pageController.animateToPage(0,
+            duration: const Duration(milliseconds: 800), curve: Curves.ease);
+      } else {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+      }
+    });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       print(message);
@@ -94,13 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // 2. This method only call when App in forground it mean app must be opened
     FirebaseMessaging.onMessage.listen(
       (message) {
-        print(message);
-        print("FirebaseMessaging.onMessage.listen");
         if (message.notification != null) {
           print(message.data);
           LocalNotificationService.createanddisplaynotification(message);
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => NotificationDetailsPage()));
         }
       },
     );
@@ -113,6 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   getToken() async {
@@ -144,11 +161,6 @@ class _HomeScreenState extends State<HomeScreen> {
       badge: true,
       sound: true,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -185,10 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasData) {
                             final carousel = snapshot.data!.carousel;
+
                             return Stack(
                               alignment: Alignment.center,
                               children: [
                                 PageView.builder(
+                                  controller: _pageController,
                                   itemCount: carousel!.slides.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
@@ -350,12 +364,12 @@ class titlebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, left: 24),
+      padding: const EdgeInsets.only(top: 16, left: 24),
       child: Align(
         alignment: Alignment.topLeft,
         child: Text(
           title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -572,7 +586,8 @@ class ChapterCard extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: <BoxShadow>[
                   BoxShadow(
-                      color: Color.fromARGB(75, 158, 158, 158).withOpacity(0.2),
+                      color: const Color.fromARGB(75, 158, 158, 158)
+                          .withOpacity(0.2),
                       blurRadius: 0.65,
                       offset: const Offset(0.25, 0.35))
                 ],
@@ -610,9 +625,9 @@ class ChapterCard extends StatelessWidget {
                             end: const Alignment(0.0, -1),
                             begin: const Alignment(0.0, 0.9),
                             colors: <Color>[
-                              Color.fromARGB(179, 179, 178, 178)
+                              const Color.fromARGB(179, 179, 178, 178)
                                   .withOpacity(0.25),
-                              Color.fromARGB(138, 230, 227, 227)
+                              const Color.fromARGB(138, 230, 227, 227)
                                   .withOpacity(0.0)
                             ],
                           ),

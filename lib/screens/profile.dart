@@ -12,7 +12,6 @@ import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/profile.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -133,15 +132,16 @@ class _MyProfileState extends State<MyProfile> {
                       backgroundImage: NetworkImage(profilePic),
                       radius: 36,
                     ),
-                    title: Text("$username", style: TextStyle(fontSize: 18)),
-                    subtitle:
-                        Text("Show profile", style: TextStyle(fontSize: 15)),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                    title:
+                        Text("$username", style: const TextStyle(fontSize: 18)),
+                    subtitle: const Text("Show profile",
+                        style: TextStyle(fontSize: 15)),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 20),
                   );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             )),
