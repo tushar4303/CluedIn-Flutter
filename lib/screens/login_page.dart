@@ -1,224 +1,238 @@
-// // ignore_for_file: use_build_context_synchronously
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// import '../notificationService/local_notification_service.dart';
+class LoginPage extends StatelessWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
-// class LoginPage extends StatefulWidget {
-//   const LoginPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
-//   @override
-//   State<LoginPage> createState() => _LoginPageState();
-// }
+    return Scaffold(
+        body: Stack(children: [
+      Center(
+          child: isSmallScreen
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Expanded(child: _FormContent()),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Divider(),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 14, top: 14),
+                          child: RichText(
+                            text: TextSpan(
+                              text: "Don't have an account?",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87.withOpacity(0.7)),
+                              children: const <TextSpan>[
+                                TextSpan(
+                                    text: " Sign up",
+                                    style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              : Container(
+                  padding: const EdgeInsets.all(32.0),
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Center(child: _FormContent()),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: "Don't have an account?",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87.withOpacity(0.7)),
+                          children: const <TextSpan>[
+                            TextSpan(
+                                text: " Sign up",
+                                style: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+    ]));
+  }
+}
 
-// class _LoginPageState extends State<LoginPage> {
-//   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-//   String fcmToken = "firebase token";
+class _Logo extends StatelessWidget {
+  const _Logo({Key? key}) : super(key: key);
 
-//   @override
-//   void initState() {
-//     print("le token");
-//     getToken();
-//     super.initState();
+  @override
+  Widget build(BuildContext context) {
+    // final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
-//     FirebaseMessaging.instance.getInitialMessage().then((message) {
-//       print(message);
-//       print("FirebaseMessaging.instance.getInitialMessage");
-//     });
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Transform(
+            transform: Matrix4.translationValues(-7, 0, 0),
+            child: Image.asset(
+              "assets/images/splash.png",
+              width: MediaQuery.of(context).size.width * 0.8,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
 
-//     // 2. This method only call when App in forground it mean app must be opened
-//     FirebaseMessaging.onMessage.listen(
-//       (message) {
-//         print("FirebaseMessaging.onMessage.listen");
-//         if (message.notification != null) {
-//           print(message.notification!.title);
-//           print(message.notification!.body);
-//           print("message.data11 ${message.data}");
-//           LocalNotificationService.createanddisplaynotification(message);
-//         }
-//       },
-//     );
-//     // 3. This method only call when App in background and not terminated(not closed)
-//     FirebaseMessaging.onMessageOpenedApp.listen(
-//       (message) {
-//         print("FirebaseMessaging.onMessageOpenedApp.listen");
-//         if (message.notification != null) {
-//           print(message.notification!.title);
-//           print(message.notification!.body);
-//           print("message.data22 ${message.data['_id']}");
-//         }
-//       },
-//     );
-//   }
+class _FormContent extends StatefulWidget {
+  const _FormContent({Key? key}) : super(key: key);
 
-//   getToken() async {
-//     String? token = await _firebaseMessaging.getToken();
-//     fcmToken = token!;
-//     print("fcm token : $fcmToken");
-//   }
+  @override
+  State<_FormContent> createState() => __FormContentState();
+}
 
-//   requestingNotificationPermission() async {
-//     NotificationSettings settings = await _firebaseMessaging.requestPermission(
-//       alert: true,
-//       announcement: false,
-//       badge: true,
-//       carPlay: false,
-//       criticalAlert: false,
-//       provisional: false,
-//       sound: true,
-//     );
-//     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-//       print("user granted permission");
-//     } else if (settings.authorizationStatus ==
-//         AuthorizationStatus.provisional) {
-//       print("user granted provisional authorization");
-//     } else {
-//       print("user declined or has not accepted permisiion");
-//     }
-//     await FirebaseMessaging.instance
-//         .setForegroundNotificationPresentationOptions(
-//       alert: true,
-//       badge: true,
-//       sound: true,
-//     );
-//   }
+class __FormContentState extends State<_FormContent> {
+  bool _isPasswordVisible = false;
 
-//   String name = "";
-//   bool changeButton = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-//   final _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 330),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const _Logo(),
+            const SizedBox(
+              height: 8,
+            ),
+            TextFormField(
+              style: const TextStyle(fontSize: 16),
+              validator: (value) {
+                // add email validation
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
 
-//   moveToHome(BuildContext context) async {
-//     if (_formKey.currentState!.validate()) {
-//       setState(() {
-//         changeButton = true;
-//       });
+                bool emailValid = RegExp(r"^[0-9]{10}$").hasMatch(value);
+                if (!emailValid) {
+                  return 'Please enter a valid number';
+                }
 
-//       await Future.delayed((Duration(seconds: 1)));
-//       // await Navigator.pushNamed(context, MyRoutes.notificationRoute);
-//       setState(() {
-//         changeButton = false;
-//       });
-//     }
-//   }
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: 'Phone',
+                hintText: 'Enter your phone no',
+                prefixIcon: Icon(Icons.call),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+              ),
+            ),
+            _gap(),
+            TextFormField(
+              style: const TextStyle(fontSize: 16),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Material(
-//         color: Colors.white,
-//         child: SingleChildScrollView(
-//           child: Form(
-//             key: _formKey,
-//             child: Column(
-//               children: [
-//                 SizedBox(
-//                   height: 30.0,
-//                 ),
-//                 Image.asset(
-//                   "assets/images/welcome_cats.png",
-//                   fit: BoxFit.cover,
-//                 ),
-//                 SizedBox(
-//                   height: 10.0,
-//                 ),
-//                 Text(
-//                   "Welcome $name",
-//                   style: TextStyle(
-//                       fontSize: 28,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.black87),
-//                 ),
-//                 SizedBox(
-//                   height: 20.0,
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(
-//                       vertical: 16.0, horizontal: 32),
-//                   child: Column(
-//                     children: [
-//                       TextFormField(
-//                         decoration: InputDecoration(
-//                             hintText: "Enter Username", labelText: "UserName"),
-//                         validator: (value) {
-//                           //   if (value!.isEmpty) {
-//                           //     return "Username cannot be empty";
-//                           //   }
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
+                return null;
+              },
+              obscureText: !_isPasswordVisible,
+              decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  suffixIcon: IconButton(
+                    icon: Icon(_isPasswordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  )),
+            ),
+            _gap(),
 
-//                           //   return null;
-//                           // },
-//                           if (value != "Tushar4303") {
-//                             return "User doesn't exist";
-//                           } else if (value!.isEmpty) {
-//                             return "Please enter your UserName";
-//                           }
+            // _gap(),
+            SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.05,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurpleAccent[200],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Sign in',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    /// do something
+                  }
+                },
+              ),
+            ),
+            _gap(),
+            RichText(
+              text: TextSpan(
+                text: 'Forgot your login details? ',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87.withOpacity(0.7)),
+                children: const <TextSpan>[
+                  TextSpan(
+                      text: "Get help signing in",
+                      style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-//                           return null;
-//                         },
-//                         onChanged: (value) {
-//                           name = value;
-//                           setState(() {});
-//                         },
-//                       ),
-//                       TextFormField(
-//                         obscureText: true,
-//                         decoration: InputDecoration(
-//                             hintText: "Enter Password", labelText: "Password"),
-//                         validator: (value) {
-//                           //   if (value!.isEmpty) {
-//                           //     return "Password cannot be empty";
-//                           //   } else if (value.length < 6) {
-//                           //     return "Password length should be atleast 6";
-//                           //   }
-
-//                           //   return null;
-//                           // },
-//                           if (value != "admin123") {
-//                             return "Incorrect UserName or Password";
-//                           } else if (value!.isEmpty) {
-//                             return "Please enter your Password";
-//                           }
-
-//                           return null;
-//                         },
-//                       ),
-//                       SizedBox(
-//                         height: 40.0,
-//                       ),
-//                       Material(
-//                         color: Colors.deepPurple,
-//                         borderRadius:
-//                             BorderRadius.circular(changeButton ? 50 : 8),
-//                         child: InkWell(
-//                           onTap: () => moveToHome(context),
-//                           child: AnimatedContainer(
-//                             duration: Duration(seconds: 1),
-//                             width: changeButton ? 50 : 150,
-//                             height: 50,
-//                             alignment: Alignment.center,
-//                             child: changeButton
-//                                 ? Icon(
-//                                     Icons.done,
-//                                     color: Colors.white,
-//                                   )
-//                                 : Text(
-//                                     "Login",
-//                                     style: TextStyle(
-//                                       color: Colors.white,
-//                                       fontWeight: FontWeight.bold,
-//                                       fontSize: 18.0,
-//                                     ),
-//                                   ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ));
-//   }
-// }
-
-// // ignore_for_file: prefer_const_constructors
+  Widget _gap() => const SizedBox(height: 16);
+}

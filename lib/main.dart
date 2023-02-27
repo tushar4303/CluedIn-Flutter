@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types
 import 'package:cluedin_app/screens/events.dart';
 import 'package:cluedin_app/screens/homescreen.dart';
+import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profile.dart';
@@ -10,12 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
+import 'models/notification.dart';
+import 'notificationService/local_notification_service.dart';
 import 'utils/globals.dart';
 import 'package:navbar_router/navbar_router.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
-  print(message.data.toString());
-  print(message.notification!.title);
+  if (message.notification != null) {
+    // Show a notification and handle tap events
+    LocalNotificationService.createanddisplaynotification(message);
+  }
 }
 
 // FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -34,19 +39,22 @@ void main() async {
 }
 
 class myApp extends StatelessWidget {
-  const myApp({super.key});
+  myApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey(debugLabel: "Main Navigator"); //
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: snackbarKey,
-      themeMode: ThemeMode.light,
-      debugShowCheckedModeBanner: false,
-      theme: MyTheme.lightTheme(context),
-      darkTheme: MyTheme.darkTheme(context),
-      home: HomePage(),
-      // home: MyPhone(),
-    );
+        navigatorKey: navigatorKey,
+        scaffoldMessengerKey: snackbarKey,
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        theme: MyTheme.lightTheme(context),
+        darkTheme: MyTheme.darkTheme(context),
+        // home: HomePage(),
+        // home: MyPhone(),
+        home: LoginPage());
   }
 }
 

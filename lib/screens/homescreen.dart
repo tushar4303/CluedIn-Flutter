@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cluedin_app/screens/notification_detail.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
@@ -11,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:io';
 import '../notificationService/local_notification_service.dart';
+import 'package:cluedin_app/models/notification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -102,28 +104,32 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      print(message);
-      print("FirebaseMessaging.instance.getInitialMessage");
-    });
+      if (message != null) {
+        // Handle notifications when the app is in the foreground
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          if (message.notification != null) {
+            print('Received message in foreground: $message');
+            LocalNotificationService.createanddisplaynotification(message);
+          }
+        });
 
-    // 2. This method only call when App in forground it mean app must be opened
-    FirebaseMessaging.onMessage.listen(
-      (message) {
-        if (message.notification != null) {
-          print(message.data);
-          LocalNotificationService.createanddisplaynotification(message);
-        }
-      },
-    );
-    // 3. This method only call when App in background and not terminated(not closed)
-    FirebaseMessaging.onMessageOpenedApp.listen(
-      (message) {
-        print("FirebaseMessaging.onMessageOpenedApp.listen");
-        if (message.notification != null) {
-          print(message.data);
-        }
-      },
-    );
+        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          if (message.data.isNotEmpty) {
+            print('Opened app from message: $message');
+            Notifications notification = Notifications.fromMap(message.data);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NotificationDetailsPage(
+                  notification: notification,
+                ),
+              ),
+            );
+          }
+        });
+      }
+    });
   }
 
   @override

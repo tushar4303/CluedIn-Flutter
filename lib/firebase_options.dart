@@ -67,7 +67,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '100872515087',
     projectId: 'cluedin-e47b2',
     storageBucket: 'cluedin-e47b2.appspot.com',
-    androidClientId: '100872515087-0f8us9qldl61s0mr1lovi66e9tkqqff8.apps.googleusercontent.com',
     iosClientId: '100872515087-kf546q4tmedqet89stdp89ma8a6blr3a.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );
@@ -78,7 +77,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '100872515087',
     projectId: 'cluedin-e47b2',
     storageBucket: 'cluedin-e47b2.appspot.com',
-    androidClientId: '100872515087-0f8us9qldl61s0mr1lovi66e9tkqqff8.apps.googleusercontent.com',
     iosClientId: '100872515087-kf546q4tmedqet89stdp89ma8a6blr3a.apps.googleusercontent.com',
     iosBundleId: 'com.example.cluedinApp',
   );
