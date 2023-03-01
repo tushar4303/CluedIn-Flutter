@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:navbar_router/navbar_router.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -167,6 +168,7 @@ class _MyProfileState extends State<MyProfile> {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () async {
+                  NavbarNotifier.hideBottomNavBar = true;
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (c) => const LoginPage()),
                       (r) => false);

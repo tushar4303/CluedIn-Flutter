@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -195,6 +196,8 @@ class __FormContentState extends State<_FormContent> {
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
       );
+
+      NavbarNotifier.hideBottomNavBar = false;
       // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
