@@ -1,4 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:retry/retry.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'package:cluedin_app/models/profile.dart';
+import '../main.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -31,10 +42,19 @@ class LoginPage extends StatelessWidget {
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black87.withOpacity(0.7)),
-                              children: const <TextSpan>[
+                              children: <TextSpan>[
                                 TextSpan(
                                     text: " Sign up",
-                                    style: TextStyle(
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        final url =
+                                            Uri.parse("https://csi.dbit.in/");
+                                        if (!await launchUrl(url,
+                                            mode: LaunchMode.platformDefault)) {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                    style: const TextStyle(
                                         color: Colors.deepPurple,
                                         fontWeight: FontWeight.bold)),
                               ],
@@ -60,10 +80,19 @@ class LoginPage extends StatelessWidget {
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: Colors.black87.withOpacity(0.7)),
-                          children: const <TextSpan>[
+                          children: <TextSpan>[
                             TextSpan(
                                 text: " Sign up",
-                                style: TextStyle(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    final url =
+                                        Uri.parse("https://csi.dbit.in/");
+                                    if (!await launchUrl(url,
+                                        mode: LaunchMode.platformDefault)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                style: const TextStyle(
                                     color: Colors.deepPurple,
                                     fontWeight: FontWeight.bold)),
                           ],
@@ -109,6 +138,74 @@ class _FormContent extends StatefulWidget {
 }
 
 class __FormContentState extends State<_FormContent> {
+  bool isLoading = false;
+  final TextEditingController mobnoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> signIn() async {
+    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/authAppUser');
+
+    const r = RetryOptions(maxAttempts: 3);
+    final response = await r.retry(
+      // Make a GET request
+      () => http.post(uri, body: {
+        'usermobno': mobnoController.text,
+        'password': passwordController.text,
+      }).timeout(const Duration(seconds: 2)),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+
+    if (response.statusCode != 200) {
+      print("idhar");
+      final error = response.body;
+      final decodedData = jsonDecode(error);
+      var message = decodedData["msg"];
+      Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+      );
+    } else {
+      print("idhar 2");
+      final UserDetailsJson = response.body;
+      print(UserDetailsJson);
+
+      final userBox = Hive.box('userBox');
+
+      final decodedData = jsonDecode(UserDetailsJson);
+      var userDetails = decodedData["data"];
+
+      userDetails = UserDetails.fromMap(userDetails);
+
+      await userBox.put('fname', userDetails.fname);
+      await userBox.put('lname', userDetails.lname);
+      await userBox.put('mobno', userDetails.mobno);
+      await userBox.put('email', userDetails.email);
+      await userBox.put('branchName', userDetails.branchName);
+      await userBox.put('profilePic',
+          "http://cluedin.creast.in:5000/${userDetails.profilePic}");
+      await userBox.put('token', userDetails.token);
+      await userBox.put('isLoggedIn', true);
+
+      Fluttertoast.showToast(
+        msg: "logged in successfully!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+      );
+      // ignore: use_build_context_synchronously
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => HomePage(),
+        ),
+        (route) => false,
+      );
+    }
+  }
+
   bool _isPasswordVisible = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -129,6 +226,7 @@ class __FormContentState extends State<_FormContent> {
               height: 8,
             ),
             TextFormField(
+              controller: mobnoController,
               style: const TextStyle(fontSize: 16),
               validator: (value) {
                 // add email validation
@@ -136,8 +234,8 @@ class __FormContentState extends State<_FormContent> {
                   return 'Please enter some text';
                 }
 
-                bool emailValid = RegExp(r"^[0-9]{10}$").hasMatch(value);
-                if (!emailValid) {
+                bool phoneValid = RegExp(r"^[0-9]{10}$").hasMatch(value);
+                if (!phoneValid) {
                   return 'Please enter a valid number';
                 }
 
@@ -153,6 +251,7 @@ class __FormContentState extends State<_FormContent> {
             ),
             _gap(),
             TextFormField(
+              controller: passwordController,
               style: const TextStyle(fontSize: 16),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -188,27 +287,38 @@ class __FormContentState extends State<_FormContent> {
             SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.05,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurpleAccent[200],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text(
-                    'Sign in',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+              child: AbsorbPointer(
+                absorbing: isLoading,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurpleAccent[200],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      signIn();
+                      Timer(const Duration(seconds: 2), () {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                    }
+                  },
                 ),
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    /// do something
-                  }
-                },
               ),
             ),
             _gap(),
@@ -219,10 +329,18 @@ class __FormContentState extends State<_FormContent> {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Colors.black87.withOpacity(0.7)),
-                children: const <TextSpan>[
+                children: <TextSpan>[
                   TextSpan(
                       text: "Get help signing in",
-                      style: TextStyle(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          final url = Uri.parse("https://csi.dbit.in/");
+                          if (!await launchUrl(url,
+                              mode: LaunchMode.platformDefault)) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      style: const TextStyle(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.bold)),
                 ],

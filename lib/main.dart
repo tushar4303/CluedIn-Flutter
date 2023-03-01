@@ -1,20 +1,21 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: camel_case_types
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:navbar_router/navbar_router.dart';
+
 import 'package:cluedin_app/screens/events.dart';
 import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/notification_page.dart';
-import 'package:cluedin_app/screens/phone.dart';
 import 'package:cluedin_app/screens/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
 import 'firebase_options.dart';
-import 'models/notification.dart';
 import 'notificationService/local_notification_service.dart';
 import 'utils/globals.dart';
-import 'package:navbar_router/navbar_router.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
@@ -33,13 +34,20 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Hive.initFlutter();
+  await Hive.openBox('userBox');
+
+  bool isLoggedIn = Hive.box('userBox').get('isLoggedIn', defaultValue: false);
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  runApp(myApp());
+  runApp(myApp(isLoggedIn: isLoggedIn));
 }
 
 class myApp extends StatelessWidget {
-  myApp({super.key});
+  final bool isLoggedIn;
+  myApp({
+    Key? key,
+    required this.isLoggedIn,
+  }) : super(key: key);
   final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey(debugLabel: "Main Navigator"); //
 
@@ -54,7 +62,8 @@ class myApp extends StatelessWidget {
         darkTheme: MyTheme.darkTheme(context),
         // home: HomePage(),
         // home: MyPhone(),
-        home: LoginPage());
+        home: isLoggedIn ? HomePage() : LoginPage());
+    // initialRoute: LoginPage());
   }
 }
 

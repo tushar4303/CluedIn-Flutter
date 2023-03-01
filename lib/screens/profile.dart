@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:cluedin_app/screens/phone.dart';
+import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:retry/retry.dart';
-import 'package:http/http.dart' as http;
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -21,57 +16,24 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  late Future _userDetailsFuture;
+  late Future openbox;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    loadUserDetails();
+    openBox("UserBox");
   }
 
   @override
   void initState() {
     super.initState();
 
-    _userDetailsFuture = loadUserDetails();
+    openbox = openBox("UserBox");
   }
 
-  Future<void> loadUserDetails() async {
-    final queryParameters = {
-      'mobno': '8104951731',
-    };
-
-    final uri =
-        Uri.http('cluedin.creast.in:5000', '/api/app/profile', queryParameters);
-
-    const r = RetryOptions(maxAttempts: 3);
-    final response = await r.retry(
-      // Make a GET request
-      () => http.get(uri).timeout(const Duration(seconds: 2)),
-      // Retry on SocketException or TimeoutException
-      retryIf: (e) => e is SocketException || e is TimeoutException,
-    );
-
-    if (response.statusCode == 200) {
-      final UserDetailsJson = response.body;
-
-      final userBox = await Hive.openBox('userBox');
-
-      final decodedData = jsonDecode(UserDetailsJson);
-      var userDetails = decodedData["data"];
-
-      userDetails = UserDetails.fromMap(userDetails);
-
-      await userBox.put('fname', userDetails.fname);
-      await userBox.put('lname', userDetails.lname);
-      await userBox.put('mobno', userDetails.mobno);
-      await userBox.put('email', userDetails.email);
-      await userBox.put('branchName', userDetails.branchName);
-      await userBox.put('profilePic',
-          'http://cluedin.creast.in:5000/' + userDetails.profilePic);
-    } else {
-      throw Exception('Failed to load user details');
-    }
+  Future<Box<dynamic>> openBox(String boxName) async {
+    final box = await Hive.openBox(boxName);
+    return box;
   }
 
   @override
@@ -98,38 +60,35 @@ class _MyProfileState extends State<MyProfile> {
             height: 90,
             child: Center(
                 child: FutureBuilder(
-              future: _userDetailsFuture,
+              future: openbox,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final userBox = Hive.box('userBox');
-                  final fname = userBox.get('fname');
-                  final lname = userBox.get('lname');
-                  final mobno = userBox.get('mobno');
-                  final email = userBox.get('email');
-                  final branchName = userBox.get('branchName');
-                  final profilePic = userBox.get('profilePic');
-                  final Details = UserDetails(
-                      fname: fname,
-                      lname: lname,
-                      mobno: mobno,
-                      email: email,
-                      branchName: branchName,
-                      profilePic: profilePic);
+                  var firstname = Hive.box('userBox').get("fname");
+                  var lastname = Hive.box('userBox').get("lname");
+                  var profilepic = Hive.box('userBox').get("profilePic");
+                  final details = UserDetails(
+                      fname: firstname,
+                      lname: lastname,
+                      mobno: Hive.box('userBox').get("mobno"),
+                      email: Hive.box('userBox').get("email"),
+                      branchName: Hive.box('userBox').get("branchName"),
+                      profilePic: profilepic,
+                      token: Hive.box('userBox').get("token"));
 
-                  final username = fname + lname;
+                  final username = firstname + lastname;
                   return ListTile(
                     onTap: () {
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                               builder: (context) => ProfileDetails(
-                                    userDetails: Details,
+                                    userDetails: details,
                                   ))).then((_) {
                         setState(() {});
                       });
                     },
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(profilePic),
+                      backgroundImage: NetworkImage(profilepic),
                       radius: 36,
                     ),
                     title:
@@ -207,11 +166,12 @@ class _MyProfileState extends State<MyProfile> {
                 horizontalTitleGap: 0,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
+                onTap: () async {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (c) => const MyPhone()),
+                      MaterialPageRoute(builder: (c) => const LoginPage()),
                       (r) => false);
+                  final box = await Hive.openBox("UserBox");
+                  await box.clear();
                 },
                 leading: const Icon(Icons.logout_outlined),
                 title: const Text(
