@@ -65,8 +65,9 @@ class NotificationDetailsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    notification.senderProfilePic)),
+                              backgroundImage: NetworkImage(
+                                  "http://cluedin.creast.in:5000/${notification.senderProfilePic}"),
+                            ),
                             const SizedBox(
                               width: 8,
                             ),
@@ -81,7 +82,8 @@ class NotificationDetailsPage extends StatelessWidget {
                                         color: Colors.black),
                                     children: <TextSpan>[
                                       TextSpan(
-                                        text: " @${notification.senderName}",
+                                        text:
+                                            " @${notification.sender_fname} ${notification.sender_lname}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400),
                                       )

@@ -9,10 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:navbar_router/navbar_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../models/profile.dart';
+import 'login_page.dart';
 
 class ProfileDetails extends StatefulWidget {
   const ProfileDetails({super.key, required this.userDetails});
@@ -264,6 +266,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Future uploadImage(File _image) async {
     final appDir = await getApplicationDocumentsDirectory();
     final filePath = '${appDir.path}/${DateTime.now()}.png';
+    var token = Hive.box('userBox').get("token");
+    print(token);
 
     final compressedBytes = await FlutterImageCompress.compressWithFile(
       _image.absolute.path,
@@ -277,8 +281,10 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
     // Create the multipart form data
     var url = "http://cluedin.creast.in:5000/api/app/updateProfile";
+
     var mobno = Hive.box('userBox').get('mobno');
     var request = http.MultipartRequest("POST", Uri.parse(url));
+    request.headers["authorization"] = "Bearer $token";
 
     // Create a MultipartFile from the compressed image
     var fileData = compressedImageFile.readAsBytesSync();
@@ -294,12 +300,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
     // Send the multipart form data request
     var response = await request.send();
-
+    print(response);
     // Get the response from the server
     var responseData = await response.stream.toBytes();
     var responseString = String.fromCharCodes(responseData);
 
-    // Check the status code of the response
     if (response.statusCode == 200) {
       // Parse the response to get the image URL
       var responseJSON = json.decode(responseString);
@@ -318,8 +323,23 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         timeInSecForIosWeb: 1,
       );
     } else {
+      var errorJson = json.decode(responseString);
+      var error = '';
+      if (errorJson['error'] != null && errorJson['error'].isNotEmpty) {
+        error = errorJson['error'];
+        NavbarNotifier.hideBottomNavBar = true;
+        // ignore: use_build_context_synchronously
+        Navigator.of(context, rootNavigator: true).pop();
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (c) => const LoginPage()), (r) => false);
+        final box = await Hive.openBox("UserBox");
+        await box.clear();
+      } else {
+        error = "Failed to upload image";
+      }
       Fluttertoast.showToast(
-        msg: "Failed to upload image",
+        msg: error,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,

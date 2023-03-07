@@ -105,19 +105,22 @@ class Labels {
 
 class Notifications {
   final int notificationId;
-  final String senderName;
+  final String sender_fname;
+  final String sender_lname;
   final String senderRole;
   final String senderProfilePic;
-  late final String notificationTitle;
+  final String notificationTitle;
   final String notificationLabel;
   final String notificationMessage;
   final String imageUrl;
   final String attachmentUrl;
   final DateTime dateOfcreation;
+  final int isRead;
 
   Notifications(
       {required this.notificationId,
-      required this.senderName,
+      required this.sender_fname,
+      required this.sender_lname,
       required this.senderRole,
       required this.senderProfilePic,
       required this.notificationTitle,
@@ -125,26 +128,29 @@ class Notifications {
       required this.notificationMessage,
       required this.imageUrl,
       required this.attachmentUrl,
-      required this.dateOfcreation});
+      required this.dateOfcreation,
+      required this.isRead});
 
   factory Notifications.fromMap(Map<String, dynamic> map) {
     return Notifications(
-      notificationId: map["notification_id"],
-      senderName: map["senderName"],
-      senderRole: map["senderRole"],
-      senderProfilePic: map["senderProfilePic"],
-      notificationTitle: map["notification_title"],
-      notificationLabel: map["notification_label"],
-      notificationMessage: map["notification_message"],
-      imageUrl: map["image_url"] ?? "",
-      attachmentUrl: map["attachment_url"] ?? "",
-      dateOfcreation: DateTime.parse(map["dateOfCreation"]),
-    );
+        notificationId: map["notification_id"],
+        sender_fname: map["sender_fname"],
+        sender_lname: map["sender_lname"],
+        senderRole: map["senderRole"],
+        senderProfilePic: map["senderProfilePic"],
+        notificationTitle: map["notification_title"],
+        notificationLabel: map["notification_label"],
+        notificationMessage: map["notification_message"],
+        imageUrl: map["image_url"] ?? "",
+        attachmentUrl: map["attachment_url"] ?? "",
+        dateOfcreation: DateTime.parse(map["dateOfCreation"]),
+        isRead: map["isRead"]);
   }
 
   toMap() => {
         "notification_id": notificationId,
-        "senderName": senderName,
+        "sender_fname": sender_fname,
+        "sender_lname": sender_lname,
         "senderRole": senderRole,
         "senderProfilePic": senderProfilePic,
         "notification_title": notificationTitle,
@@ -153,10 +159,11 @@ class Notifications {
         "image_url": imageUrl,
         "attachment_url": attachmentUrl,
         "dateOfCreation": dateOfcreation,
+        "isRead": isRead
       };
 
   @override
   String toString() {
-    return 'Notifications(notificationId: $notificationId, senderName: $senderName, senderRole: $senderRole, senderProfilePic: $senderProfilePic, notificationTitle: $notificationTitle, notificationLabel: $notificationLabel, notificationMessage: $notificationMessage, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, dateOfcreation: $dateOfcreation)';
+    return 'Notifications(notificationId: $notificationId, sender_fname: $sender_fname, sender_lname: $sender_lname, senderRole: $senderRole, senderProfilePic: $senderProfilePic, notificationTitle: $notificationTitle, notificationLabel: $notificationLabel, notificationMessage: $notificationMessage, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, dateOfcreation: $dateOfcreation, isRead: $isRead)';
   }
 }

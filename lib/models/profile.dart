@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class UserDetails {
+  final int userid;
   final String fname;
   final String lname;
   final String mobno;
@@ -9,6 +10,7 @@ class UserDetails {
   final String token;
 
   UserDetails({
+    required this.userid,
     required this.fname,
     required this.lname,
     required this.mobno,
@@ -20,6 +22,7 @@ class UserDetails {
 
   factory UserDetails.fromMap(Map<String, dynamic> json) {
     return UserDetails(
+        userid: json['user_id'],
         fname: json['user_fname'],
         lname: json['user_lname'],
         mobno: json['user_mobno'],
@@ -31,6 +34,6 @@ class UserDetails {
 
   @override
   String toString() {
-    return 'UserDetails(fname: $fname, lname: $lname, mobno: $mobno, email: $email, branchName: $branchName, profilePic: $profilePic, token: $token)';
+    return 'UserDetails(userid: $userid, fname: $fname, lname: $lname, mobno: $mobno, email: $email, branchName: $branchName, profilePic: $profilePic, token: $token)';
   }
 }

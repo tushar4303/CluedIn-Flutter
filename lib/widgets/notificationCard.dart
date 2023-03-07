@@ -28,7 +28,8 @@ class NotificationWidget extends StatelessWidget {
                           NotificationDetailsPage(notification: notification)));
             },
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(notification.senderProfilePic),
+              backgroundImage: NetworkImage(
+                  "http://cluedin.creast.in:5000/${notification.senderProfilePic}"),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +43,8 @@ class NotificationWidget extends StatelessWidget {
                         fontWeight: FontWeight.w600, color: Colors.black),
                     children: <TextSpan>[
                       TextSpan(
-                        text: " @${notification.senderName}",
+                        text:
+                            " @${notification.sender_fname} ${notification.sender_lname}",
                         style: const TextStyle(fontWeight: FontWeight.w400),
                       )
                     ],
@@ -68,7 +70,7 @@ class NotificationWidget extends StatelessWidget {
               ],
             ),
             trailing: Text(
-              DateFormat('MMM d, ' 'yy').format(notification.dateOfcreation),
+              DateFormat('MMM d, ' 'yy').format(notification.dateOfcreation!),
               textAlign: TextAlign.end,
               textScaleFactor: 0.8,
             ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -13,7 +14,7 @@ class LocalNotificationService {
 
   static void initialize(BuildContext context) {
     AndroidInitializationSettings androidSettings =
-        const AndroidInitializationSettings("@mipmap/ic_launcher");
+        const AndroidInitializationSettings("@mipmap/launcher_icon");
 
     DarwinInitializationSettings iosSettings =
         const DarwinInitializationSettings(
@@ -29,21 +30,22 @@ class LocalNotificationService {
         onDidReceiveNotificationResponse: (details) async {
       String? payload = details.payload;
       if (payload != null && payload.isNotEmpty) {
-        Notifications notification = Notifications.fromMap(jsonDecode(payload));
+        // Notifications notification = Notifications.fromMap(jsonDecode(payload));
 
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NotificationDetailsPage(
-              notification: notification,
-            ),
-          ),
-        );
+        // await Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const NotificationPage(),
+        //   ),
+        // );
       }
     });
   }
 
   static void createanddisplaynotification(RemoteMessage message) async {
+    RemoteNotification? notification = message.notification;
+    print(message);
+    print("reached in show");
     try {
       const NotificationDetails notificationDetails = NotificationDetails(
         android: AndroidNotificationDetails(
@@ -55,17 +57,20 @@ class LocalNotificationService {
           playSound: true,
           enableVibration: true,
           channelShowBadge: true,
+          icon: "@mipmap/launcher_icon",
           category: AndroidNotificationCategory("notifications"),
         ),
       );
 
       await _notificationsPlugin.show(
-        message.messageId.hashCode,
-        message.notification!.title,
-        message.notification!.body,
+        notification.hashCode,
+        notification!.title,
+        notification.body,
         notificationDetails,
-        payload: json.encode(message.data),
+        // payload: json.encode(message.data),
       );
+
+      print("hua kya?");
     } on Exception catch (e) {
       print(e);
     }

@@ -68,6 +68,7 @@ class _MyProfileState extends State<MyProfile> {
                   var lastname = Hive.box('userBox').get("lname");
                   var profilepic = Hive.box('userBox').get("profilePic");
                   final details = UserDetails(
+                      userid: Hive.box('userBox').get("userid"),
                       fname: firstname,
                       lname: lastname,
                       mobno: Hive.box('userBox').get("mobno"),
@@ -76,7 +77,7 @@ class _MyProfileState extends State<MyProfile> {
                       profilePic: profilepic,
                       token: Hive.box('userBox').get("token"));
 
-                  final username = firstname + lastname;
+                  final username = firstname + " " + lastname;
                   return ListTile(
                     onTap: () {
                       Navigator.push(

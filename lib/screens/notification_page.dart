@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/notificationCard.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:retry/retry.dart';
@@ -20,6 +21,9 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   List<Notifications> filter(
       List<Notifications> notifications, laBels, senders) {
+    if (!_filters.contains("Academics")) {
+      _senders.clear();
+    }
     return notifications
         .where((notification) =>
             (laBels.isEmpty ||
@@ -32,8 +36,6 @@ class _NotificationPageState extends State<NotificationPage> {
   bool isoffline = false;
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
-  final url =
-      "https://gist.githubusercontent.com/tushar4303/0ababbdad3073acd8ab2580b5deb084b/raw/06c30616cc8f59ee3e208a314fdb52436e76fbe7/notifications.json";
 
   final _filters = [];
   final _senders = [];
@@ -73,13 +75,17 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Future<List<Notifications>?> loadNotifications() async {
+    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/appNotif');
+    var userid = Hive.box('userBox').get("userid") as int;
+
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
-      // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
+      () => http.post(uri, body: {'user_id': userid.toString()}).timeout(
+          const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
+
     try {
       if (response.statusCode == 200) {
         final NotificationsJson = response.body;
@@ -96,6 +102,8 @@ class _NotificationPageState extends State<NotificationPage> {
             .map<Notifications>(
                 (notification) => Notifications.fromMap(notification))
             .toList();
+
+        print(NotificationModel.notifications);
 
         setState(() {
           _filters.clear();

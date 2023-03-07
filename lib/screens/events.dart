@@ -21,6 +21,9 @@ class MyEvents extends StatefulWidget {
 
 class _MyEventsState extends State<MyEvents> {
   List<Events> filter(List<Events> events, laBels, senders) {
+    if (!_filters.contains("Technical")) {
+      _senders.clear();
+    }
     return events
         .where((event) =>
             (laBels.isEmpty || laBels.contains(event.eventLabel)) &&

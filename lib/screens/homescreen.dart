@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:cluedin_app/screens/notification_detail.dart';
+import 'package:cluedin_app/screens/notification_page.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
@@ -12,7 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:io';
 import '../notificationService/local_notification_service.dart';
-import 'package:cluedin_app/models/notification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  String fcmToken = "firebase token";
   int currentPage = 0;
   late PageController _pageController;
   late final CarouselModel carousel;
@@ -42,6 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<HomeModel> loadHomePageData() async {
     const r = RetryOptions(maxAttempts: 3);
+    var token = Hive.box('userBox').get("token");
+
+    // var headers = {'authorization': token};
+
     final response = await r.retry(
       // Make a GET request
       () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
@@ -85,8 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    print("le token");
-    getToken();
     super.initState();
     myfuture = loadHomePageData();
     _pageController = PageController(initialPage: 0);
@@ -103,28 +104,35 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print('Received message in foreground: $message');
+        LocalNotificationService.createanddisplaynotification(message);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.data.isNotEmpty) {
+        print('idhar 1: $message');
+        // Notifications notification = Notifications.fromMap(message.data);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const NotificationPage()),
+        );
+      }
+    });
+
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        // Handle notifications when the app is in the foreground
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          if (message.notification != null) {
-            print('Received message in foreground: $message');
-            LocalNotificationService.createanddisplaynotification(message);
-          }
-        });
-
         FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
           if (message.data.isNotEmpty) {
-            print('Opened app from message: $message');
-            Notifications notification = Notifications.fromMap(message.data);
+            print('idhar 2: $message');
+            // Notifications notification = Notifications.fromMap(message.data);
 
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => NotificationDetailsPage(
-                  notification: notification,
-                ),
-              ),
+              MaterialPageRoute(builder: (context) => const NotificationPage()),
             );
           }
         });
@@ -136,11 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  getToken() async {
-    String? token = await _firebaseMessaging.getToken();
-    fcmToken = token!;
   }
 
   requestingNotificationPermission() async {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -139,9 +140,52 @@ class _FormContent extends StatefulWidget {
 }
 
 class __FormContentState extends State<_FormContent> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  String fcmToken = "firebase token";
   bool isLoading = false;
   final TextEditingController mobnoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
+  getToken() async {
+    String? token = await _firebaseMessaging.getToken();
+    fcmToken = token!;
+    await Hive.box('userBox').put('fcmtoken', fcmToken);
+    print("done");
+  }
+
+  Future sendToken() async {
+    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/firebaseToken');
+    int userid = Hive.box('userBox').get("userid") as int;
+    var fcmtoken = Hive.box('userBox').get("fcmtoken");
+    const r = RetryOptions(maxAttempts: 3);
+    final response = await r.retry(
+      // Make a GET request
+      () => http.post(uri, body: {
+        'user_id': userid.toString(),
+        'firebaseToken': fcmtoken
+      }).timeout(const Duration(seconds: 2)),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    try {
+      if (response.statusCode == 200) {
+        print("Token sent successfully");
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: e.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+      );
+    }
+  }
 
   Future<void> signIn() async {
     final uri = Uri.http('cluedin.creast.in:5000', '/api/app/authAppUser');
@@ -179,7 +223,7 @@ class __FormContentState extends State<_FormContent> {
       var userDetails = decodedData["data"];
 
       userDetails = UserDetails.fromMap(userDetails);
-
+      await userBox.put('userid', userDetails.userid);
       await userBox.put('fname', userDetails.fname);
       await userBox.put('lname', userDetails.lname);
       await userBox.put('mobno', userDetails.mobno);
@@ -198,6 +242,8 @@ class __FormContentState extends State<_FormContent> {
       );
 
       NavbarNotifier.hideBottomNavBar = false;
+
+      sendToken();
       // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
