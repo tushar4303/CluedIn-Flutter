@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:cluedin_app/screens/notification_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:navbar_router/navbar_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
@@ -12,6 +14,8 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:io';
+import '../main.dart';
+import '../models/notification.dart';
 import '../notificationService/local_notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -86,6 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
     throw Exception('Failed to load home page data');
   }
 
+  final localNotificationService = LocalNotificationService();
+
   @override
   void initState() {
     super.initState();
@@ -107,35 +113,45 @@ class _HomeScreenState extends State<HomeScreen> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         print('Received message in foreground: $message');
-        LocalNotificationService.createanddisplaynotification(message);
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.data.isNotEmpty) {
-        print('idhar 1: $message');
-        // Notifications notification = Notifications.fromMap(message.data);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const NotificationPage()),
-        );
+        localNotificationService.createanddisplaynotification(context, message);
       }
     });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-          if (message.data.isNotEmpty) {
-            print('idhar 2: $message');
+          if (message.notification != null) {
+            print('idhar: click hua idhar');
             // Notifications notification = Notifications.fromMap(message.data);
+            print(message.data);
 
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const NotificationPage()),
+              MaterialPageRoute(
+                builder: (BuildContext context) => HomePage(),
+              ),
+              (route) => false,
             );
+            NavbarNotifier.index = 1;
           }
         });
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print('idhar: click hua');
+        // Notifications notification = Notifications.fromMap(message.data);
+        print(message.data);
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomePage(),
+          ),
+          (route) => false,
+        );
+        NavbarNotifier.index = 1;
       }
     });
   }

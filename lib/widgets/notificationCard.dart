@@ -4,14 +4,19 @@ import 'package:intl/intl.dart';
 
 import '../screens/notification_detail.dart';
 
-class NotificationWidget extends StatelessWidget {
+class NotificationWidget extends StatefulWidget {
   const NotificationWidget({super.key, required this.notification});
   final Notifications notification;
 
   @override
+  State<NotificationWidget> createState() => _NotificationWidgetState();
+}
+
+class _NotificationWidgetState extends State<NotificationWidget> {
+  @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: Key(notification.notificationId.toString()),
+      tag: Key(widget.notification.notificationId.toString()),
       child: SizedBox(
         width: double.infinity,
         // height: MediaQuery.of(context).size.height * 0.1155,
@@ -24,12 +29,14 @@ class NotificationWidget extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          NotificationDetailsPage(notification: notification)));
+                      builder: (context) => NotificationDetailsPage(
+                          notification: widget.notification))).then((_) {
+                setState(() {});
+              });
             },
             leading: CircleAvatar(
               backgroundImage: NetworkImage(
-                  "http://cluedin.creast.in:5000/${notification.senderProfilePic}"),
+                  "http://cluedin.creast.in:5000/${widget.notification.senderProfilePic}"),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,14 +45,18 @@ class NotificationWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(
-                    text: notification.senderRole,
+                    text: widget.notification.senderRole,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w600, color: Colors.black),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
                         text:
-                            " @${notification.sender_fname} ${notification.sender_lname}",
-                        style: const TextStyle(fontWeight: FontWeight.w400),
+                            " @${widget.notification.sender_fname} ${widget.notification.sender_lname}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
                       )
                     ],
                   ),
@@ -53,7 +64,7 @@ class NotificationWidget extends StatelessWidget {
                 const SizedBox(
                   height: 1,
                 ),
-                Text(notification.notificationTitle,
+                Text(widget.notification.notificationTitle,
                     textScaleFactor: 0.9,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -61,7 +72,7 @@ class NotificationWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(
-                    notification.notificationMessage,
+                    widget.notification.notificationMessage,
                     textScaleFactor: 0.9,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -69,10 +80,29 @@ class NotificationWidget extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: Text(
-              DateFormat('MMM d, ' 'yy').format(notification.dateOfcreation!),
-              textAlign: TextAlign.end,
-              textScaleFactor: 0.8,
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  DateFormat('MMM d, ' 'yy')
+                      .format(widget.notification.dateOfcreation),
+                  textAlign: TextAlign.end,
+                  textScaleFactor: 0.9,
+                ),
+                if (widget.notification.isRead == 0)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24, right: 8),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.deepPurple,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+              ],
             ),
           ),
         ),

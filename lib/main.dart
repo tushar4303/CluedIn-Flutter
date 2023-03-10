@@ -20,7 +20,7 @@ import 'utils/globals.dart';
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
     // Show a notification and handle tap events
-    LocalNotificationService.createanddisplaynotification(message);
+    print("handling a background notification");
   }
 }
 
@@ -62,8 +62,9 @@ class myApp extends StatelessWidget {
         darkTheme: MyTheme.darkTheme(context),
         // home: HomePage(),
         // home: MyPhone(),
-        home: isLoggedIn ? HomePage() : LoginPage());
-    // initialRoute: LoginPage());
+        home: isLoggedIn ? HomePage() : LoginPage()
+        // initialRoute: isLoggedIn ? HomePage() : LoginPage();
+        );
   }
 }
 
@@ -127,7 +128,7 @@ class HomePage extends StatelessWidget {
                   widget: _routes[i]!.values.elementAt(j),
                 ),
             ],
-            initialRoute: _routes[i]!.keys.first,
+            // initialRoute: _routes[i]!.keys.first,
           ),
       ],
     );

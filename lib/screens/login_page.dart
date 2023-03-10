@@ -153,16 +153,20 @@ class __FormContentState extends State<_FormContent> {
   }
 
   getToken() async {
+    print("inside get token");
+    await _firebaseMessaging.deleteToken();
     String? token = await _firebaseMessaging.getToken();
     fcmToken = token!;
+    print(token);
     await Hive.box('userBox').put('fcmtoken', fcmToken);
-    print("done");
   }
 
   Future sendToken() async {
+    print("inside send token");
     final uri = Uri.http('cluedin.creast.in:5000', '/api/app/firebaseToken');
     int userid = Hive.box('userBox').get("userid") as int;
     var fcmtoken = Hive.box('userBox').get("fcmtoken");
+
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
@@ -189,6 +193,7 @@ class __FormContentState extends State<_FormContent> {
 
   Future<void> signIn() async {
     final uri = Uri.http('cluedin.creast.in:5000', '/api/app/authAppUser');
+    // getToken();
 
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
@@ -202,10 +207,10 @@ class __FormContentState extends State<_FormContent> {
     );
 
     if (response.statusCode != 200) {
-      print("idhar");
       final error = response.body;
       final decodedData = jsonDecode(error);
-      var message = decodedData["msg"];
+      print(decodedData);
+      var message = decodedData["message"];
       Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
@@ -213,13 +218,13 @@ class __FormContentState extends State<_FormContent> {
         timeInSecForIosWeb: 3,
       );
     } else {
-      print("idhar 2");
       final UserDetailsJson = response.body;
       print(UserDetailsJson);
 
       final userBox = Hive.box('userBox');
 
       final decodedData = jsonDecode(UserDetailsJson);
+      print(decodedData);
       var userDetails = decodedData["data"];
 
       userDetails = UserDetails.fromMap(userDetails);
@@ -234,6 +239,8 @@ class __FormContentState extends State<_FormContent> {
       await userBox.put('token', userDetails.token);
       await userBox.put('isLoggedIn', true);
 
+      await sendToken();
+
       Fluttertoast.showToast(
         msg: "logged in successfully!",
         toastLength: Toast.LENGTH_SHORT,
@@ -243,7 +250,6 @@ class __FormContentState extends State<_FormContent> {
 
       NavbarNotifier.hideBottomNavBar = false;
 
-      sendToken();
       // ignore: use_build_context_synchronously
       Navigator.pushAndRemoveUntil(
         context,
@@ -252,6 +258,8 @@ class __FormContentState extends State<_FormContent> {
         ),
         (route) => false,
       );
+
+      // ignore: use_build_context_synchronously
     }
   }
 

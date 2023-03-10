@@ -66,6 +66,7 @@ class _NotificationPageState extends State<NotificationPage> {
       }
     }); // using this listiner, you can get the medium of connection as well.
     super.initState();
+    // loadNotifications();
     myfuture = loadNotifications();
   }
 
