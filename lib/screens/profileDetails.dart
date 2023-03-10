@@ -322,11 +322,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
       );
-    } else {
+    } else if (response.statusCode == 401 || response.statusCode == 403) {
       var errorJson = json.decode(responseString);
       var error = '';
-      if (errorJson['error'] != null && errorJson['error'].isNotEmpty) {
-        error = errorJson['error'];
+      if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
+        error = errorJson['msg'];
         NavbarNotifier.hideBottomNavBar = true;
         // ignore: use_build_context_synchronously
         Navigator.of(context, rootNavigator: true).pop();
@@ -343,6 +343,16 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
+      );
+    } else {
+      final decodedData = jsonDecode(responseString);
+      print(decodedData);
+      var message = decodedData["msg"];
+      Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
       );
     }
   }

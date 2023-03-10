@@ -5,11 +5,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/notificationCard.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
 import '../widgets/offline.dart';
+import 'login_page.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -78,11 +81,15 @@ class _NotificationPageState extends State<NotificationPage> {
   Future<List<Notifications>?> loadNotifications() async {
     final uri = Uri.http('cluedin.creast.in:5000', '/api/app/appNotif');
     var userid = Hive.box('userBox').get("userid") as int;
+    var token = Hive.box('userBox').get("token");
 
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
-      () => http.post(uri, body: {'user_id': userid.toString()}).timeout(
-          const Duration(seconds: 2)),
+      () => http.post(uri, headers: {
+        'Authorization': 'Bearer $token',
+      }, body: {
+        'user_id': userid.toString()
+      }).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -117,6 +124,38 @@ class _NotificationPageState extends State<NotificationPage> {
         });
 
         return NotificationModel.notifications;
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        var errorJson = json.decode(response.body);
+        var error = '';
+        if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
+          error = errorJson['msg'];
+          NavbarNotifier.hideBottomNavBar = true;
+          // ignore: use_build_context_synchronously
+          // Navigator.of(context, rootNavigator: true).pop();
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (c) => const LoginPage()),
+              (r) => false);
+          final box = await Hive.openBox("UserBox");
+          await box.clear();
+        }
+        Fluttertoast.showToast(
+          msg: error,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+        );
+      } else {
+        final error = response.body;
+        final decodedData = jsonDecode(error);
+        print(decodedData);
+        var message = decodedData["msg"];
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+        );
       }
     } catch (e) {
       throw Exception(e.toString());

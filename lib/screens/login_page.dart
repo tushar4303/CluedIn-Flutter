@@ -210,7 +210,7 @@ class __FormContentState extends State<_FormContent> {
       final error = response.body;
       final decodedData = jsonDecode(error);
       print(decodedData);
-      var message = decodedData["message"];
+      var message = decodedData["msg"];
       Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
