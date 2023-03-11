@@ -289,30 +289,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
-  firebase_auth:
-    dependency: "direct main"
-    description:
-      name: firebase_auth
-      sha256: "843e307e9b7faa026dd9970e584b5d53265fb5a0c4323883fecdce89ec05d56a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.6"
-  firebase_auth_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_auth_platform_interface
-      sha256: "8702baa08ad5aa6daa023082d612ca168bf3f7de81e3d56e1df18321f76d675f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.11.8"
-  firebase_auth_web:
-    dependency: transitive
-    description:
-      name: firebase_auth_web
-      sha256: "0c01b9c772ee730df03ac92102e538873558f908d6e42602f6ff9c61dead8d58"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.2.5"
   firebase_core:
     dependency: "direct main"
     description:
@@ -568,30 +544,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
-  image_cropper:
-    dependency: "direct main"
-    description:
-      name: image_cropper
-      sha256: "85324928ee8a8be35a529446435ca53067865b9353c8681983472eeec66d780f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
-  image_cropper_for_web:
-    dependency: transitive
-    description:
-      name: image_cropper_for_web
-      sha256: "09e93a8ec0435adcaa23622ac090442872f18145d70b9ff605ffedcf97d56255"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
-  image_cropper_platform_interface:
-    dependency: transitive
-    description:
-      name: image_cropper_platform_interface
-      sha256: "62349e3aab63873ea9b9ab9f69d036ab8a0d74b3004beec4303981386cb9273f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -648,14 +600,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  isar:
-    dependency: "direct main"
-    description:
-      name: isar
-      sha256: "5be35dbc489880fccc535da3d1c4b3f5fdeee6ebfcacd4b149e39e803c4029cd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.5"
   js:
     dependency: transitive
     description:
@@ -840,14 +784,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.0"
-  pinput:
-    dependency: "direct main"
-    description:
-      name: pinput
-      sha256: e6aabd1571dde622f9b942f62ac2c80f84b0b50f95fa209a93e78f7d621e1f82
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.23"
   platform:
     dependency: transitive
     description:
@@ -1005,14 +941,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  smart_auth:
-    dependency: transitive
-    description:
-      name: smart_auth
-      sha256: "8cfaec55b77d5930ed1666bb7ae70db5bade099bb1422401386853b400962113"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
   source_span:
     dependency: transitive
     description:
@@ -1157,14 +1085,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.4"
-  universal_platform:
-    dependency: transitive
-    description:
-      name: universal_platform
-      sha256: d315be0f6641898b280ffa34e2ddb14f3d12b1a37882557869646e0cc363d0cc
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0+1"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1295,4 +1215,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.19.0 <3.0.0"
-  flutter: ">=3.7.0"
+  flutter: ">=3.3.0"

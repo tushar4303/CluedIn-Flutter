@@ -36,14 +36,13 @@ class LocalNotificationService {
         if (payload == "notification") {
           print("reached here here");
           // add this line
-          await Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(),
-            ),
-            (route) => false,
-          );
           NavbarNotifier.index = 1;
+          // await Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (BuildContext context) => const NotificationPage(),
+          //   ),
+          // );
         }
       },
       onDidReceiveNotificationResponse: (details) async {
@@ -51,15 +50,14 @@ class LocalNotificationService {
 
         if (payload == "notification") {
           print("reached here");
-          // add this line
-          await Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => HomePage(),
-            ),
-            (route) => false,
-          );
           NavbarNotifier.index = 1;
+          // add this line
+          // await Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (BuildContext context) => const NotificationPage(),
+          //   ),
+          // );
         }
       },
     );

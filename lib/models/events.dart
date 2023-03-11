@@ -105,7 +105,8 @@ class Labels {
 
 class Events {
   final int eventId;
-  final String senderName;
+  final String sender_fname;
+  final String sender_lname;
   final String senderRole;
   final String organizedBy;
   final String senderProfilePic;
@@ -117,11 +118,12 @@ class Events {
   final String registrationLink;
   final String registrationFee;
   final DateTime dateOfcreation;
-  final DateTime dateOfexpiration;
+  final DateTime? dateOfexpiration;
 
   Events(
       {required this.eventId,
-      required this.senderName,
+      required this.sender_fname,
+      required this.sender_lname,
       required this.senderRole,
       required this.organizedBy,
       required this.senderProfilePic,
@@ -133,38 +135,40 @@ class Events {
       required this.registrationLink,
       required this.registrationFee,
       required this.dateOfcreation,
-      required this.dateOfexpiration});
+      this.dateOfexpiration});
 
   factory Events.fromMap(Map<String, dynamic> map) {
     return Events(
       eventId: map["event_id"],
-      senderName: map["senderName"],
+      sender_fname: map["sender_fname"],
+      sender_lname: map["sender_lname"],
       senderRole: map["senderRole"],
-      organizedBy: map["OrganizedBy"],
+      organizedBy: map["organizedBy"],
       senderProfilePic: map["senderProfilePic"],
       eventTitle: map["event_title"],
       eventLabel: map["event_label"],
       eventDesc: map["event_desc"],
-      imageUrl: map["image_url"],
-      attachmentUrl: map["attachment_url"] ?? "",
+      imageUrl: map["event_image_url"],
+      attachmentUrl: map["event_attachment_url"] ?? "",
       registrationLink: map["registration_link"] ?? "",
       registrationFee: map["registration_fee"] ?? "",
       dateOfcreation: DateTime.parse(map["dateOfCreation"]),
-      dateOfexpiration: DateTime.parse(map["dateOfExpiration"]),
+      dateOfexpiration: DateTime.tryParse(map["dateOfExpiration"]),
     );
   }
 
   toMap() => {
         "event_id": eventId,
-        "senderName": senderName,
+        "sender_fname": sender_fname,
+        "sender_lname": sender_lname,
         "senderRole": senderRole,
-        "OrganizedBy": organizedBy,
+        "organizedBy": organizedBy,
         "senderProfilePic": senderProfilePic,
         "event_title": eventTitle,
         "event_label": eventLabel,
         "event_desc": eventDesc,
-        "image_url": imageUrl,
-        "attachment_url": attachmentUrl,
+        "event_image_url": imageUrl,
+        "event_attachment_url": attachmentUrl,
         "registration_link": registrationLink,
         "registration_fee": registrationFee,
         "dateOfCreation": dateOfcreation,
@@ -173,6 +177,6 @@ class Events {
 
   @override
   String toString() {
-    return 'Events(eventId: $eventId, senderName: $senderName, senderRole: $senderRole, organizedBy: $organizedBy, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
+    return 'Events(eventId: $eventId, sender_fname: $sender_fname, sender_lname: $sender_lname, senderRole: $senderRole, organizedBy: $organizedBy, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
   }
 }

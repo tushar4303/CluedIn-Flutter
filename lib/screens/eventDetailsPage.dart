@@ -15,14 +15,14 @@ class EventDetailsPage extends StatelessWidget {
   final Events event;
 
   RichText get timerDisplay {
-    Duration duration = event.dateOfexpiration.difference(DateTime.now());
+    Duration duration = event.dateOfcreation.difference(DateTime.now());
     var sent_at = DateFormat('MMM d, ' 'yy').format(event.dateOfcreation);
     if (duration.isNegative) {
       return RichText(
         text: TextSpan(
           children: [
             const TextSpan(
-                text: 'ENDED', style: TextStyle(color: Colors.black)),
+                text: 'ENDED ', style: TextStyle(color: Colors.black)),
             TextSpan(text: '|', style: TextStyle(color: Colors.grey[400])),
             TextSpan(
                 text: ' $sent_at', style: const TextStyle(color: Colors.black)),
@@ -262,9 +262,8 @@ class EventDetailsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(event.senderProfilePic),
-                              radius: 24,
+                              backgroundImage: NetworkImage(
+                                  "http://cluedin.creast.in:5000/${event.senderProfilePic}"),
                             ),
                             const SizedBox(
                               width: 16,
@@ -283,7 +282,8 @@ class EventDetailsPage extends StatelessWidget {
                                           color: Colors.black),
                                       children: <TextSpan>[
                                         TextSpan(
-                                          text: " @${event.senderName}",
+                                          text:
+                                              " @${event.sender_fname} ${event.sender_lname}",
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w500),
                                         )

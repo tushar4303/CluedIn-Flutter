@@ -49,8 +49,8 @@ class LoginPage extends StatelessWidget {
                                     text: " Sign up",
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () async {
-                                        final url =
-                                            Uri.parse("https://csi.dbit.in/");
+                                        final url = Uri.parse(
+                                            "http://cluedin.creast.in:5000/signup");
                                         if (!await launchUrl(url,
                                             mode: LaunchMode.platformDefault)) {
                                           throw 'Could not launch $url';
@@ -391,7 +391,8 @@ class __FormContentState extends State<_FormContent> {
                       text: "Get help signing in",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          final url = Uri.parse("https://csi.dbit.in/");
+                          final url =
+                              Uri.parse("http://cluedin.creast.in:5000/signup");
                           if (!await launchUrl(url,
                               mode: LaunchMode.platformDefault)) {
                             throw 'Could not launch $url';

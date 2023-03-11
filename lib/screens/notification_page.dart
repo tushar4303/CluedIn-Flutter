@@ -148,7 +148,7 @@ class _NotificationPageState extends State<NotificationPage> {
       } else {
         final error = response.body;
         final decodedData = jsonDecode(error);
-        print(decodedData);
+        // print(decodedData);
         var message = decodedData["msg"];
         Fluttertoast.showToast(
           msg: message,

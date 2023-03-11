@@ -6,11 +6,15 @@ import 'package:cluedin_app/models/events.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
 import '../widgets/eventsCard.dart';
 import '../widgets/offline.dart';
+import 'login_page.dart';
 
 class MyEvents extends StatefulWidget {
   const MyEvents({super.key});
@@ -36,8 +40,9 @@ class _MyEventsState extends State<MyEvents> {
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
 
-  final url =
-      "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/9352579f1a97a046a7a9917b2e9a596f4ddc4ee0/events.json";
+  final url = "http://128.199.23.207:5000/api/app/appEvent";
+  // final url =
+  //     "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/9352579f1a97a046a7a9917b2e9a596f4ddc4ee0/events.json";
   final _filters = [];
   final _senders = [];
   final List<Events> _filteredEvents = [];
@@ -76,10 +81,16 @@ class _MyEventsState extends State<MyEvents> {
   }
 
   Future<List<Events>?> loadEvents() async {
+    var token = Hive.box('userBox').get("token");
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
+      () => http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -87,7 +98,9 @@ class _MyEventsState extends State<MyEvents> {
       if (response.statusCode == 200) {
         final EventsJson = response.body;
         final decodedData = jsonDecode(EventsJson);
+        // print(decodedData);
         var eventsData = decodedData["events"];
+        print(eventsData);
         var labelsData = decodedData["labels"];
         var organizersData = decodedData["organizers"];
 
@@ -97,6 +110,8 @@ class _MyEventsState extends State<MyEvents> {
         EventModel.events = List.from(eventsData)
             .map<Events>((event) => Events.fromMap(event))
             .toList();
+
+        print(EventModel.events);
 
         setState(() {
           _filters.clear();
@@ -109,6 +124,38 @@ class _MyEventsState extends State<MyEvents> {
         });
 
         return EventModel.events;
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        var errorJson = json.decode(response.body);
+        var error = '';
+        if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
+          error = errorJson['msg'];
+          NavbarNotifier.hideBottomNavBar = true;
+          // ignore: use_build_context_synchronously
+          // Navigator.of(context, rootNavigator: true).pop();
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (c) => const LoginPage()),
+              (r) => false);
+          final box = await Hive.openBox("UserBox");
+          await box.clear();
+        }
+        Fluttertoast.showToast(
+          msg: error,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+        );
+      } else {
+        final error = response.body;
+        final decodedData = jsonDecode(error);
+        // print(decodedData);
+        var message = decodedData["msg"];
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+        );
       }
     } catch (e) {
       throw Exception(e.toString());

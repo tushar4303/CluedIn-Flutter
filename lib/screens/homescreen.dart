@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,6 +18,7 @@ import 'dart:io';
 import '../main.dart';
 import '../models/notification.dart';
 import '../notificationService/local_notification_service.dart';
+import 'login_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,8 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final CarouselModel carousel;
 
   late Future<HomeModel?> myfuture;
-  final url =
-      "https://gist.githubusercontent.com/tushar4303/f7dc4c7e9463f9e93d62da331a71a754/raw/2395d2e80e0dc64ef6403d5d5fdcaa9255ec6760/homepage.json";
+  final url = "http://128.199.23.207:5000/api/app/homeapi";
 
   DateTime today = DateTime.now();
 
@@ -51,7 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final response = await r.retry(
       // Make a GET request
-      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 2)),
+      () => http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
@@ -72,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final studentChapters = List.from(studentChaptersJson)
             .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
             .toList();
+        studentChapters.shuffle(Random());
         // print(studentChapters.length);
 
         // Load carousel
@@ -82,6 +89,38 @@ class _HomeScreenState extends State<HomeScreen> {
         );
 
         return homeModel;
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        var errorJson = json.decode(response.body);
+        var error = '';
+        if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
+          error = errorJson['msg'];
+          NavbarNotifier.hideBottomNavBar = true;
+          // ignore: use_build_context_synchronously
+          // Navigator.of(context, rootNavigator: true).pop();
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (c) => const LoginPage()),
+              (r) => false);
+          final box = await Hive.openBox("UserBox");
+          await box.clear();
+        }
+        Fluttertoast.showToast(
+          msg: error,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+        );
+      } else {
+        final error = response.body;
+        final decodedData = jsonDecode(error);
+        // print(decodedData);
+        var message = decodedData["msg"];
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+        );
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -124,15 +163,14 @@ class _HomeScreenState extends State<HomeScreen> {
             print('idhar: click hua idhar');
             // Notifications notification = Notifications.fromMap(message.data);
             print(message.data);
-
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => HomePage(),
-              ),
-              (route) => false,
-            );
             NavbarNotifier.index = 1;
+
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (BuildContext context) => const NotificationPage(),
+            //   ),
+            // );
           }
         });
       }
@@ -143,15 +181,14 @@ class _HomeScreenState extends State<HomeScreen> {
         print('idhar: click hua');
         // Notifications notification = Notifications.fromMap(message.data);
         print(message.data);
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(),
-          ),
-          (route) => false,
-        );
         NavbarNotifier.index = 1;
+
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (BuildContext context) => const NotificationPage(),
+        //   ),
+        // );
       }
     });
   }
@@ -624,20 +661,23 @@ class ChapterCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 child: Stack(children: <Widget>[
+                  // Positioned.fill(
+                  //     child: Image.asset(
+                  //   "assets/images/csi.png",
+                  //   fit: BoxFit.cover,
+                  // )),
                   Positioned.fill(
-                      child: Image.asset(
-                    "assets/images/csi.png",
-                    fit: BoxFit.cover,
-                  )),
-                  // CachedNetworkImage(
-                  //   imageUrl: chapter.logo,
-                  //   placeholder: (context, url) {
-                  //     return Image.asset(
-                  //       "assets/images/placeholder.png",
-                  //       fit: BoxFit.cover,
-                  //     );
-                  //   },
-                  // ),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: chapter.logo,
+                      placeholder: (context, url) {
+                        return Image.asset(
+                          "assets/images/placeholder.png",
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                   Positioned(
                     child: Align(
                       alignment: Alignment.bottomCenter,
@@ -709,7 +749,7 @@ class CarouselCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           child: CachedNetworkImage(
-            imageUrl: slide.photoUrl,
+            imageUrl: "http://cluedin.creast.in:5000/${slide.photoUrl}",
             fit: BoxFit.cover,
             placeholder: (context, url) {
               return Image.asset(
