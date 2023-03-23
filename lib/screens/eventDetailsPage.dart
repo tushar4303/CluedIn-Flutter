@@ -149,9 +149,11 @@ class EventDetailsPage extends StatelessWidget {
                         height: 16,
                       ),
                       if (event.attachmentUrl.isNotEmpty)
-                        AnyLinkPreview.isValidLink(event.attachmentUrl)
+                        AnyLinkPreview.isValidLink(
+                                "http://cluedin.creast.in:5000/${event.attachmentUrl}")
                             ? AnyLinkPreview.builder(
-                                link: event.attachmentUrl,
+                                link:
+                                    "http://cluedin.creast.in:5000/${event.attachmentUrl}",
                                 itemBuilder:
                                     (context, metadata, imageProvider) =>
                                         Column(
@@ -165,8 +167,8 @@ class EventDetailsPage extends StatelessWidget {
                                             242, 243, 245, 1),
                                         child: InkWell(
                                           onTap: () async {
-                                            final url =
-                                                Uri.parse(event.attachmentUrl);
+                                            final url = Uri.parse(
+                                                "http://cluedin.creast.in:5000/${event.attachmentUrl}");
                                             if (!await launchUrl(url,
                                                 mode: LaunchMode
                                                     .platformDefault)) {
@@ -239,7 +241,8 @@ class EventDetailsPage extends StatelessWidget {
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 onPressed: () async {
-                                  final url = Uri.parse(event.registrationLink);
+                                  final url = Uri.parse(
+                                      "http://cluedin.creast.in:5000/${event.registrationLink}");
                                   if (!await launchUrl(url)) {
                                     throw 'Could not launch $url';
                                   }

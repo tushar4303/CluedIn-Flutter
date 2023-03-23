@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             print('idhar: click hua idhar');
             // Notifications notification = Notifications.fromMap(message.data);
             print(message.data);
-            NavbarNotifier.index = 1;
+            // NavbarNotifier.index = 1;
 
             // Navigator.pushReplacement(
             //   context,
@@ -180,7 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (message.notification != null) {
         print('idhar: click hua');
         // Notifications notification = Notifications.fromMap(message.data);
-        print(message.data);
+        var screen = message.data;
+        print(screen);
+
         NavbarNotifier.index = 1;
 
         // Navigator.pushReplacement(

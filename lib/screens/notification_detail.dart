@@ -205,9 +205,10 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         ),
                         if (widget.notification.attachmentUrl.isNotEmpty)
                           AnyLinkPreview.isValidLink(
-                                  widget.notification.attachmentUrl)
+                                  "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}")
                               ? AnyLinkPreview.builder(
-                                  link: widget.notification.attachmentUrl,
+                                  link:
+                                      "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
                                   itemBuilder:
                                       (context, metadata, imageProvider) =>
                                           Column(
@@ -222,8 +223,8 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                               242, 243, 245, 1),
                                           child: InkWell(
                                             onTap: () async {
-                                              final url = Uri.parse(widget
-                                                  .notification.attachmentUrl);
+                                              final url = Uri.parse(
+                                                  "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}");
                                               if (!await launchUrl(url,
                                                   mode: LaunchMode
                                                       .platformDefault)) {
