@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:cluedin_app/screens/notification_page.dart';
+import 'package:cluedin_app/widgets/webview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
@@ -485,12 +486,15 @@ class utilityBar extends StatelessWidget {
                         icon: const Icon(Icons.calendar_today),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
-                        onPressed: () async {
-                          final url = Uri.parse(
-                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
-                          if (!await launchUrl(url)) {
-                            throw 'Could not launch $url';
-                          }
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WebViewApp(
+                                        webViewTitle: 'Class Timetable',
+                                        webViewLink:
+                                            'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
+                                      )));
                         },
                       ),
                     ],
@@ -519,15 +523,17 @@ class utilityBar extends StatelessWidget {
                     children: [
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.train),
+                        icon: const Icon(Icons.library_books),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
-                        onPressed: () async {
-                          final url = Uri.parse(
-                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
-                          if (!await launchUrl(url)) {
-                            throw 'Could not launch $url';
-                          }
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WebViewApp(
+                                        webViewTitle: "E-Library services",
+                                        webViewLink: 'http://opac.dbit.in/',
+                                      )));
                         },
                       ),
                     ],
@@ -537,7 +543,7 @@ class utilityBar extends StatelessWidget {
                   height: 6,
                 ),
                 const Text(
-                  "Concession",
+                  "E-library",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                 )
               ],
@@ -556,15 +562,17 @@ class utilityBar extends StatelessWidget {
                     children: [
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.library_books),
+                        icon: const Icon(Icons.settings_system_daydream),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
-                        onPressed: () async {
-                          final url = Uri.parse(
-                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
-                          if (!await launchUrl(url)) {
-                            throw 'Could not launch $url';
-                          }
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WebViewApp(
+                                        webViewTitle: "Moodle E-learn",
+                                        webViewLink: 'https://elearn.dbit.in/',
+                                      )));
                         },
                       ),
                     ],
@@ -596,12 +604,14 @@ class utilityBar extends StatelessWidget {
                         icon: const Icon(Icons.web),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
-                        onPressed: () async {
-                          final url = Uri.parse(
-                              'https://drive.google.com/file/d/1ZWAwmTozuTU_Zm3HBZ9jdTse25ryMEIV/view?usp=share_link');
-                          if (!await launchUrl(url)) {
-                            throw 'Could not launch $url';
-                          }
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WebViewApp(
+                                        webViewTitle: "DBIT's Official Website",
+                                        webViewLink: 'http://www.dbit.in/',
+                                      )));
                         },
                       ),
                     ],

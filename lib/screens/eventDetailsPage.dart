@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/events.dart';
+import '../widgets/webview.dart';
 
 class EventDetailsPage extends StatelessWidget {
   const EventDetailsPage({
@@ -166,14 +167,15 @@ class EventDetailsPage extends StatelessWidget {
                                         color: const Color.fromRGBO(
                                             242, 243, 245, 1),
                                         child: InkWell(
-                                          onTap: () async {
-                                            final url = Uri.parse(
-                                                "http://cluedin.creast.in:5000/${event.attachmentUrl}");
-                                            if (!await launchUrl(url,
-                                                mode: LaunchMode
-                                                    .platformDefault)) {
-                                              throw 'Could not launch $url';
-                                            }
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        WebViewApp(
+                                                          webViewLink:
+                                                              "http://cluedin.creast.in:5000/${event.attachmentUrl}",
+                                                        )));
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
@@ -240,12 +242,15 @@ class EventDetailsPage extends StatelessWidget {
                                   "Register Now!",
                                   style: TextStyle(color: Colors.white),
                                 ),
-                                onPressed: () async {
-                                  final url = Uri.parse(
-                                      "http://cluedin.creast.in:5000/${event.registrationLink}");
-                                  if (!await launchUrl(url)) {
-                                    throw 'Could not launch $url';
-                                  }
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => WebViewApp(
+                                                webViewTitle: "Register now!",
+                                                webViewLink:
+                                                    "http://cluedin.creast.in:5000/${event.registrationLink}",
+                                              )));
                                 },
                               ),
                             ),

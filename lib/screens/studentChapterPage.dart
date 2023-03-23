@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/webview.dart';
+
 class StudentChapterPage extends StatelessWidget {
   const StudentChapterPage({
     Key? key,
@@ -130,11 +132,15 @@ class StudentChapterPage extends StatelessWidget {
                                 "Visit Website for more Info",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () async {
-                                final url = Uri.parse(chapter.website);
-                                if (!await launchUrl(url)) {
-                                  throw 'Could not launch $url';
-                                }
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => WebViewApp(
+                                              webViewTitle: chapter.title,
+                                              webViewLink:
+                                                  'http://www.dbit.in/',
+                                            )));
                               },
                             ),
                           ),

@@ -116,6 +116,21 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     ),
                   ),
                   const Divider(),
+                  ListTile(
+                    onTap: () async {
+                      NavbarNotifier.hideBottomNavBar = true;
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (c) => const LoginPage()),
+                          (r) => false);
+                      final box = await Hive.openBox("UserBox");
+                      await box.clear();
+                    },
+                    leading: const Icon(Icons.logout_outlined),
+                    title: const Text(
+                      "Logout",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
                 ],
               ),
             ),

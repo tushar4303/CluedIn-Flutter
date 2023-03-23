@@ -4,10 +4,13 @@ import 'package:cluedin_app/screens/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:hive/hive.dart';
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
+
+import '../widgets/webview.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -117,7 +120,16 @@ class _MyProfileState extends State<MyProfile> {
               child: Center(
                 child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const WebViewApp(
+                                    webViewTitle: "CluedIn Feedback form",
+                                    webViewLink:
+                                        'https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link',
+                                  )));
+                    },
                     title: const Text("Leave us a Feedback!"),
                     subtitle: const Text(
                         "Your feedback helps us to improve the product"),
@@ -164,30 +176,6 @@ class _MyProfileState extends State<MyProfile> {
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
               ),
               const CustomDivider(),
-              ListTile(
-                horizontalTitleGap: 0,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                onTap: () async {
-                  NavbarNotifier.hideBottomNavBar = true;
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (c) => const LoginPage()),
-                      (r) => false);
-                  final box = await Hive.openBox("UserBox");
-                  await box.clear();
-                },
-                leading: const Icon(Icons.logout_outlined),
-                title: const Text(
-                  "Logout",
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 20,
-                  color: Colors.black,
-                ),
-              ),
             ],
           ),
           const SizedBox(
