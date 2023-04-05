@@ -2,6 +2,9 @@
 
 # CluedIn-Flutter
 CluedIn is an app that helps you stay up-to-date with all the latest updates and events that matter most to you. Its intuitive and centralized platform streamlines communication and event organization, enabling you to quickly filter out what's not relevant to you at that moment while still keeping you informed about what's happening in your organization.
+
+![Apple iPhone 11 Pro Max Presentation](https://user-images.githubusercontent.com/88235295/230158183-ef189204-365d-4eea-8160-0bf16e2e8596.png)
+
 ## Features
 
 - Auto logout for added security when logging in from a new device.
