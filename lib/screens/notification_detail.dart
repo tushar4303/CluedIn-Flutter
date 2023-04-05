@@ -69,6 +69,9 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
     if (widget.notification.isRead == 0) {
       hasRead();
     }
+    final Uri uri = Uri.parse(
+        "http://cluedin.creast.in:5000${widget.notification.attachmentUrl}");
+    final String fileName = uri.pathSegments.last;
   }
 
   @override
@@ -203,72 +206,74 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         const SizedBox(
                           height: 8,
                         ),
-                        if (widget.notification.attachmentUrl.isNotEmpty)
-                          AnyLinkPreview.isValidLink(
-                                  "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}")
-                              ? AnyLinkPreview.builder(
-                                  link:
-                                      "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
-                                  itemBuilder:
-                                      (context, metadata, imageProvider) =>
-                                          Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
-                                        child: Material(
-                                          color: const Color.fromRGBO(
-                                              242, 243, 245, 1),
-                                          child: InkWell(
-                                            onTap: () async {
-                                              final url = Uri.parse(
-                                                  "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}");
-                                              if (!await launchUrl(url,
-                                                  mode: LaunchMode
-                                                      .platformDefault)) {
-                                                throw 'Could not launch $url';
-                                              }
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16,
-                                                      horizontal: 24),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.insert_drive_file,
-                                                    color: Colors.black
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  if (metadata.title != null)
-                                                    Text(
-                                                      metadata.title!,
-                                                      maxLines: 2,
-                                                      style: const TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              27, 96, 173, 1),
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
+
+                        // if (widget.notification.attachmentUrl.isNotEmpty)
+
+                        // AnyLinkPreview.isValidLink(
+                        //         "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}")
+                        //     ? AnyLinkPreview.builder(
+                        //         link:
+                        //             "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
+                        //         itemBuilder:
+                        //             (context, metadata, imageProvider) =>
+                        //                 Column(
+                        //           crossAxisAlignment:
+                        //               CrossAxisAlignment.start,
+                        //           children: [
+                        //             ClipRRect(
+                        //               borderRadius: const BorderRadius.all(
+                        //                   Radius.circular(10)),
+                        //               child: Material(
+                        //                 color: const Color.fromRGBO(
+                        //                     242, 243, 245, 1),
+                        //                 child: InkWell(
+                        //                   onTap: () async {
+                        //                     final url = Uri.parse(
+                        //                         "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}");
+                        //                     if (!await launchUrl(url,
+                        //                         mode: LaunchMode
+                        //                             .platformDefault)) {
+                        //                       throw 'Could not launch $url';
+                        //                     }
+                        //                   },
+                        //                   child: Container(
+                        //                     padding:
+                        //                         const EdgeInsets.symmetric(
+                        //                             vertical: 16,
+                        //                             horizontal: 24),
+                        //                     child: Row(
+                        //                       crossAxisAlignment:
+                        //                           CrossAxisAlignment.center,
+                        //                       children: [
+                        //                         Icon(
+                        //                           Icons.insert_drive_file,
+                        //                           color: Colors.black
+                        //                               .withOpacity(0.5),
+                        //                         ),
+                        //                         const SizedBox(
+                        //                           width: 5,
+                        //                         ),
+                        //                         if (metadata.title != null)
+                        //                           Text(
+                        //                             metadata.title!,
+                        //                             maxLines: 2,
+                        //                             style: const TextStyle(
+                        //                                 color: Color.fromRGBO(
+                        //                                     27, 96, 173, 1),
+                        //                                 fontSize: 16,
+                        //                                 fontWeight:
+                        //                                     FontWeight.w500),
+                        //                           ),
+                        //                       ],
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       )
+                        //     : Container(),
                       ],
                     ),
                   ),

@@ -138,8 +138,7 @@ class StudentChapterPage extends StatelessWidget {
                                     MaterialPageRoute(
                                         builder: (context) => WebViewApp(
                                               webViewTitle: chapter.title,
-                                              webViewLink:
-                                                  'http://www.dbit.in/',
+                                              webViewLink: chapter.website,
                                             )));
                               },
                             ),
