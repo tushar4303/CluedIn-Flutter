@@ -10,6 +10,7 @@ CluedIn is an app that helps you stay up-to-date with all the latest updates and
 - Explore events within your organisation 
 - Cross platform support
 
+
 ## Installation
 
 To install the app, follow these steps:
