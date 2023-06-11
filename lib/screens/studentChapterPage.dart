@@ -2,9 +2,8 @@
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../widgets/webview.dart';
+import '../widgets/webView/webview.dart';
 
 class StudentChapterPage extends StatelessWidget {
   const StudentChapterPage({

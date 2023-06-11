@@ -3,10 +3,9 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/events.dart';
-import '../widgets/webview.dart';
+import '../widgets/webView/webview.dart';
 
 class EventDetailsPage extends StatelessWidget {
   const EventDetailsPage({
@@ -17,7 +16,7 @@ class EventDetailsPage extends StatelessWidget {
 
   RichText get timerDisplay {
     Duration duration = event.dateOfcreation.difference(DateTime.now());
-    var sent_at = DateFormat('MMM d, ' 'yy').format(event.dateOfcreation);
+    var sentAt = DateFormat('MMM d, ' 'yy').format(event.dateOfcreation);
     if (duration.isNegative) {
       return RichText(
         text: TextSpan(
@@ -26,7 +25,7 @@ class EventDetailsPage extends StatelessWidget {
                 text: 'ENDED ', style: TextStyle(color: Colors.black)),
             TextSpan(text: '|', style: TextStyle(color: Colors.grey[400])),
             TextSpan(
-                text: ' $sent_at', style: const TextStyle(color: Colors.black)),
+                text: ' $sentAt', style: const TextStyle(color: Colors.black)),
           ],
         ),
       );
@@ -42,7 +41,7 @@ class EventDetailsPage extends StatelessWidget {
                 text: '|',
                 style: TextStyle(color: Colors.grey[600], fontSize: 18)),
             TextSpan(
-                text: ' $sent_at',
+                text: ' $sentAt',
                 style: const TextStyle(color: Colors.black, fontSize: 18)),
           ],
         ),
@@ -65,7 +64,7 @@ class EventDetailsPage extends StatelessWidget {
             style: TextStyle(color: Colors.grey[400], fontSize: 18),
           ),
           TextSpan(
-              text: ' $sent_at',
+              text: ' $sentAt',
               style: const TextStyle(color: Colors.black, fontSize: 18)),
         ],
       ),

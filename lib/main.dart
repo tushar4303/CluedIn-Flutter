@@ -14,7 +14,6 @@ import 'package:cluedin_app/screens/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 
 import 'firebase_options.dart';
-import 'notificationService/local_notification_service.dart';
 import 'utils/globals.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {

@@ -2,7 +2,7 @@ import 'package:cluedin_app/models/events.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../screens/eventDetailsPage.dart';
+import '../../screens/eventDetailsPage.dart';
 
 class EventsWidget extends StatelessWidget {
   const EventsWidget({super.key, required this.event});
@@ -93,7 +93,7 @@ class EventsWidget extends StatelessWidget {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                        fontSize: 14, fontWeight: FontWeight.w600)),
               ),
               // Align(
               //   alignment: Alignment.topLeft,

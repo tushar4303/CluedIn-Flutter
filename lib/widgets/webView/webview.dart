@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:cluedin_app/widgets/navigation_controls.dart';
-import 'package:cluedin_app/widgets/web_view_stack.dart';
+import 'package:cluedin_app/widgets/webView/navigation_controls.dart';
+import 'package:cluedin_app/widgets/webView/web_view_stack.dart';
 
 class WebViewApp extends StatefulWidget {
   const WebViewApp({

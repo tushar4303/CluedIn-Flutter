@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:io';
-
-import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
@@ -13,7 +11,6 @@ import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class NotificationDetailsPage extends StatefulWidget {
   const NotificationDetailsPage({
@@ -32,18 +29,18 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
     print("inside has read");
     final uri = Uri.http('cluedin.creast.in:5000', '/api/app/notifReadStatus');
     var hasRead = widget.notification.isRead;
-    var user_id = Hive.box('userBox').get("userid") as int;
-    var nm_id = widget.notification.notificationId;
+    var userId = Hive.box('userBox').get("userid") as int;
+    var nmId = widget.notification.notificationId;
     print(hasRead);
-    print(user_id);
-    print(nm_id);
+    print(userId);
+    print(nmId);
 
     const r = RetryOptions(maxAttempts: 3);
     final response = await r.retry(
       // Make a GET request
       () => http.post(uri, body: {
-        'user_id': user_id.toString(),
-        'nm_id': nm_id.toString(),
+        'user_id': userId.toString(),
+        'nm_id': nmId.toString(),
         'isRead': "1"
       }).timeout(const Duration(seconds: 2)),
       // Retry on SocketException or TimeoutException
@@ -69,9 +66,9 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
     if (widget.notification.isRead == 0) {
       hasRead();
     }
-    final Uri uri = Uri.parse(
-        "http://cluedin.creast.in:5000${widget.notification.attachmentUrl}");
-    final String fileName = uri.pathSegments.last;
+    // final Uri uri = Uri.parse(
+    //     "http://cluedin.creast.in:5000${widget.notification.attachmentUrl}");
+    // final String fileName = uri.pathSegments.last;
   }
 
   @override

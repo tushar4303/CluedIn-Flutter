@@ -278,14 +278,14 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     );
   }
 
-  Future uploadImage(File _image) async {
+  Future uploadImage(File image) async {
     final appDir = await getApplicationDocumentsDirectory();
     final filePath = '${appDir.path}/${DateTime.now()}.png';
     var token = Hive.box('userBox').get("token");
     print(token);
 
     final compressedBytes = await FlutterImageCompress.compressWithFile(
-      _image.absolute.path,
+      image.absolute.path,
       quality: 50,
     );
 

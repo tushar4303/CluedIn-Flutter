@@ -12,7 +12,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
-import '../widgets/eventsCard.dart';
+import '../widgets/eventsPage/eventsCard.dart';
 import '../widgets/offline.dart';
 import 'login_page.dart';
 

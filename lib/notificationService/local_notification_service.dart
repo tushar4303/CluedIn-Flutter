@@ -1,14 +1,9 @@
-import 'dart:convert';
 
-import 'package:cluedin_app/models/notification.dart';
-import 'package:cluedin_app/screens/notification_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:navbar_router/navbar_router.dart';
 
-import '../main.dart';
-import '../screens/notification_detail.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =

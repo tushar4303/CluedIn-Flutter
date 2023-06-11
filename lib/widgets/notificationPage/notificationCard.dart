@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:intl/intl.dart';
 
-import '../screens/notification_detail.dart';
+import '../../screens/notification_detail.dart';
 
 class NotificationWidget extends StatefulWidget {
   const NotificationWidget({super.key, required this.notification});
@@ -13,6 +13,17 @@ class NotificationWidget extends StatefulWidget {
 }
 
 class _NotificationWidgetState extends State<NotificationWidget> {
+  String _formatDate(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays > 0) {
+      return DateFormat('MMM d, ' 'yy').format(dateTime);
+    } else {
+      return DateFormat.jm().format(dateTime);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Hero(
@@ -23,7 +34,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
         child: Card(
           color: Colors.transparent,
           elevation: 0.0,
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 12, left: 4),
           child: ListTile(
             onTap: () {
               Navigator.push(
@@ -72,7 +83,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(
-                    widget.notification.notificationMessage,
+                    widget.notification.notificationMessage.trim(),
                     textScaleFactor: 0.9,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -85,10 +96,13 @@ class _NotificationWidgetState extends State<NotificationWidget> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  DateFormat('MMM d, ' 'yy')
-                      .format(widget.notification.dateOfcreation),
+                  _formatDate(widget.notification.dateOfcreation),
                   textAlign: TextAlign.end,
-                  textScaleFactor: 0.9,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0,
+                    fontSize: 11,
+                  ),
                 ),
                 if (widget.notification.isRead == 0)
                   Padding(

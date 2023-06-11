@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:cluedin_app/widgets/notificationCard.dart';
+import 'package:cluedin_app/widgets/notificationPage/notificationCard.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -390,99 +390,92 @@ class _NotificationPageState extends State<NotificationPage> {
             //to show internet connection message on isoffline = true.
           ),
           Expanded(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: FutureBuilder(
-                    future: myfuture,
-                    builder: ((context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              loadNotifications();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 54),
-                              child: ListView.builder(
-                                  itemCount: _filteredNotifications.length,
-                                  itemBuilder: (context, index) {
-                                    return NotificationWidget(
-                                      notification:
-                                          _filteredNotifications[index],
-                                    );
-                                  }),
-                            ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.035,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 0),
-                                child: SvgPicture.asset(
-                                  "assets/images/offline.svg",
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.45,
-                                ),
-                              ),
-                              const Text(
-                                'Well this is awkward!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 30, 29, 29)),
-                              ),
-                              const Text(
-                                'We dont seem to be connected...',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 30, 29, 29)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                      visualDensity: VisualDensity.comfortable,
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.black)),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: const Text(
-                                    "Try again",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      myfuture = loadNotifications();
-                                    });
-                                  },
-                                ),
-                              )
-                            ],
-                          );
-                        }
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
+            child: FutureBuilder(
+                future: myfuture,
+                builder: ((context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          loadNotifications();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 54),
+                          child: ListView.builder(
+                              itemCount: _filteredNotifications.length,
+                              itemBuilder: (context, index) {
+                                return NotificationWidget(
+                                  notification: _filteredNotifications[index],
+                                );
+                              }),
                         ),
                       );
-                    }))),
+                    } else if (snapshot.hasError) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.035,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 0),
+                            child: SvgPicture.asset(
+                              "assets/images/offline.svg",
+                              height: MediaQuery.of(context).size.height * 0.45,
+                            ),
+                          ),
+                          const Text(
+                            'Well this is awkward!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromARGB(255, 30, 29, 29)),
+                          ),
+                          const Text(
+                            'We dont seem to be connected...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromARGB(255, 30, 29, 29)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  visualDensity: VisualDensity.comfortable,
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.black)),
+                              clipBehavior: Clip.hardEdge,
+                              child: const Text(
+                                "Try again",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  myfuture = loadNotifications();
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
+                })),
           ),
         ],
       ),
