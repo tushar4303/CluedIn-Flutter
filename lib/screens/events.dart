@@ -1,8 +1,9 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/events.dart';
+import 'package:cluedin_app/widgets/notificationPage/EventShimmer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -75,10 +76,10 @@ class _MyEventsState extends State<MyEvents> {
     myfuture = loadEvents();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   Future<List<Events>?> loadEvents() async {
     var token = Hive.box('userBox').get("token");
@@ -130,9 +131,6 @@ class _MyEventsState extends State<MyEvents> {
         if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
           error = errorJson['msg'];
           NavbarNotifier.hideBottomNavBar = true;
-          // ignore: use_build_context_synchronously
-          // Navigator.of(context, rootNavigator: true).pop();
-          // ignore: use_build_context_synchronously
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (c) => const LoginPage()),
               (r) => false);
@@ -163,6 +161,13 @@ class _MyEventsState extends State<MyEvents> {
     return null;
   }
 
+  void updateFilteredEvents() {
+    setState(() {
+      _filteredEvents.clear();
+      _filteredEvents.addAll(filter(EventModel.events!, _filters, _senders));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,11 +177,9 @@ class _MyEventsState extends State<MyEvents> {
         automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.125,
         elevation: 0.3,
-        // title: Text("Notifications"),
         title: Transform(
           transform: Matrix4.translationValues(8.0, 16.0, 0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
@@ -203,102 +206,31 @@ class _MyEventsState extends State<MyEvents> {
                                   padding: const EdgeInsets.only(right: 16),
                                   child: ActionChip(
                                     onPressed: () async {
-                                      await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          isDismissible: true,
-                                          useRootNavigator: true,
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (context) =>
-                                              DraggableScrollableSheet(
-                                                  expand: false,
-                                                  key: UniqueKey(),
-                                                  initialChildSize: 0.4,
-                                                  maxChildSize: 0.6,
-                                                  builder:
-                                                      (context, controller) =>
-                                                          Container(
-                                                            decoration: const BoxDecoration(
-                                                                color: Colors
-                                                                    .white,
-                                                                borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            20.0),
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            20.0))),
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  margin: const EdgeInsets
-                                                                          .only(
-                                                                      top: 8,
-                                                                      bottom:
-                                                                          8),
-                                                                  width: 40.0,
-                                                                  height: 5.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0),
-                                                                    color: Colors
-                                                                        .grey,
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: ListView
-                                                                      .builder(
-                                                                    itemCount: EventModel
-                                                                        .organizers!
-                                                                        .length,
-                                                                    controller:
-                                                                        controller,
-                                                                    itemBuilder:
-                                                                        (BuildContext
-                                                                                context,
-                                                                            int index) {
-                                                                      return Column(
-                                                                        children: [
-                                                                          ListTile(
-                                                                            visualDensity:
-                                                                                const VisualDensity(vertical: -2.5),
-                                                                            title:
-                                                                                Text(EventModel.organizers![index]),
-                                                                            selected:
-                                                                                _senders.contains(EventModel.organizers![index]),
-                                                                            selectedColor:
-                                                                                Colors.blueAccent,
-                                                                            onTap:
-                                                                                () {
-                                                                              setState(() {
-                                                                                if (!_senders.contains(EventModel.organizers![index])) {
-                                                                                  _senders.add(EventModel.organizers![index]);
-                                                                                } else {
-                                                                                  _senders.removeWhere((name) {
-                                                                                    return name == EventModel.organizers![index];
-                                                                                  });
-                                                                                }
-                                                                                _filteredEvents.clear();
-                                                                                _filteredEvents.addAll(filter(EventModel.events!, _filters, _senders));
-                                                                              });
-                                                                            },
-                                                                          ),
-                                                                          Divider(
-                                                                            thickness:
-                                                                                0.5,
-                                                                            color:
-                                                                                Colors.grey.withOpacity(0.3),
-                                                                          )
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )));
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        isDismissible: true,
+                                        useRootNavigator: true,
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) =>
+                                            DraggableScrollableSheet(
+                                          expand: false,
+                                          key: UniqueKey(),
+                                          initialChildSize: 0.4,
+                                          maxChildSize: 0.6,
+                                          builder: (context, controller) =>
+                                              SenderRolesBottomSheet(
+                                            senderRoles: EventModel.organizers!,
+                                            onSendersSelected: (senders) {
+                                              setState(() {
+                                                _senders.clear();
+                                                _senders.addAll(senders);
+                                                updateFilteredEvents();
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      );
                                     },
                                     label: const Text("From"),
                                     avatar: const Icon(
@@ -392,103 +324,112 @@ class _MyEventsState extends State<MyEvents> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: FutureBuilder(
-                    future: myfuture,
-                    builder: ((context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              loadEvents();
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 54, top: 4),
-                              child: GridView.builder(
-                                itemCount: _filteredEvents.length,
-                                itemBuilder: (context, index) {
-                                  return EventsWidget(
-                                    event: _filteredEvents[index],
-                                  );
-                                },
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 16.0,
-                                        mainAxisSpacing: 12.0,
-                                        mainAxisExtent: 310.0),
+                  future: Future.delayed(Duration(seconds: 1), () => myfuture),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            loadEvents();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 54, top: 4),
+                            child: GridView.builder(
+                              itemCount: _filteredEvents.length,
+                              itemBuilder: (context, index) {
+                                return EventsWidget(
+                                  event: _filteredEvents[index],
+                                );
+                              },
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16.0,
+                                mainAxisSpacing: 12.0,
+                                mainAxisExtent: 310.0,
                               ),
                             ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.035,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 0),
+                              child: SvgPicture.asset(
+                                "assets/images/offline.svg",
                                 height:
-                                    MediaQuery.of(context).size.height * 0.035,
+                                    MediaQuery.of(context).size.height * 0.45,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 0),
-                                child: SvgPicture.asset(
-                                  "assets/images/offline.svg",
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.45,
-                                ),
-                              ),
-                              const Text(
-                                'Well this is awkward!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 30, 29, 29)),
-                              ),
-                              const Text(
-                                'We dont seem to be connected...',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 30, 29, 29)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
+                            ),
+                            const Text(
+                              'Well this is awkward!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromARGB(255, 30, 29, 29)),
+                            ),
+                            const Text(
+                              'We dont seem to be connected...',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromARGB(255, 30, 29, 29)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                      visualDensity: VisualDensity.comfortable,
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.black)),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: const Text(
-                                    "Try again",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      myfuture = loadEvents();
-                                    });
-                                  },
+                                    ),
+                                    visualDensity: VisualDensity.comfortable,
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.black)),
+                                clipBehavior: Clip.hardEdge,
+                                child: const Text(
+                                  "Try again",
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                              )
-                            ],
-                          );
-                        }
+                                onPressed: () {
+                                  setState(() {
+                                    myfuture = loadEvents();
+                                  });
+                                },
+                              ),
+                            )
+                          ],
+                        );
                       }
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.black,
-                        ),
-                      );
-                    }))),
+                    }
+                    // Show shimmer while waiting for data
+                    return GridView.builder(
+                      itemCount:
+                          6, // Number of shimmer widgets you want to show
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 12.0,
+                        mainAxisExtent: 310.0,
+                      ),
+                      itemBuilder: (context, index) {
+                        return EventWidgetShimmer();
+                      },
+                    );
+                  },
+                )),
           ),
         ],
       ),
@@ -497,67 +438,77 @@ class _MyEventsState extends State<MyEvents> {
   }
 }
 
-// class _showRoleFilterSheet extends StatelessWidget {
-//   const _showRoleFilterSheet({
-//     Key? key,
-//     required List senders,
-//   })  : _senders = senders,
-//         super(key: key);
+// Extracted widget for the bottom sheet content
+class SenderRolesBottomSheet extends StatefulWidget {
+  final List<String> senderRoles;
+  final Function(List<String>) onSendersSelected;
 
-//   final List _senders;
+  SenderRolesBottomSheet({
+    required this.senderRoles,
+    required this.onSendersSelected,
+  });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return DraggableScrollableSheet(
-//         expand: false,
-//         key: UniqueKey(),
-//         initialChildSize: 0.4,
-//         maxChildSize: 0.6,
-//         builder: (context, controller) => Container(
-//               decoration: const BoxDecoration(
-//                   color: Colors.white,
-//                   borderRadius: BorderRadius.only(
-//                       topLeft: Radius.circular(20.0),
-//                       topRight: Radius.circular(20.0))),
-//               child: Column(
-//                 children: [
-//                   Container(
-//                     margin: const EdgeInsets.only(top: 8, bottom: 8),
-//                     width: 40.0,
-//                     height: 5.0,
-//                     decoration: BoxDecoration(
-//                       borderRadius: BorderRadius.circular(10.0),
-//                       color: Colors.grey,
-//                     ),
-//                   ),
-//                   Expanded(
-//                     child: ListView.builder(
-//                       itemCount: EventModel.senderRoles!.length,
-//                       controller: controller,
-//                       itemBuilder: (BuildContext context, int index) {
-//                         return Column(
-//                           children: [
-//                             ListTile(
-//                               visualDensity:
-//                                   const VisualDensity(vertical: -2.5),
-//                               title: Text(EventModel.senderRoles![index]),
-//                               trailing: Visibility(
-//                                   visible: _senders
-//                                       .contains(EventModel.senderRoles![index]),
-//                                   child: const Icon(Icons.check)),
-//                               onTap: () {},
-//                             ),
-//                             Divider(
-//                               thickness: 0.5,
-//                               color: Colors.grey.withOpacity(0.3),
-//                             )
-//                           ],
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ));
-//   }
-// }
+  @override
+  _SenderRolesBottomSheetState createState() => _SenderRolesBottomSheetState();
+}
+
+class _SenderRolesBottomSheetState extends State<SenderRolesBottomSheet> {
+  List<String> selectedSenders = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+          color: Colors.white, // Change the background color as needed
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 8),
+              width: 40.0,
+              height: 5.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.senderRoles.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        visualDensity: const VisualDensity(vertical: -2.5),
+                        title: Text(widget.senderRoles[index]),
+                        selected:
+                            selectedSenders.contains(widget.senderRoles[index]),
+                        selectedColor: Colors.blueAccent,
+                        onTap: () {
+                          setState(() {
+                            if (!selectedSenders
+                                .contains(widget.senderRoles[index])) {
+                              selectedSenders.add(widget.senderRoles[index]);
+                            } else {
+                              selectedSenders.removeWhere((name) {
+                                return name == widget.senderRoles[index];
+                              });
+                            }
+                            widget.onSendersSelected(selectedSenders);
+                          });
+                        },
+                      ),
+                      Divider(
+                        thickness: 0.5,
+                        color: Colors.grey.withOpacity(0.3),
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
+  }
+}

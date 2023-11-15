@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/notificationPage/notificationCard.dart';
@@ -13,6 +14,7 @@ import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
 import '../widgets/offline.dart';
 import 'login_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -38,7 +40,10 @@ class _NotificationPageState extends State<NotificationPage> {
   StreamSubscription? internetconnection;
   bool isoffline = false;
   bool showFrom = false;
-  //set variable for Connectivity subscription listiner
+
+  Future<void> _simulateDelay() async {
+    await Future.delayed(const Duration(seconds: 1));
+  }
 
   final _filters = [];
   final _senders = [];
@@ -50,32 +55,22 @@ class _NotificationPageState extends State<NotificationPage> {
     internetconnection = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
-      // whenevery connection status is changed.
       if (result == ConnectivityResult.none) {
-        //there is no any connection
         setState(() {
           isoffline = true;
         });
       } else if (result == ConnectivityResult.mobile) {
-        //connection is mobile data network
         setState(() {
           isoffline = false;
         });
       } else if (result == ConnectivityResult.wifi) {
-        //connection is from wifi
         setState(() {
           isoffline = false;
         });
       }
-    }); // using this listiner, you can get the medium of connection as well.
+    });
     super.initState();
-    // loadNotifications();
     myfuture = loadNotifications();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future<List<Notifications>?> loadNotifications() async {
@@ -90,14 +85,12 @@ class _NotificationPageState extends State<NotificationPage> {
       }, body: {
         'user_id': userid.toString()
       }).timeout(const Duration(seconds: 2)),
-      // Retry on SocketException or TimeoutException
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
 
     try {
       if (response.statusCode == 200) {
         final NotificationsJson = response.body;
-
         final decodedData = jsonDecode(NotificationsJson);
         var notificationsData = decodedData["notifications"];
         var labelsData = decodedData["labels"];
@@ -110,8 +103,6 @@ class _NotificationPageState extends State<NotificationPage> {
             .map<Notifications>(
                 (notification) => Notifications.fromMap(notification))
             .toList();
-
-        print(NotificationModel.notifications);
 
         setState(() {
           _filters.clear();
@@ -130,9 +121,6 @@ class _NotificationPageState extends State<NotificationPage> {
         if (errorJson['msg'] != null && errorJson['msg'].isNotEmpty) {
           error = errorJson['msg'];
           NavbarNotifier.hideBottomNavBar = true;
-          // ignore: use_build_context_synchronously
-          // Navigator.of(context, rootNavigator: true).pop();
-          // ignore: use_build_context_synchronously
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (c) => const LoginPage()),
               (r) => false);
@@ -148,7 +136,6 @@ class _NotificationPageState extends State<NotificationPage> {
       } else {
         final error = response.body;
         final decodedData = jsonDecode(error);
-        // print(decodedData);
         var message = decodedData["msg"];
         Fluttertoast.showToast(
           msg: message,
@@ -163,20 +150,25 @@ class _NotificationPageState extends State<NotificationPage> {
     return null;
   }
 
+  void updateFilteredNotifications() {
+    setState(() {
+      _filteredNotifications.clear();
+      _filteredNotifications
+          .addAll(filter(NotificationModel.notifications!, _filters, _senders));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.125,
         elevation: 0.3,
-        // title: Text("Notifications"),
         title: Transform(
           transform: Matrix4.translationValues(8.0, 16.0, 0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
@@ -204,102 +196,32 @@ class _NotificationPageState extends State<NotificationPage> {
                                   padding: const EdgeInsets.only(right: 16),
                                   child: ActionChip(
                                     onPressed: () async {
-                                      await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          isDismissible: true,
-                                          useRootNavigator: true,
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (context) =>
-                                              DraggableScrollableSheet(
-                                                  expand: false,
-                                                  key: UniqueKey(),
-                                                  initialChildSize: 0.4,
-                                                  maxChildSize: 0.6,
-                                                  builder:
-                                                      (context, controller) =>
-                                                          Container(
-                                                            decoration: const BoxDecoration(
-                                                                color: Colors
-                                                                    .white,
-                                                                borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            20.0),
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            20.0))),
-                                                            child: Column(
-                                                              children: [
-                                                                Container(
-                                                                  margin: const EdgeInsets
-                                                                          .only(
-                                                                      top: 8,
-                                                                      bottom:
-                                                                          8),
-                                                                  width: 40.0,
-                                                                  height: 5.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0),
-                                                                    color: Colors
-                                                                        .grey,
-                                                                  ),
-                                                                ),
-                                                                Expanded(
-                                                                  child: ListView
-                                                                      .builder(
-                                                                    itemCount: NotificationModel
-                                                                        .senderRoles!
-                                                                        .length,
-                                                                    controller:
-                                                                        controller,
-                                                                    itemBuilder:
-                                                                        (BuildContext
-                                                                                context,
-                                                                            int index) {
-                                                                      return Column(
-                                                                        children: [
-                                                                          ListTile(
-                                                                            visualDensity:
-                                                                                const VisualDensity(vertical: -2.5),
-                                                                            title:
-                                                                                Text(NotificationModel.senderRoles![index]),
-                                                                            selected:
-                                                                                _senders.contains(NotificationModel.senderRoles![index]),
-                                                                            selectedColor:
-                                                                                Colors.blueAccent,
-                                                                            onTap:
-                                                                                () {
-                                                                              setState(() {
-                                                                                if (!_senders.contains(NotificationModel.senderRoles![index])) {
-                                                                                  _senders.add(NotificationModel.senderRoles![index]);
-                                                                                } else {
-                                                                                  _senders.removeWhere((name) {
-                                                                                    return name == NotificationModel.senderRoles![index];
-                                                                                  });
-                                                                                }
-                                                                                _filteredNotifications.clear();
-                                                                                _filteredNotifications.addAll(filter(NotificationModel.notifications!, _filters, _senders));
-                                                                              });
-                                                                            },
-                                                                          ),
-                                                                          Divider(
-                                                                            thickness:
-                                                                                0.5,
-                                                                            color:
-                                                                                Colors.grey.withOpacity(0.3),
-                                                                          )
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )));
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        isDismissible: true,
+                                        useRootNavigator: true,
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) =>
+                                            DraggableScrollableSheet(
+                                          expand: false,
+                                          key: UniqueKey(),
+                                          initialChildSize: 0.4,
+                                          maxChildSize: 0.6,
+                                          builder: (context, controller) =>
+                                              SenderRolesBottomSheet(
+                                            senderRoles:
+                                                NotificationModel.senderRoles!,
+                                            onSendersSelected: (senders) {
+                                              setState(() {
+                                                _senders.clear();
+                                                _senders.addAll(senders);
+                                                updateFilteredNotifications();
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      );
                                     },
                                     label: const Text("From"),
                                     avatar: const Icon(
@@ -311,8 +233,6 @@ class _NotificationPageState extends State<NotificationPage> {
                                     side: const BorderSide(
                                         width: 1,
                                         color: Color.fromARGB(66, 75, 74, 74)),
-                                    // surfaceTintColor: Colors.black,
-
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
@@ -337,15 +257,13 @@ class _NotificationPageState extends State<NotificationPage> {
                                             width: 1,
                                             color:
                                                 Color.fromARGB(66, 75, 74, 74)),
-                                        // surfaceTintColor: Colors.black,
-
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
                                         selectedColor: const Color.fromARGB(
                                             180, 224, 220, 220),
-                                        onSelected: ((value) {
+                                        onSelected: (value) {
                                           setState(() {
                                             if (value) {
                                               _filters.clear();
@@ -355,20 +273,17 @@ class _NotificationPageState extends State<NotificationPage> {
                                                 return name == filterType;
                                               });
                                             }
-                                            print(_filters);
 
                                             showFrom =
                                                 _filters.contains("Academics");
 
-                                            _filteredNotifications.clear();
-                                            _filteredNotifications.addAll(
-                                                filter(
-                                                    NotificationModel
-                                                        .notifications!,
-                                                    _filters,
-                                                    _senders));
+                                            if (showFrom) {
+                                              _senders.clear();
+                                            }
+
+                                            updateFilteredNotifications();
                                           });
-                                        })));
+                                        }));
                               }).toList()),
                             ),
                           ],
@@ -387,99 +302,185 @@ class _NotificationPageState extends State<NotificationPage> {
         children: [
           Container(
             child: errmsg("No Internet Connection Available", isoffline),
-            //to show internet connection message on isoffline = true.
           ),
           Expanded(
             child: FutureBuilder(
-                future: myfuture,
-                builder: ((context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          loadNotifications();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 54),
-                          child: ListView.builder(
-                              itemCount: _filteredNotifications.length,
-                              itemBuilder: (context, index) {
-                                return NotificationWidget(
-                                  notification: _filteredNotifications[index],
-                                );
-                              }),
+              future: Future.wait([myfuture, _simulateDelay()]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData) {
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        loadNotifications();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 54),
+                        child: ListView.builder(
+                          itemCount: _filteredNotifications.length,
+                          itemBuilder: (context, index) {
+                            return NotificationWidget(
+                              notification: _filteredNotifications[index],
+                            );
+                          },
                         ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.035,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.035,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 0),
+                          child: SvgPicture.asset(
+                            "assets/images/offline.svg",
+                            height: MediaQuery.of(context).size.height * 0.45,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 0),
-                            child: SvgPicture.asset(
-                              "assets/images/offline.svg",
-                              height: MediaQuery.of(context).size.height * 0.45,
-                            ),
+                        ),
+                        const Text(
+                          'Well, this is awkward!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 30, 29, 29),
                           ),
-                          const Text(
-                            'Well this is awkward!',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromARGB(255, 30, 29, 29)),
+                        ),
+                        const Text(
+                          'We don\'t seem to be connected...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 30, 29, 29),
                           ),
-                          const Text(
-                            'We dont seem to be connected...',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromARGB(255, 30, 29, 29)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  visualDensity: VisualDensity.comfortable,
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.black)),
-                              clipBehavior: Clip.hardEdge,
-                              child: const Text(
-                                "Try again",
-                                style: TextStyle(color: Colors.white),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  myfuture = loadNotifications();
-                                });
-                              },
+                              visualDensity: VisualDensity.comfortable,
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.black),
                             ),
-                          )
-                        ],
-                      );
-                    }
+                            clipBehavior: Clip.hardEdge,
+                            child: const Text(
+                              "Try again",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                myfuture = loadNotifications();
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    );
                   }
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  );
-                })),
+                }
+
+                // If the data is still loading or no data has been retrieved yet, display shimmer effect
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: ListView.builder(
+                    itemCount:
+                        10, // You can adjust this number based on your design
+                    itemBuilder: (context, index) {
+                      return ListTileShimmer(); // Create a ListTileShimmer widget for shimmer effect
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
-      // ignore: prefer_const_literals_to_create_immutables
     );
+  }
+}
+
+// Extracted widget for the bottom sheet content
+class SenderRolesBottomSheet extends StatefulWidget {
+  final List<String> senderRoles;
+  final Function(List<String>) onSendersSelected;
+
+  SenderRolesBottomSheet({
+    required this.senderRoles,
+    required this.onSendersSelected,
+  });
+
+  @override
+  _SenderRolesBottomSheetState createState() => _SenderRolesBottomSheetState();
+}
+
+class _SenderRolesBottomSheetState extends State<SenderRolesBottomSheet> {
+  List<String> selectedSenders = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+          color: Colors.white, // Change the background color as needed
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 8),
+              width: 40.0,
+              height: 5.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.senderRoles.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        visualDensity: const VisualDensity(vertical: -2.5),
+                        title: Text(widget.senderRoles[index]),
+                        selected:
+                            selectedSenders.contains(widget.senderRoles[index]),
+                        selectedColor: Colors.blueAccent,
+                        onTap: () {
+                          setState(() {
+                            if (!selectedSenders
+                                .contains(widget.senderRoles[index])) {
+                              selectedSenders.add(widget.senderRoles[index]);
+                            } else {
+                              selectedSenders.removeWhere((name) {
+                                return name == widget.senderRoles[index];
+                              });
+                            }
+                            widget.onSendersSelected(selectedSenders);
+                          });
+                        },
+                      ),
+                      Divider(
+                        thickness: 0.5,
+                        color: Colors.grey.withOpacity(0.3),
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
   }
 }

@@ -95,18 +95,6 @@ class EventsWidget extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w600)),
               ),
-              // Align(
-              //   alignment: Alignment.topLeft,
-              //   child: Text(
-              //       event
-              //           .messageLabel,
-              //       maxLines: 2,
-              //       textAlign: TextAlign.left,
-              //       overflow: TextOverflow.ellipsis,
-              //       style: const TextStyle(
-              //         fontSize: 14,
-              //       )),
-              // ),
             ],
           ),
         ));
