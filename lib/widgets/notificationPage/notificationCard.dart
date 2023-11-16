@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:intl/intl.dart';
@@ -38,10 +39,12 @@ class _NotificationWidgetState extends State<NotificationWidget> {
           child: ListTile(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NotificationDetailsPage(
-                          notification: widget.notification))).then((_) {
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => NotificationDetailsPage(
+                      notification: widget.notification),
+                ),
+              ).then((_) {
                 setState(() {});
               });
             },

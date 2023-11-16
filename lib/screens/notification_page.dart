@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -33,7 +36,11 @@ class _NotificationPageState extends State<NotificationPage> {
         .where((notification) =>
             (laBels.isEmpty ||
                 laBels.contains(notification.notificationLabel)) &&
-            (senders.isEmpty || senders.contains(notification.senderRole)))
+            (senders.isEmpty || senders.contains(notification.senderRole)) &&
+            (_startDate == null ||
+                notification.dateOfcreation.isAfter(_startDate!)) &&
+            (_endDate == null ||
+                notification.dateOfcreation.isBefore(_endDate!)))
         .toList();
   }
 
@@ -44,6 +51,9 @@ class _NotificationPageState extends State<NotificationPage> {
   Future<void> _simulateDelay() async {
     await Future.delayed(const Duration(seconds: 1));
   }
+
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   final _filters = [];
   final _senders = [];
@@ -71,6 +81,14 @@ class _NotificationPageState extends State<NotificationPage> {
     });
     super.initState();
     myfuture = loadNotifications();
+  }
+
+  void clearDateRange() {
+    setState(() {
+      _startDate = null;
+      _endDate = null;
+      updateFilteredNotifications();
+    });
   }
 
   Future<List<Notifications>?> loadNotifications() async {
@@ -171,11 +189,72 @@ class _NotificationPageState extends State<NotificationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Notifications",
-                textAlign: TextAlign.left,
-                textScaleFactor: 1.3,
-                style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Notifications",
+                    textAlign: TextAlign.left,
+                    textScaleFactor: 1.3,
+                    style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                  ),
+                  _startDate != null && _endDate != null
+                      ? IconButton(
+                          icon: Icon(Icons.event_busy),
+                          onPressed: () {
+                            // Handle clear date range
+                            clearDateRange();
+                          },
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            // Use DateTime.now() for both start and end dates
+                            setState(() {
+                              _startDate = DateTime.now();
+                              _endDate = DateTime.now();
+                              updateFilteredNotifications();
+                            });
+                          },
+                          onDoubleTap: () {
+                            // Handle double tap to automatically choose today's date
+                            setState(() {
+                              _startDate =
+                                  DateTime.now().subtract(Duration(days: 1));
+                              _endDate = DateTime.now();
+                              updateFilteredNotifications();
+                            });
+                          },
+                          onLongPress: () {
+                            // Handle long press to clear the date range
+                            clearDateRange();
+                          },
+                          child: IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () async {
+                              final picked = await showDateRangePicker(
+                                context: context,
+                                firstDate: DateTime(2022),
+                                lastDate: DateTime(2030),
+                                initialDateRange:
+                                    _startDate != null && _endDate != null
+                                        ? DateTimeRange(
+                                            start: _startDate!, end: _endDate!)
+                                        : null,
+                              );
+
+                              if (picked != null &&
+                                  picked.start != null &&
+                                  picked.end != null) {
+                                setState(() {
+                                  _startDate = picked.start!;
+                                  _endDate = picked.end!;
+                                  updateFilteredNotifications();
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                ],
               ),
               const SizedBox(
                 height: 4,
@@ -263,7 +342,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                         ),
                                         selectedColor: const Color.fromARGB(
                                             180, 224, 220, 220),
-                                        onSelected: (value) {
+                                        onSelected: ((value) {
                                           setState(() {
                                             if (value) {
                                               _filters.clear();
@@ -273,17 +352,20 @@ class _NotificationPageState extends State<NotificationPage> {
                                                 return name == filterType;
                                               });
                                             }
+                                            print(_filters);
 
                                             showFrom =
                                                 _filters.contains("Academics");
 
-                                            if (showFrom) {
-                                              _senders.clear();
-                                            }
-
-                                            updateFilteredNotifications();
+                                            _filteredNotifications.clear();
+                                            _filteredNotifications.addAll(
+                                                filter(
+                                                    NotificationModel
+                                                        .notifications!,
+                                                    _filters,
+                                                    _senders));
                                           });
-                                        }));
+                                        })));
                               }).toList()),
                             ),
                           ],

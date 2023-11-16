@@ -32,7 +32,9 @@ class _MyEventsState extends State<MyEvents> {
     return events
         .where((event) =>
             (laBels.isEmpty || laBels.contains(event.eventLabel)) &&
-            (senders.isEmpty || senders.contains(event.organizedBy)))
+            (senders.isEmpty || senders.contains(event.organizedBy)) &&
+            (_startDate == null || event.dateOfcreation.isAfter(_startDate!)) &&
+            (_endDate == null || event.dateOfcreation.isBefore(_endDate!)))
         .toList();
   }
 
@@ -76,10 +78,16 @@ class _MyEventsState extends State<MyEvents> {
     myfuture = loadEvents();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  void clearDateRange() {
+    setState(() {
+      _startDate = null;
+      _endDate = null;
+      updateFilteredEvents();
+    });
+  }
 
   Future<List<Events>?> loadEvents() async {
     var token = Hive.box('userBox').get("token");
@@ -182,11 +190,72 @@ class _MyEventsState extends State<MyEvents> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Events",
-                textAlign: TextAlign.left,
-                textScaleFactor: 1.3,
-                style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Events",
+                    textAlign: TextAlign.left,
+                    textScaleFactor: 1.3,
+                    style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+                  ),
+                  _startDate != null && _endDate != null
+                      ? IconButton(
+                          icon: Icon(Icons.event_busy),
+                          onPressed: () {
+                            // Handle clear date range
+                            clearDateRange();
+                          },
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            // Use DateTime.now() for both start and end dates
+                            setState(() {
+                              _startDate = DateTime.now();
+                              _endDate = DateTime.now();
+                              updateFilteredEvents();
+                            });
+                          },
+                          onDoubleTap: () {
+                            // Handle double tap to automatically choose today's date
+                            setState(() {
+                              _startDate =
+                                  DateTime.now().subtract(Duration(days: 1));
+                              _endDate = DateTime.now();
+                              updateFilteredEvents();
+                            });
+                          },
+                          onLongPress: () {
+                            // Handle long press to clear the date range
+                            clearDateRange();
+                          },
+                          child: IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () async {
+                              final picked = await showDateRangePicker(
+                                context: context,
+                                firstDate: DateTime(2022),
+                                lastDate: DateTime(2030),
+                                initialDateRange:
+                                    _startDate != null && _endDate != null
+                                        ? DateTimeRange(
+                                            start: _startDate!, end: _endDate!)
+                                        : null,
+                              );
+
+                              if (picked != null &&
+                                  picked.start != null &&
+                                  picked.end != null) {
+                                setState(() {
+                                  _startDate = picked.start!;
+                                  _endDate = picked.end!;
+                                  updateFilteredEvents();
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                ],
               ),
               const SizedBox(
                 height: 4,

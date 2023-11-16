@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/webView/webview.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -17,6 +19,13 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   late Future openbox;
+
+  void shareApp() {
+    final String text =
+        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://github.com/tushar4303/CluedIn-Flutter/]";
+
+    Share.share(text);
+  }
 
   @override
   void didChangeDependencies() {
@@ -146,7 +155,9 @@ class _MyProfileState extends State<MyProfile> {
                 // horizontalTitleGap: 0,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                onTap: () {},
+                onTap: () {
+                  shareApp();
+                },
                 leading: const Icon(Icons.share),
                 title: const Text("Spread the word"),
                 subtitle: const Text("Share the App with your friends"),
@@ -168,7 +179,14 @@ class _MyProfileState extends State<MyProfile> {
                 // horizontalTitleGap: 0,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                onTap: () {},
+                onTap: () async {
+                  final url = Uri.parse(
+                    "https://github.com/tushar4303/CluedIn-Flutter",
+                  );
+                  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+                    throw 'Could not launch $url';
+                  }
+                },
                 leading: const Icon(Icons.info_outline),
                 title: const Text("About CluedIn"),
                 subtitle: const Text("Know more about us"),
@@ -205,9 +223,16 @@ class _MyProfileState extends State<MyProfile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  final url = Uri.parse(
+                    "https://github.com/tushar4303/CluedIn-Flutter",
+                  );
+                  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+                    throw 'Could not launch $url';
+                  }
+                },
                 child: const Text(
-                  "About app",
+                  "Changelogs",
                   style:
                       TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
                 ),
@@ -223,7 +248,14 @@ class _MyProfileState extends State<MyProfile> {
                 width: 6,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  final url = Uri.parse(
+                    "https://github.com/tushar4303/CluedIn-Flutter/blob/main/PRIVACY_POLICY.md",
+                  );
+                  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+                    throw 'Could not launch $url';
+                  }
+                },
                 child: const Text(
                   "Privacy policy",
                   style:
