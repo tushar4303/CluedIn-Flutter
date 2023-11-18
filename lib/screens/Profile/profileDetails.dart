@@ -13,8 +13,8 @@ import 'package:navbar_router/navbar_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-import '../models/profile.dart';
-import 'login_page.dart';
+import '../../models/profile.dart';
+import '../login_page.dart';
 
 class ProfileDetails extends StatefulWidget {
   const ProfileDetails({super.key, required this.userDetails});

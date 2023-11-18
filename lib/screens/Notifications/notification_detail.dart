@@ -3,13 +3,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retry/retry.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cluedin_app/screens/notification_page.dart';
+import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/models/notification.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -17,7 +18,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mime/mime.dart';
 
-import '../models/linkMetaData.dart';
+import '../../models/linkMetaData.dart';
 
 class NotificationDetailsPage extends StatefulWidget {
   const NotificationDetailsPage({
@@ -225,10 +226,16 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        widget.notification.notificationMessage,
-                        textAlign: TextAlign.left,
+                      child: Linkify(
+                        onOpen: (link) async {
+                          if (!await launchUrl(Uri.parse(link.url))) {
+                            throw Exception('Could not launch ${link.url}');
+                          }
+                        },
+                        text: widget.notification.notificationMessage,
                         style: const TextStyle(fontSize: 16),
+                        linkStyle: const TextStyle(
+                            color: Colors.blue), // Customize link color
                       ),
                     ),
                     const SizedBox(

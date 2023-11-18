@@ -3,14 +3,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
 
-import 'package:cluedin_app/screens/events.dart';
+import 'package:cluedin_app/screens/Events/events.dart';
 import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/screens/login_page.dart';
-import 'package:cluedin_app/screens/notification_page.dart';
-import 'package:cluedin_app/screens/profile.dart';
+import 'package:cluedin_app/screens/Notifications/notification_page.dart';
+import 'package:cluedin_app/screens/Profile/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 
 import 'firebase_options.dart';
@@ -27,6 +28,10 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 //     FlutterLocalNotificationsPlugin();
 
 void main() async {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     name: "CluedIn",

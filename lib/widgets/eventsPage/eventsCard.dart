@@ -1,25 +1,33 @@
 import 'package:cluedin_app/models/events.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../screens/eventDetailsPage.dart';
+import '../../screens/Events/eventDetailsPage.dart';
 
-class EventsWidget extends StatelessWidget {
+class EventsWidget extends StatefulWidget {
   const EventsWidget({super.key, required this.event});
   final Events event;
 
   @override
+  State<EventsWidget> createState() => _EventsWidgetState();
+}
+
+class _EventsWidgetState extends State<EventsWidget> {
+  @override
   Widget build(BuildContext context) {
     return Hero(
-        tag: Key(event.eventId.toString()),
+        tag: Key(widget.event.eventId.toString()),
         child: InkWell(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EventDetailsPage(
-                          event: event,
-                        )));
+              context,
+              CupertinoPageRoute(
+                builder: (context) => EventDetailsPage(event: widget.event),
+              ),
+            ).then((_) {
+              setState(() {});
+            });
           },
           child: Column(
             children: [
@@ -33,7 +41,7 @@ class EventsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.0)),
                       child: CachedNetworkImage(
                         fit: BoxFit.cover,
-                        imageUrl: event.imageUrl,
+                        imageUrl: widget.event.imageUrl,
                         placeholder: (context, url) {
                           return Image.asset(
                             "assets/images/placeholder.png",
@@ -69,7 +77,7 @@ class EventsWidget extends StatelessWidget {
                                     ),
                                     TextSpan(
                                         text:
-                                            " ${DateFormat('MMM d, ' 'yy').format(event.dateOfcreation)}",
+                                            " ${DateFormat('MMM d, ' 'yy').format(widget.event.dateOfcreation)}",
                                         style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.white,
@@ -88,7 +96,7 @@ class EventsWidget extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.topLeft,
-                child: Text(event.eventTitle,
+                child: Text(widget.event.eventTitle,
                     maxLines: 2,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,

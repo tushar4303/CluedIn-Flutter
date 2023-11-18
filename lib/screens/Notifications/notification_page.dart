@@ -1,22 +1,21 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'dart:async';
 import 'dart:io';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:cluedin_app/widgets/connectivityTest.dart';
+import 'package:cluedin_app/widgets/noInternet.dart';
 import 'package:cluedin_app/models/notification.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/notificationPage/notificationCard.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
-import '../widgets/offline.dart';
-import 'login_page.dart';
+import '../../widgets/offline.dart';
+import '../login_page.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -40,7 +39,10 @@ class _NotificationPageState extends State<NotificationPage> {
             (_startDate == null ||
                 notification.dateOfcreation.isAfter(_startDate!)) &&
             (_endDate == null ||
-                notification.dateOfcreation.isBefore(_endDate!)))
+                notification.dateOfcreation.isBefore(_endDate!)) &&
+            (!showUnread ||
+                notification.isRead ==
+                    0)) // Added condition for filtering unread notifications
         .toList();
   }
 
@@ -48,12 +50,15 @@ class _NotificationPageState extends State<NotificationPage> {
   bool isoffline = false;
   bool showFrom = false;
 
+  late ConnectivityHelper connectivityHelper;
+
   Future<void> _simulateDelay() async {
     await Future.delayed(const Duration(seconds: 1));
   }
 
   DateTime? _startDate;
   DateTime? _endDate;
+  bool showUnread = false;
 
   final _filters = [];
   final _senders = [];
@@ -62,24 +67,15 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   void initState() {
-    internetconnection = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        setState(() {
-          isoffline = true;
-        });
-      } else if (result == ConnectivityResult.mobile) {
-        setState(() {
-          isoffline = false;
-        });
-      } else if (result == ConnectivityResult.wifi) {
-        setState(() {
-          isoffline = false;
-        });
-      }
-    });
     super.initState();
+    connectivityHelper = ConnectivityHelper(
+      onConnectivityChanged: (bool isConnected) {
+        setState(() {
+          isoffline = !isConnected;
+        });
+      },
+    );
+    connectivityHelper.initConnectivityListener();
     myfuture = loadNotifications();
   }
 
@@ -180,7 +176,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.125,
         elevation: 0.3,
@@ -195,78 +191,137 @@ class _NotificationPageState extends State<NotificationPage> {
                   const Text(
                     "Notifications",
                     textAlign: TextAlign.left,
-                    textScaleFactor: 1.3,
+                    textScaler: TextScaler.linear(1.3),
                     style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
                   ),
-                  _startDate != null && _endDate != null
-                      ? IconButton(
-                          icon: Icon(Icons.event_busy),
-                          onPressed: () {
-                            // Handle clear date range
-                            clearDateRange();
-                          },
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            // Use DateTime.now() for both start and end dates
-                            setState(() {
-                              _startDate = DateTime.now();
-                              _endDate = DateTime.now();
-                              updateFilteredNotifications();
-                            });
-                          },
-                          onDoubleTap: () {
-                            // Handle double tap to automatically choose today's date
-                            setState(() {
-                              _startDate =
-                                  DateTime.now().subtract(Duration(days: 1));
-                              _endDate = DateTime.now();
-                              updateFilteredNotifications();
-                            });
-                          },
-                          onLongPress: () {
-                            // Handle long press to clear the date range
-                            clearDateRange();
-                          },
-                          child: IconButton(
-                            icon: Icon(Icons.calendar_today),
-                            onPressed: () async {
-                              final picked = await showDateRangePicker(
-                                context: context,
-                                firstDate: DateTime(2022),
-                                lastDate: DateTime(2030),
-                                initialDateRange:
-                                    _startDate != null && _endDate != null
-                                        ? DateTimeRange(
-                                            start: _startDate!, end: _endDate!)
-                                        : null,
-                              );
-
-                              if (picked != null &&
-                                  picked.start != null &&
-                                  picked.end != null) {
-                                setState(() {
-                                  _startDate = picked.start!;
-                                  _endDate = picked.end!;
-                                  updateFilteredNotifications();
-                                });
-                              }
-                            },
-                          ),
+                  Transform.translate(
+                    offset: const Offset(0.0, -4.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: showUnread
+                            ? const Color.fromRGBO(233, 228, 230, 0.8)
+                            : null,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        visualDensity: VisualDensity.comfortable,
+                        icon: Icon(
+                          showUnread
+                              ? Icons.mark_unread_chat_alt_rounded
+                              : Icons.mark_unread_chat_alt_outlined,
+                          color: Colors.black,
                         ),
+                        onPressed: () {
+                          setState(() {
+                            // Toggle the state when the icon button is tapped
+                            showUnread = !showUnread;
+                            // Filter notifications based on 'showUnread' state
+                            updateFilteredNotifications();
+                          });
+                        },
+                      ),
+                    ),
+                  )
                 ],
-              ),
-              const SizedBox(
-                height: 4,
               ),
               (NotificationModel.labels != null &&
                       NotificationModel.labels!.isNotEmpty)
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
-                        margin: const EdgeInsets.only(bottom: 16),
+                        margin: const EdgeInsets.only(bottom: 16, left: 0),
                         child: Row(
                           children: [
+                            GestureDetector(
+                              onTap: () {
+                                // Use DateTime.now() for both start and end dates
+                                setState(() {
+                                  _startDate = DateTime.now();
+                                  _endDate = DateTime.now();
+                                  updateFilteredNotifications();
+                                });
+                              },
+                              onDoubleTap: () {
+                                // Handle double tap to automatically choose today's date
+                                setState(() {
+                                  _startDate = DateTime.now()
+                                      .subtract(const Duration(days: 1));
+                                  _endDate = DateTime.now();
+                                  updateFilteredNotifications();
+                                });
+                              },
+                              onLongPress: () {
+                                // Handle long press to clear the date range
+                                clearDateRange();
+                              },
+                              child: _startDate != null && _endDate != null
+                                  ? Transform.translate(
+                                      offset: const Offset(0.0, -4.0),
+                                      child: ActionChip(
+                                        visualDensity:
+                                            const VisualDensity(vertical: -1.5),
+                                        side: const BorderSide(
+                                            width: 1,
+                                            color:
+                                                Color.fromARGB(66, 75, 74, 74)),
+                                        shape: const StadiumBorder(),
+                                        avatar: const Icon(
+                                          Icons.event_busy,
+                                          color: Colors.black,
+                                        ),
+                                        label: const Text('Date'),
+                                        onPressed: () {
+                                          // Handle clear date range
+                                          clearDateRange();
+                                        },
+                                      ),
+                                    )
+                                  : Transform.translate(
+                                      offset: const Offset(0.0, -4.0),
+                                      child: ActionChip(
+                                        visualDensity:
+                                            const VisualDensity(vertical: -1.5),
+                                        side: const BorderSide(
+                                            width: 1,
+                                            color:
+                                                Color.fromARGB(66, 75, 74, 74)),
+                                        shape: const StadiumBorder(),
+                                        avatar: const Icon(
+                                          Icons.calendar_today,
+                                          color: Colors.black,
+                                        ),
+                                        label: const Text('Date'),
+                                        onPressed: () async {
+                                          final picked =
+                                              await showDateRangePicker(
+                                            context: context,
+                                            firstDate: DateTime(2022),
+                                            lastDate: DateTime(2030),
+                                            initialDateRange:
+                                                _startDate != null &&
+                                                        _endDate != null
+                                                    ? DateTimeRange(
+                                                        start: _startDate!,
+                                                        end: _endDate!)
+                                                    : null,
+                                          );
+
+                                          if (picked != null &&
+                                              picked.start != null &&
+                                              picked.end != null) {
+                                            setState(() {
+                                              _startDate = picked.start;
+                                              _endDate = picked.end;
+                                              updateFilteredNotifications();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                            ),
+                            const SizedBox(
+                              width: 14,
+                            ),
                             Transform(
                               transform: Matrix4.translationValues(0, -4, 0),
                               child: Visibility(
@@ -408,65 +463,12 @@ class _NotificationPageState extends State<NotificationPage> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.035,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 0),
-                          child: SvgPicture.asset(
-                            "assets/images/offline.svg",
-                            height: MediaQuery.of(context).size.height * 0.45,
-                          ),
-                        ),
-                        const Text(
-                          'Well, this is awkward!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Color.fromARGB(255, 30, 29, 29),
-                          ),
-                        ),
-                        const Text(
-                          'We don\'t seem to be connected...',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Color.fromARGB(255, 30, 29, 29),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                              visualDensity: VisualDensity.comfortable,
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.black),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: const Text(
-                              "Try again",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                myfuture = loadNotifications();
-                              });
-                            },
-                          ),
-                        )
-                      ],
+                    return ErrorView(
+                      onRetry: () {
+                        setState(() {
+                          myfuture = loadNotifications();
+                        });
+                      },
                     );
                   }
                 }
@@ -512,7 +514,7 @@ class _SenderRolesBottomSheetState extends State<SenderRolesBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white, // Change the background color as needed
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
         ),

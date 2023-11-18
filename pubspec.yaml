@@ -47,6 +47,7 @@ dependencies:
   retry: ^3.1.0
   connectivity_plus:
   share_plus:
+  flutter_linkify: ^6.0.0
   image_picker: ^0.8.6
   cached_network_image: ^3.2.3
   url_launcher: ^6.1.7

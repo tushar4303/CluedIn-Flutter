@@ -1,5 +1,10 @@
+// ignore_for_file: unused_import, unused_element
+
 import 'dart:convert';
 import 'dart:math';
+import 'package:cluedin_app/widgets/connectivityTest.dart';
+import 'package:cluedin_app/widgets/noInternet.dart';
+import 'package:cluedin_app/widgets/offline.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
@@ -128,10 +133,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final localNotificationService = LocalNotificationService();
+  late ConnectivityHelper connectivityHelper;
 
   @override
   void initState() {
     super.initState();
+    connectivityHelper = ConnectivityHelper(
+      onConnectivityChanged: (bool isConnected) {
+        setState(() {
+          isOffline = !isConnected;
+        });
+      },
+    );
+    connectivityHelper.initConnectivityListener();
     myfuture = loadHomePageData();
     _pageController = PageController(initialPage: 0);
     Timer.periodic(const Duration(seconds: 4), (Timer timer) {
@@ -225,163 +239,132 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  bool isOffline = false;
+
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          toolbarHeight: MediaQuery.of(context).size.height * 0.076,
-          // elevation: 0.3,
-          title: Transform(
-            transform: Matrix4.translationValues(8.0, 3.0, 0),
-            child: const Text(
-              "Home",
-              textAlign: TextAlign.left,
-              textScaleFactor: 1.3,
-              style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
-            ),
-          )),
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.076,
+        title: Transform(
+          transform: Matrix4.translationValues(8.0, 3.0, 0),
+          child: const Text(
+            "Home",
+            textAlign: TextAlign.left,
+            textScaleFactor: 1.3,
+            style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 56),
           child: Column(
             children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.20,
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Stack(alignment: Alignment.center, children: <Widget>[
-                    FutureBuilder(
-                      future: myfuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            final carousel = snapshot.data!.carousel;
-
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                PageView.builder(
-                                  controller: _pageController,
-                                  itemCount: carousel!.slides.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return CarouselCard(
-                                      slide: carousel.slides[index],
-                                    );
-                                  },
-                                  onPageChanged: (int index) {
-                                    setState(() {
-                                      currentPage = index;
-                                    });
-                                  },
-                                ),
-                                Positioned(
-                                  bottom: 0.0,
-                                  child: updateIndicators(
-                                    carousel.slides.length,
-                                    currentPage,
+              Container(
+                child: errmsg(
+                  "No Internet Connection Available",
+                  isOffline,
+                ),
+                // Show internet connection message on isOffline = true.
+              ),
+              FutureBuilder(
+                future: myfuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.20,
+                            width: double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  PageView.builder(
+                                    controller: _pageController,
+                                    itemCount: carousel.slides.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return CarouselCard(
+                                        slide: carousel.slides[index],
+                                      );
+                                    },
+                                    onPageChanged: (int index) {
+                                      setState(() {
+                                        currentPage = index;
+                                      });
+                                    },
                                   ),
-                                ),
-                              ],
-                            );
-                          } else if (snapshot.hasError) {
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  "Error: ${snapshot.error.toString()}",
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                  Positioned(
+                                    bottom: 0.0,
+                                    child: updateIndicators(
+                                      carousel.slides.length,
+                                      currentPage,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            );
-                          }
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
+                            ),
                           ),
-                        );
-                      },
+                          const SizedBox(height: 16),
+                          const utilityBar(),
+                          const titlebar(
+                            title: "Student Chapters",
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.225,
+                            width: double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: PageView.builder(
+                                itemBuilder: (context, index) {
+                                  return ChapterCard(
+                                      chapter: snapshot
+                                          .data!.studentChapters![index]);
+                                },
+                                padEnds: false,
+                                itemCount:
+                                    snapshot.data!.studentChapters!.length,
+                                controller: PageController(
+                                    initialPage: 0, viewportFraction: 0.425),
+                                onPageChanged: (index) {},
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          const titlebar(title: "What's new?"),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return ErrorView(
+                        onRetry: () {
+                          setState(() {
+                            myfuture = loadHomePageData();
+                          });
+                        },
+                      );
+                    }
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
                     ),
-                  ]),
-                ),
+                  );
+                },
               ),
-              const SizedBox(height: 16),
-              const utilityBar(),
-              const titlebar(
-                title: "Student Chapters",
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.225,
-                width: double.infinity,
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: FutureBuilder(
-                      future: myfuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            return PageView.builder(
-                              itemBuilder: (context, index) {
-                                return ChapterCard(
-                                    chapter:
-                                        snapshot.data!.studentChapters![index]);
-                              },
-                              padEnds: false,
-                              itemCount: snapshot.data!.studentChapters!.length,
-                              controller: PageController(
-                                  initialPage: 0, viewportFraction: 0.425),
-                              onPageChanged: (index) {},
-                            );
-                          } else if (snapshot.hasError) {
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  "Error: ${snapshot.error.toString()}",
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
-                          ),
-                        );
-                      },
-                    )),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              const titlebar(title: "What's new?"),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: TableCalendar(
-                  firstDay: DateTime.utc(2010, 10, 16),
-                  lastDay: DateTime.utc(2030, 3, 14),
-                  focusedDay: today,
-                  selectedDayPredicate: (day) => isSameDay(day, today),
-                  headerStyle: const HeaderStyle(
-                      formatButtonVisible: false, titleCentered: true),
-                  onDaySelected: _onDaySelected,
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              )
             ],
           ),
         ),

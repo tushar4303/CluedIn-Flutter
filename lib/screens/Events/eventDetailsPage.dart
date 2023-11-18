@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,9 +16,9 @@ import 'package:http/http.dart' as http;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:mime/mime.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/events.dart';
-import '../widgets/webView/webview.dart';
-import '../models/linkMetaData.dart';
+import '../../models/events.dart';
+import '../../widgets/webView/webview.dart';
+import '../../models/linkMetaData.dart';
 
 class EventDetailsPage extends StatefulWidget {
   const EventDetailsPage({
@@ -191,11 +192,17 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           ),
                         ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text(
-                          widget.event.eventDesc,
-                          textAlign: TextAlign.left,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Linkify(
+                          onOpen: (link) async {
+                            if (!await launchUrl(Uri.parse(link.url))) {
+                              throw Exception('Could not launch ${link.url}');
+                            }
+                          },
+                          text: widget.event.eventDesc,
                           style: const TextStyle(fontSize: 16),
+                          linkStyle: const TextStyle(
+                              color: Colors.blue), // Customize link color
                         ),
                       ),
                       const SizedBox(

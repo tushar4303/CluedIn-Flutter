@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:cluedin_app/screens/profileDetails.dart';
+import 'package:cluedin_app/screens/Profile/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../widgets/webView/webview.dart';
+import '../../widgets/webView/webview.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MyProfile extends StatefulWidget {
