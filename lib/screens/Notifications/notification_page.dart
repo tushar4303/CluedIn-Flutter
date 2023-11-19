@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/noInternet.dart';
 import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/widgets/noResultsFound.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/widgets/notificationPage/notificationCard.dart';
@@ -73,6 +74,12 @@ class _NotificationPageState extends State<NotificationPage> {
         setState(() {
           isoffline = !isConnected;
         });
+        if (isConnected) {
+          // If connected, reload data
+          setState(() {
+            myfuture = loadNotifications();
+          });
+        }
       },
     );
     connectivityHelper.initConnectivityListener();
@@ -444,8 +451,34 @@ class _NotificationPageState extends State<NotificationPage> {
             child: FutureBuilder(
               future: Future.wait([myfuture, _simulateDelay()]),
               builder: (context, snapshot) {
+                if (isoffline) {
+                  return ErrorView(
+                    onRetry: () {
+                      setState(() {
+                        myfuture = loadNotifications();
+                      });
+                    },
+                  );
+                }
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
+                    if (_filteredNotifications.isEmpty) {
+                      return NoResultsFound(
+                        onResetFiltersPressed: () {
+                          // Handle resetting filters
+                          setState(() {
+                            _filters.clear();
+                            _senders.clear();
+                            showFrom = false;
+                            _startDate = null;
+                            _endDate = null;
+                            _filteredNotifications.clear();
+                            myfuture = loadNotifications();
+                          });
+                        },
+                      );
+                    }
+
                     return RefreshIndicator(
                       onRefresh: () async {
                         loadNotifications();
@@ -481,7 +514,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     itemCount:
                         10, // You can adjust this number based on your design
                     itemBuilder: (context, index) {
-                      return ListTileShimmer(); // Create a ListTileShimmer widget for shimmer effect
+                      return const ListTileShimmer(); // Create a ListTileShimmer widget for shimmer effect
                     },
                   ),
                 );
@@ -499,7 +532,7 @@ class SenderRolesBottomSheet extends StatefulWidget {
   final List<String> senderRoles;
   final Function(List<String>) onSendersSelected;
 
-  SenderRolesBottomSheet({
+  const SenderRolesBottomSheet({super.key, 
     required this.senderRoles,
     required this.onSendersSelected,
   });

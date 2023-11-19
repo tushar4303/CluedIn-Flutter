@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cluedin_app/models/events.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/noInternet.dart';
+import 'package:cluedin_app/widgets/noResultsFound.dart';
 import 'package:cluedin_app/widgets/notificationPage/EventShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -59,6 +60,12 @@ class _MyEventsState extends State<MyEvents> {
         setState(() {
           isoffline = !isConnected;
         });
+        if (isConnected) {
+          // If connected, reload data
+          setState(() {
+            myfuture = loadEvents();
+          });
+        }
       },
     );
     connectivityHelper.initConnectivityListener();
@@ -227,7 +234,6 @@ class _MyEventsState extends State<MyEvents> {
                                   _startDate = DateTime.now();
                                   _endDate = DateTime.now();
                                   updateFilteredEvents();
-                                  ;
                                 });
                               },
                               onDoubleTap: () {
@@ -237,7 +243,6 @@ class _MyEventsState extends State<MyEvents> {
                                       .subtract(const Duration(days: 1));
                                   _endDate = DateTime.now();
                                   updateFilteredEvents();
-                                  ;
                                 });
                               },
                               onLongPress: () {
@@ -441,8 +446,33 @@ class _MyEventsState extends State<MyEvents> {
                   future: Future.delayed(
                       const Duration(seconds: 1), () => myfuture),
                   builder: (context, snapshot) {
+                    if (isoffline) {
+                      return ErrorView(
+                        onRetry: () {
+                          setState(() {
+                            myfuture = loadEvents();
+                          });
+                        },
+                      );
+                    }
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
+                        if (_filteredEvents.isEmpty) {
+                          return NoResultsFound(
+                            onResetFiltersPressed: () {
+                              // Handle resetting filters
+                              setState(() {
+                                _filters.clear();
+                                _senders.clear();
+                                showFrom = false;
+                                _startDate = null;
+                                _endDate = null;
+                                _filteredEvents.clear();
+                                myfuture = loadEvents();
+                              });
+                            },
+                          );
+                        }
                         return RefreshIndicator(
                           onRefresh: () async {
                             loadEvents();
@@ -488,7 +518,7 @@ class _MyEventsState extends State<MyEvents> {
                         mainAxisExtent: 310.0,
                       ),
                       itemBuilder: (context, index) {
-                        return EventWidgetShimmer();
+                        return const EventWidgetShimmer();
                       },
                     );
                   },
@@ -506,7 +536,7 @@ class SenderRolesBottomSheet extends StatefulWidget {
   final List<String> senderRoles;
   final Function(List<String>) onSendersSelected;
 
-  SenderRolesBottomSheet({
+  const SenderRolesBottomSheet({super.key, 
     required this.senderRoles,
     required this.onSendersSelected,
   });

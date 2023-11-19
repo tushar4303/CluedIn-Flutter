@@ -1,19 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:io';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:retry/retry.dart';
-import 'package:html/parser.dart' as htmlParser;
-import 'package:html/dom.dart' as htmlDom;
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:mime/mime.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/events.dart';
@@ -221,7 +214,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                 // Display filename with ellipsis if it's too long
                                 final displayFilename =
                                     metadata.title.length > 20
-                                        ? metadata.title.substring(0, 15) + '..'
+                                        ? '${metadata.title.substring(0, 15)}..'
                                         : metadata.title;
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +223,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                   children: [
                                     ClipRRect(
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
+                                          const BorderRadius.all(Radius.circular(10)),
                                       child: Material(
                                         color: const Color.fromRGBO(
                                             242, 243, 245, 1),
@@ -300,7 +293,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               }
                             } else {
                               // Handle loading state
-                              return ShimmerForAttachment();
+                              return const ShimmerForAttachment();
                             }
                           },
                         ),

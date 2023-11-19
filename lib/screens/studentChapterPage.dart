@@ -2,6 +2,8 @@
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/webView/webview.dart';
 
@@ -106,12 +108,20 @@ class StudentChapterPage extends StatelessWidget {
                         ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          chapter.desc,
+                        child: SelectableLinkify(
+                          onOpen: (link) async {
+                            if (!await launchUrl(Uri.parse(link.url))) {
+                              throw Exception('Could not launch ${link.url}');
+                            }
+                          },
+                          text: chapter.desc,
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16),
+                          linkStyle: const TextStyle(
+                              color: Colors.blue), // Customize link color
                         ),
                       ),
+
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Center(

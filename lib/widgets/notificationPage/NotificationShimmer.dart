@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ListTileShimmer extends StatelessWidget {
+  const ListTileShimmer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,7 +14,7 @@ class ListTileShimmer extends StatelessWidget {
           highlightColor: Colors.grey[100]!,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: CircleAvatar(
+            child: const CircleAvatar(
               backgroundColor: Colors.grey,
               radius: 24,
             ),

@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   int currentPage = 0;
   late PageController _pageController;
-  late final CarouselModel carousel;
+  late CarouselModel carousel;
 
   late Future<HomeModel?> myfuture;
   final url = "http://128.199.23.207:5000/api/app/homeapi";
@@ -143,6 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           isOffline = !isConnected;
         });
+        if (isConnected) {
+          // If connected, reload data
+          setState(() {
+            myfuture = loadHomePageData();
+          });
+        }
       },
     );
     connectivityHelper.initConnectivityListener();
@@ -348,7 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           const titlebar(title: "What's new?"),
                         ],
                       );
-                    } else if (snapshot.hasError) {
+                    }
+                    if (snapshot.hasError) {
+                      print("Error: ${snapshot.error}");
                       return ErrorView(
                         onRetry: () {
                           setState(() {

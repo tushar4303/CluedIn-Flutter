@@ -7,8 +7,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retry/retry.dart';
-import 'package:html/parser.dart' as htmlParser;
-import 'package:html/dom.dart' as htmlDom;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/models/notification.dart';
@@ -226,7 +224,8 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Linkify(
+                      child: SelectableLinkify(
+                        enableInteractiveSelection: true,
                         onOpen: (link) async {
                           if (!await launchUrl(Uri.parse(link.url))) {
                             throw Exception('Could not launch ${link.url}');
@@ -254,7 +253,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
 
                               // Display filename with ellipsis if it's too long
                               final displayFilename = metadata.title.length > 20
-                                  ? metadata.title.substring(0, 15) + '..'
+                                  ? '${metadata.title.substring(0, 15)}..'
                                   : metadata.title;
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,7 +262,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                 children: [
                                   ClipRRect(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                        const BorderRadius.all(Radius.circular(10)),
                                     child: Material(
                                       color: const Color.fromRGBO(
                                           242, 243, 245, 1),
@@ -332,7 +331,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                             }
                           } else {
                             // Handle loading state
-                            return ShimmerForAttachment();
+                            return const ShimmerForAttachment();
                           }
                         },
                       ),

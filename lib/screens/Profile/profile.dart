@@ -21,7 +21,7 @@ class _MyProfileState extends State<MyProfile> {
   late Future openbox;
 
   void shareApp() {
-    final String text =
+    const String text =
         "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://github.com/tushar4303/CluedIn-Flutter/]";
 
     Share.share(text);

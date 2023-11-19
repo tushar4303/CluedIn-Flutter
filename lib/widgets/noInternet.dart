@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 
 class ErrorView extends StatelessWidget {
   final VoidCallback onRetry;
 
-  ErrorView({required this.onRetry});
+  const ErrorView({super.key, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -16,29 +16,29 @@ class ErrorView extends StatelessWidget {
           height: MediaQuery.of(context).size.height * 0.035,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-          child: SvgPicture.asset(
-            "assets/images/offline.svg",
-            height: MediaQuery.of(context).size.height * 0.45,
-          ),
+          padding: const EdgeInsets.only(left: 32, right: 32),
+          child: Lottie.asset('assets/files/noInternet.json'),
         ),
+        const SizedBox(height: 18),
         const Text(
           'Well, this is awkward!',
-          textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: Color.fromARGB(255, 30, 29, 29),
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          'We don\'t seem to be connected...',
+          style: TextStyle(
+            fontSize: 18,
+            color: Color.fromRGBO(109, 109, 109, 0.8),
           ),
         ),
         const Text(
-          'We don\'t seem to be connected...',
-          textAlign: TextAlign.center,
+          'Check your internet and try again',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Color.fromARGB(255, 30, 29, 29),
-          ),
+              fontSize: 18, color: Color.fromRGBO(109, 109, 109, 0.8)),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -49,15 +49,15 @@ class ErrorView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              visualDensity: VisualDensity.comfortable,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
               backgroundColor: MaterialStateProperty.all(Colors.black),
             ),
             clipBehavior: Clip.hardEdge,
+            onPressed: onRetry,
             child: const Text(
               "Try again",
               style: TextStyle(color: Colors.white),
             ),
-            onPressed: onRetry,
           ),
         )
       ],
