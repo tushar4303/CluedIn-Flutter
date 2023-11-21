@@ -260,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Text(
             "Home",
             textAlign: TextAlign.left,
-            textScaleFactor: 1.3,
+            textScaler: TextScaler.linear(1.3),
             style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
           ),
         ),

@@ -391,7 +391,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                         checkmarkColor: Colors.black,
                                         label: Text(
                                           filterType,
-                                          textScaleFactor: 1.1,
+                                          textScaler:
+                                              const TextScaler.linear(1.1),
                                         ),
                                         selected: _filters.contains(filterType),
                                         side: const BorderSide(

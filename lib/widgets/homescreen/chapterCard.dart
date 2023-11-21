@@ -87,7 +87,7 @@ class ChapterCard extends StatelessWidget {
                             padding: const EdgeInsets.only(
                                 left: 12, bottom: 8, right: 10),
                             child: Text(
-                              textScaleFactor: 0.9,
+                              textScaler: const TextScaler.linear(0.9),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               chapter.title,

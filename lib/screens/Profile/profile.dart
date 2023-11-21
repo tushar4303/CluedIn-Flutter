@@ -21,6 +21,8 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   late Future openbox;
+  late PackageInfo packageInfo;
+  late String appVersion;
 
   void shareApp() {
     const String text =
@@ -29,17 +31,24 @@ class _MyProfileState extends State<MyProfile> {
     Share.share(text);
   }
 
+  void initializePackageInfo() async {
+    packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
+    setState(() {});
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     openBox("UserBox");
+    initializePackageInfo();
   }
 
   @override
   void initState() {
     super.initState();
-
     openbox = openBox("UserBox");
+    initializePackageInfo();
   }
 
   Future<Box<dynamic>> openBox(String boxName) async {
@@ -61,7 +70,7 @@ class _MyProfileState extends State<MyProfile> {
             child: const Text(
               "Profile",
               textAlign: TextAlign.left,
-              textScaleFactor: 1.3,
+              textScaler: TextScaler.linear(1.3),
               style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
             ),
           )),
@@ -247,9 +256,6 @@ class _MyProfileState extends State<MyProfile> {
             children: [
               GestureDetector(
                 onTap: () async {
-                  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-                  String appVersion = packageInfo.version;
                   final url = Uri.parse(
                     "https://github.com/tushar4303/CluedIn-Flutter/releases/tag/v$appVersion",
                   );
@@ -293,7 +299,7 @@ class _MyProfileState extends State<MyProfile> {
           const SizedBox(
             height: 20,
           ),
-          const Text("Version 1.10.0"),
+          Text("Version $appVersion"),
           const SizedBox(
             height: 28,
           ),

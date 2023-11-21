@@ -191,7 +191,7 @@ class _MyEventsState extends State<MyEvents> {
                   const Text(
                     "Events",
                     textAlign: TextAlign.left,
-                    textScaleFactor: 1.3,
+                    textScaler: TextScaler.linear(1.3),
                     style: TextStyle(color: Color.fromARGB(255, 30, 29, 29)),
                   ),
                   Transform.translate(
@@ -379,7 +379,8 @@ class _MyEventsState extends State<MyEvents> {
                                         checkmarkColor: Colors.black,
                                         label: Text(
                                           filterType,
-                                          textScaleFactor: 1.1,
+                                          textScaler:
+                                              const TextScaler.linear(1.1),
                                         ),
                                         // labelPadding: EdgeInsets.symmetric(
                                         //     horizontal: 4, vertical: 0),
@@ -536,7 +537,8 @@ class SenderRolesBottomSheet extends StatefulWidget {
   final List<String> senderRoles;
   final Function(List<String>) onSendersSelected;
 
-  const SenderRolesBottomSheet({super.key, 
+  const SenderRolesBottomSheet({
+    super.key,
     required this.senderRoles,
     required this.onSendersSelected,
   });

@@ -38,7 +38,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           elevation: 0.3,
           title: const Text(
             "Account",
-            textScaleFactor: 1.3,
+            textScaler: TextScaler.linear(1.3),
           ),
         ),
         body: SingleChildScrollView(
@@ -59,13 +59,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   ListTile(
                     leading: const Icon(Icons.person),
                     title: const Text("Name",
-                        textScaleFactor: 0.9,
+                        textScaler: TextScaler.linear(0.9),
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
                       "${widget.userDetails.fname} ${widget.userDetails.lname}",
-                      textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -74,13 +74,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   ListTile(
                     leading: const Icon(Icons.phone),
                     title: const Text("Phone",
-                        textScaleFactor: 0.9,
+                        textScaler: TextScaler.linear(0.9),
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
                       widget.userDetails.mobno,
-                      textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -89,13 +89,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   ListTile(
                     leading: const Icon(Icons.mail),
                     title: const Text("Email",
-                        textScaleFactor: 0.9,
+                        textScaler: TextScaler.linear(0.9),
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
                       widget.userDetails.email,
-                      textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -104,13 +104,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   ListTile(
                     leading: const Icon(Icons.admin_panel_settings),
                     title: const Text("Branch",
-                        textScaleFactor: 0.9,
+                        textScaler: TextScaler.linear(0.9),
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
                       widget.userDetails.branchName,
-                      textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),
                     ),
@@ -184,7 +184,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                 alignment: Alignment.topLeft,
                                 child: Text(
                                   "Profile photo",
-                                  textScaleFactor: 1.4,
+                                  textScaler: TextScaler.linear(1.4),
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               ),

@@ -1,7 +1,6 @@
 // image_utils.dart
 
 import 'dart:io';
-import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
