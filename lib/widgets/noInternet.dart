@@ -17,7 +17,7 @@ class ErrorView extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32, right: 32),
-          child: Lottie.asset('assets/files/noInternet.json'),
+          child: Lottie.asset('assets/lottiefiles/noInternet.json'),
         ),
         const SizedBox(height: 18),
         const Text(

@@ -1,5 +1,6 @@
 import 'package:cluedin_app/widgets/webView/webview.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class utilityBar extends StatelessWidget {
   const utilityBar({
@@ -41,21 +42,48 @@ class utilityBar extends StatelessWidget {
                       color: const Color.fromRGBO(242, 242, 242, 1)),
                   child: Column(
                     children: [
+                      // IconButton(
+                      //   iconSize: 30,
+                      //   icon: const Icon(Icons.calendar_today),
+                      //   color: Colors.black.withOpacity(0.8),
+                      //   // tooltip: 'Increase volume by 10',
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (context) => const WebViewApp(
+                      //                   webViewTitle: 'Class Timetable',
+                      //                   webViewLink:
+                      //                       'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
+                      //                 )));
+                      //   },
+                      // ),
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.calendar_today),
-                        color: Colors.black.withOpacity(0.8),
-                        // tooltip: 'Increase volume by 10',
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const WebViewApp(
-                                        webViewTitle: 'Class Timetable',
-                                        webViewLink:
-                                            'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
-                                      )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const WebViewApp(
+                                webViewTitle: 'Class Timetable',
+                                webViewLink:
+                                    'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
+                              ),
+                            ),
+                          );
                         },
+                        // Instead of Icon, use Lottie.asset
+                        icon: LottieBuilder.asset(
+                          'assets/lottiefiles/timetable.json', // Replace with the actual path to your Lottie animation
+                          width: 30, // Adjust the width as needed
+                          height: 30, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                          reverse:
+                              true, // Set this to true to play the animation in reverse
+                        ),
+                        color: Colors.black.withOpacity(0.8),
+                        // Add tooltip if needed
+                        tooltip: 'Timetable',
                       ),
                     ],
                   ),
@@ -83,7 +111,14 @@ class utilityBar extends StatelessWidget {
                     children: [
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.library_books),
+                        icon: LottieBuilder.asset(
+                          'assets/lottiefiles/library.json', // Replace with the actual path to your Lottie animation
+                          width: 30, // Adjust the width as needed
+                          height: 30, // Adjust the height as needed
+                          fit: BoxFit.cover,
+
+                          reverse: true,
+                        ),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
                         onPressed: () {
@@ -122,7 +157,13 @@ class utilityBar extends StatelessWidget {
                     children: [
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.settings_system_daydream),
+                        icon: LottieBuilder.asset(
+                          'assets/lottiefiles/moodle.json', // Replace with the actual path to your Lottie animation
+                          width: 30, // Adjust the width as needed
+                          height: 30, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                          reverse: true,
+                        ),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
                         onPressed: () {
@@ -161,7 +202,13 @@ class utilityBar extends StatelessWidget {
                     children: [
                       IconButton(
                         iconSize: 30,
-                        icon: const Icon(Icons.web),
+                        icon: LottieBuilder.asset(
+                          'assets/lottiefiles/website.json', // Replace with the actual path to your Lottie animation
+                          width: 30, // Adjust the width as needed
+                          height: 30, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                          reverse: true,
+                        ),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
                         onPressed: () {

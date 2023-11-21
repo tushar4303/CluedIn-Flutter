@@ -1,6 +1,7 @@
 import 'package:cluedin_app/utils/shareAndDownloadFiles.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 
 void showFileOptionsBottomSheet(BuildContext context, String fileUrl) {
   showModalBottomSheet(
@@ -30,9 +31,17 @@ void showFileOptionsBottomSheet(BuildContext context, String fileUrl) {
               ),
             ),
             ListTile(
+              leading: LottieBuilder.asset(
+                'assets/lottiefiles/share.json', // Replace with the actual path to your Lottie animation
+                width: 28, // Adjust the width as needed
+                height: 28, // Adjust the height as needed
+                fit: BoxFit.cover,
+                reverse: true,
+              ),
               title: const Text(
                 'Share File',
                 style: TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color.fromRGBO(30, 29, 29, 0.8)),
               ),
@@ -46,9 +55,17 @@ void showFileOptionsBottomSheet(BuildContext context, String fileUrl) {
               color: Colors.grey,
             ),
             ListTile(
+              leading: LottieBuilder.asset(
+                'assets/lottiefiles/download.json', // Replace with the actual path to your Lottie animation
+                width: 28, // Adjust the width as needed
+                height: 28, // Adjust the height as needed
+                fit: BoxFit.cover,
+                reverse: true,
+              ),
               title: const Text(
                 'Download File',
                 style: TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color.fromRGBO(30, 29, 29, 0.8)),
               ),

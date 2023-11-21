@@ -16,7 +16,7 @@ class NoResultsFound extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 32, right: 32),
-          child: Lottie.asset('assets/files/noResults.json'),
+          child: Lottie.asset('assets/lottiefiles/noResults.json'),
         ),
         const SizedBox(height: 18),
         const Text(

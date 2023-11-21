@@ -532,7 +532,8 @@ class SenderRolesBottomSheet extends StatefulWidget {
   final List<String> senderRoles;
   final Function(List<String>) onSendersSelected;
 
-  const SenderRolesBottomSheet({super.key, 
+  const SenderRolesBottomSheet({
+    super.key,
     required this.senderRoles,
     required this.onSendersSelected,
   });

@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:cluedin_app/models/profile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/webView/webview.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -124,27 +126,30 @@ class _MyProfileState extends State<MyProfile> {
               surfaceTintColor: Colors.transparent,
               child: Center(
                 child: ListTile(
-                    contentPadding: const EdgeInsets.all(16),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const WebViewApp(
-                                    webViewTitle: "CluedIn Feedback form",
-                                    webViewLink:
-                                        'https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link',
-                                  )));
-                    },
-                    title: const Padding(
-                      padding: EdgeInsets.only(bottom: 4),
-                      child: Text("Leave us a Feedback!"),
-                    ),
-                    subtitle: const Text(
-                        "Your feedback helps us to improve the product"),
-                    trailing: const Icon(
-                      Icons.store_mall_directory,
-                      size: 32,
-                    )),
+                  contentPadding: const EdgeInsets.all(16),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WebViewApp(
+                                  webViewTitle: "CluedIn Feedback form",
+                                  webViewLink:
+                                      'https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link',
+                                )));
+                  },
+                  title: const Padding(
+                    padding: EdgeInsets.only(bottom: 4),
+                    child: Text("Leave us a Feedback!"),
+                  ),
+                  subtitle: const Text(
+                      "Your feedback helps us to improve the product"),
+                  trailing: Lottie.asset(
+                    'assets/lottiefiles/feedback.json', // Replace with the actual path to your Lottie animation
+                    width: 48, // Adjust the width as needed
+                    height: 48, // Adjust the height as needed
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           ),
@@ -158,7 +163,13 @@ class _MyProfileState extends State<MyProfile> {
                 onTap: () {
                   shareApp();
                 },
-                leading: const Icon(Icons.share),
+                leading: LottieBuilder.asset(
+                  'assets/lottiefiles/share.json', // Replace with the actual path to your Lottie animation
+                  width: 28, // Adjust the width as needed
+                  height: 28, // Adjust the height as needed
+                  fit: BoxFit.cover,
+                  reverse: true,
+                ),
                 title: const Text("Spread the word"),
                 subtitle: const Text("Share the App with your friends"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
@@ -169,7 +180,13 @@ class _MyProfileState extends State<MyProfile> {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {},
-                leading: const Icon(Icons.star_border_outlined),
+                leading: LottieBuilder.asset(
+                  'assets/lottiefiles/rating.json', // Replace with the actual path to your Lottie animation
+                  width: 28, // Adjust the width as needed
+                  height: 28, // Adjust the height as needed
+                  fit: BoxFit.cover,
+                  reverse: true,
+                ),
                 title: const Text("Rate Us"),
                 subtitle: const Text("Tell us what you think"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
@@ -187,7 +204,13 @@ class _MyProfileState extends State<MyProfile> {
                     throw 'Could not launch $url';
                   }
                 },
-                leading: const Icon(Icons.info_outline),
+                leading: LottieBuilder.asset(
+                  'assets/lottiefiles/aboutus.json',
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                  reverse: true,
+                ),
                 title: const Text("About CluedIn"),
                 subtitle: const Text("Know more about us"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20),
@@ -224,8 +247,11 @@ class _MyProfileState extends State<MyProfile> {
             children: [
               GestureDetector(
                 onTap: () async {
+                  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                  String appVersion = packageInfo.version;
                   final url = Uri.parse(
-                    "https://github.com/tushar4303/CluedIn-Flutter",
+                    "https://github.com/tushar4303/CluedIn-Flutter/releases/tag/v$appVersion",
                   );
                   if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
                     throw 'Could not launch $url';
