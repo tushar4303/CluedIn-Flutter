@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
+import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // ignore: depend_on_referenced_packages
@@ -158,17 +158,23 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         tag: Key(widget.event.eventId.toString()),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.event.imageUrl,
-                              placeholder: (context, url) {
-                                return Image.asset(
-                                  "assets/images/placeholder.png",
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                          child: InkWell(
+                            onLongPress: () {
+                              showFileOptionsBottomSheet(
+                                  context, widget.event.imageUrl);
+                            },
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              child: CachedNetworkImage(
+                                imageUrl: widget.event.imageUrl,
+                                placeholder: (context, url) {
+                                  return Image.asset(
+                                    "assets/images/placeholder.png",
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -178,24 +184,25 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             "Registration Fee: ${widget.event.registrationFee}",
-                            textScaleFactor: 1.1,
+                            textScaler: const TextScaler.linear(1.1),
                             textAlign: TextAlign.left,
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Linkify(
-                          onOpen: (link) async {
-                            if (!await launchUrl(Uri.parse(link.url))) {
-                              throw Exception('Could not launch ${link.url}');
-                            }
-                          },
-                          text: widget.event.eventDesc,
-                          style: const TextStyle(fontSize: 16),
-                          linkStyle: const TextStyle(
-                              color: Colors.blue), // Customize link color
+                      GestureDetector(
+                        onTap: () {
+                          // Clear the text selection when tapping outside the SelectableText region
+                          if (FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: SelectableText(
+                            widget.event.eventDesc,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -222,8 +229,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     ClipRRect(
-                                      borderRadius:
-                                          const BorderRadius.all(Radius.circular(10)),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
                                       child: Material(
                                         color: const Color.fromRGBO(
                                             242, 243, 245, 1),
@@ -237,6 +244,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                                     .platformDefault)) {
                                               throw 'Could not launch $url';
                                             }
+                                          },
+                                          onLongPress: () async {
+                                            showFileOptionsBottomSheet(context,
+                                                "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}");
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(

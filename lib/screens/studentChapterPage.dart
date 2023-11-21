@@ -2,8 +2,6 @@
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/webView/webview.dart';
 
@@ -106,19 +104,20 @@ class StudentChapterPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: SelectableLinkify(
-                          onOpen: (link) async {
-                            if (!await launchUrl(Uri.parse(link.url))) {
-                              throw Exception('Could not launch ${link.url}');
-                            }
-                          },
-                          text: chapter.desc,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontSize: 16),
-                          linkStyle: const TextStyle(
-                              color: Colors.blue), // Customize link color
+
+                      GestureDetector(
+                        onTap: () {
+                          // Clear the text selection when tapping outside the SelectableText region
+                          if (FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: SelectableText(
+                            chapter.desc,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
                       ),
 

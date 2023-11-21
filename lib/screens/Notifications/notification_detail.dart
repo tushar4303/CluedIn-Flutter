@@ -2,8 +2,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
+import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retry/retry.dart';
@@ -204,39 +204,48 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         ],
                       ),
                     ),
+
                     if (widget.notification.imageUrl.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16)),
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                "http://cluedin.creast.in:5000/${widget.notification.imageUrl}",
-                            placeholder: (context, url) {
-                              return Image.asset(
-                                "assets/images/placeholder_landscape.png",
-                                fit: BoxFit.cover,
-                              );
-                            },
+                        child: InkWell(
+                          onLongPress: () {
+                            showFileOptionsBottomSheet(context,
+                                "http://cluedin.creast.in:5000/${widget.notification.imageUrl}");
+                          },
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16)),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "http://cluedin.creast.in:5000/${widget.notification.imageUrl}",
+                              placeholder: (context, url) {
+                                return Image.asset(
+                                  "assets/images/placeholder_landscape.png",
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: SelectableLinkify(
-                        enableInteractiveSelection: true,
-                        onOpen: (link) async {
-                          if (!await launchUrl(Uri.parse(link.url))) {
-                            throw Exception('Could not launch ${link.url}');
-                          }
-                        },
-                        text: widget.notification.notificationMessage,
-                        style: const TextStyle(fontSize: 16),
-                        linkStyle: const TextStyle(
-                            color: Colors.blue), // Customize link color
+
+                    GestureDetector(
+                      onTap: () {
+                        // Clear the text selection when tapping outside the SelectableText region
+                        if (FocusScope.of(context).hasPrimaryFocus) {
+                          FocusScope.of(context).unfocus();
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: SelectableText(
+                          widget.notification.notificationMessage,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
+
                     const SizedBox(
                       height: 8,
                     ),
@@ -261,8 +270,8 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   ClipRRect(
-                                    borderRadius:
-                                        const BorderRadius.all(Radius.circular(10)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
                                     child: Material(
                                       color: const Color.fromRGBO(
                                           242, 243, 245, 1),
@@ -276,6 +285,10 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                                   LaunchMode.platformDefault)) {
                                             throw 'Could not launch $url';
                                           }
+                                        },
+                                        onLongPress: () async {
+                                          showFileOptionsBottomSheet(context,
+                                              "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}");
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
