@@ -63,6 +63,8 @@ dependencies:
   custom_date_range_picker: ^1.0.10
   lottie: ^2.7.0
   package_info_plus: ^5.0.1
+  vector_math: ^2.1.4
+  qr_flutter: ^4.1.0
 
   # image_cropper: ^3.0.1
 

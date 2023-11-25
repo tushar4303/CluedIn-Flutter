@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cluedin_app/screens/Profile/MyTickets.dart';
 import 'package:cluedin_app/screens/Profile/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/cupertino.dart';
@@ -164,6 +165,28 @@ class _MyProfileState extends State<MyProfile> {
           ),
           Column(
             children: [
+              const CustomDivider(),
+              ListTile(
+                // horizontalTitleGap: 0,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                onTap: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => MyTickets()));
+                },
+                leading: LottieBuilder.asset(
+                  'assets/lottiefiles/ticket.json', // Replace with the actual path to your Lottie animation
+                  width: 42, // Adjust the width as needed
+                  height: 42, // Adjust the height as needed
+                  fit: BoxFit.cover,
+                  reverse: true,
+                ),
+                title: Transform.translate(
+                    offset: const Offset(-10.0, 0.0),
+                    child: const Text("My Tickets")),
+                // subtitle: const Text("Share the App with your friends"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20),
+              ),
               const CustomDivider(),
               ListTile(
                 // horizontalTitleGap: 0,

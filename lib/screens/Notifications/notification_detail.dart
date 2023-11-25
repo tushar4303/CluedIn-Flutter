@@ -211,7 +211,9 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         child: InkWell(
                           onLongPress: () {
                             showFileOptionsBottomSheet(context,
-                                "http://cluedin.creast.in:5000/${widget.notification.imageUrl}");
+                                "http://cluedin.creast.in:5000/${widget.notification.imageUrl}",
+                                shareText:
+                                    widget.notification.notificationMessage);
                           },
                           child: ClipRRect(
                             borderRadius:
@@ -288,7 +290,9 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                         },
                                         onLongPress: () async {
                                           showFileOptionsBottomSheet(context,
-                                              "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}");
+                                              "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
+                                              shareText: widget.notification
+                                                  .notificationMessage);
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(

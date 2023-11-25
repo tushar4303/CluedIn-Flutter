@@ -285,11 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Column(
                         children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.20,
+                            height: MediaQuery.of(context).size.height * 0.22,
                             width: double.infinity,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: <Widget>[

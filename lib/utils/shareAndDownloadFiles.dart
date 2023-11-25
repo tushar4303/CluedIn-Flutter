@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 
 class ShareAndDownloadFiles {
-  static void shareFile(String imageUrl) async {
+  static void shareFile(String imageUrl, {String? shareText}) async {
     try {
       final response = await http.get(Uri.parse(imageUrl));
       if (response.statusCode == 200) {
@@ -14,7 +14,12 @@ class ShareAndDownloadFiles {
         final fileName = imageUrl.split('/').last;
         File file = await File('${directory.path}/$fileName')
             .writeAsBytes(response.bodyBytes);
-        await Share.shareXFiles([XFile(file.path)], text: 'Share');
+
+        if (shareText != null) {
+          await Share.shareXFiles([XFile(file.path)], text: shareText);
+        } else {
+          await Share.shareXFiles([XFile(file.path)]);
+        }
       } else {
         throw Exception('Failed to load');
       }

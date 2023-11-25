@@ -161,7 +161,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           child: InkWell(
                             onLongPress: () {
                               showFileOptionsBottomSheet(
-                                  context, widget.event.imageUrl);
+                                  context, widget.event.imageUrl,
+                                  shareText: widget.event.eventDesc);
                             },
                             child: ClipRRect(
                               borderRadius:
@@ -247,7 +248,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                           },
                                           onLongPress: () async {
                                             showFileOptionsBottomSheet(context,
-                                                "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}");
+                                                "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}",
+                                                shareText:
+                                                    widget.event.eventDesc);
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 
-void showFileOptionsBottomSheet(BuildContext context, String fileUrl) {
+void showFileOptionsBottomSheet(BuildContext context, String fileUrl,
+    {String? shareText}) {
   showModalBottomSheet(
     context: context,
     useRootNavigator: true,
@@ -47,7 +48,7 @@ void showFileOptionsBottomSheet(BuildContext context, String fileUrl) {
               ),
               onTap: () {
                 Navigator.pop(context); // Close the bottom sheet
-                ShareAndDownloadFiles.shareFile(fileUrl);
+                ShareAndDownloadFiles.shareFile(fileUrl, shareText: shareText);
               },
             ),
             const Divider(
