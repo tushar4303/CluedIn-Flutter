@@ -113,7 +113,6 @@
 //   }
 // }
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:cluedin_app/widgets/ticket.dart';
 import 'package:flutter/rendering.dart';
@@ -143,9 +142,9 @@ class _MyTicketsState extends State<MyTickets> {
         child: SafeArea(
           child: Center(
             child: Container(
-              height: 464,
+              height: 600,
               margin: const EdgeInsets.all(32),
-              width: MediaQuery.of(context).size.width * 0.7,
+              width: MediaQuery.of(context).size.width * 0.55,
               child: RepaintBoundary(
                 key: _globalKey,
                 child: CustomPaint(
@@ -178,38 +177,41 @@ class _MyTicketsState extends State<MyTickets> {
                           ),
                         ),
                       )),
-                      const Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 24,
-                        ),
-                        child: Text("Garba Raas 2023",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: Color.fromRGBO(115, 115, 115, 1))),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 32, right: 32),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text("Date: April 23",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                    color: Color.fromRGBO(115, 115, 115, 1))),
-                            Text(
-                              "Time: 6 p.m.",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(115, 115, 115, 1)),
-                            )
-                          ],
-                        ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(
+                      //     bottom: 24,
+                      //   ),
+                      //   child: Text("Garba Raas 2023",
+                      //       style: TextStyle(
+                      //           fontWeight: FontWeight.w600,
+                      //           fontSize: 16,
+                      //           color: Color.fromRGBO(115, 115, 115, 1))),
+                      // ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(left: 32, right: 32),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //     children: [
+                      //       Text("Date: April 23",
+                      //           style: TextStyle(
+                      //               fontWeight: FontWeight.w600,
+                      //               fontSize: 16,
+                      //               color: Color.fromRGBO(115, 115, 115, 1))),
+                      //       Text(
+                      //         "Time: 6 p.m.",
+                      //         style: TextStyle(
+                      //             fontWeight: FontWeight.w600,
+                      //             fontSize: 16,
+                      //             color: Color.fromRGBO(115, 115, 115, 1)),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                      const SizedBox(
+                        height: 0,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Center(
                           child: QrImageView(
                             eyeStyle: const QrEyeStyle(
@@ -219,7 +221,7 @@ class _MyTicketsState extends State<MyTickets> {
                             data:
                                 'https://github.com/tushar4303/CluedIn-Flutter',
                             version: QrVersions.auto,
-                            size: 130,
+                            size: 150,
                             gapless: false,
                           ),
                         ),
@@ -236,7 +238,7 @@ class _MyTicketsState extends State<MyTickets> {
         onPressed: () {
           captureAndSavePng();
         },
-        child: Icon(Icons.save),
+        child: const Icon(Icons.save),
       ),
     );
   }
@@ -274,7 +276,7 @@ class _MyTicketsState extends State<MyTickets> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Image saved to $filePath'),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

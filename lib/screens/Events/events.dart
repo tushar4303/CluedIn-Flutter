@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/events.dart';
+import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/noInternet.dart';
 import 'package:cluedin_app/widgets/noResultsFound.dart';

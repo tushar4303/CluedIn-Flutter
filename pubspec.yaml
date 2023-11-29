@@ -42,7 +42,6 @@ dependencies:
   firebase_core: ^2.3.0
   # firebase_auth: ^4.2.6
   timeago_flutter: ^1.2.0
-  navbar_router: ^0.3.3
   flutter_svg: ^1.1.6
   retry: ^3.1.0
   connectivity_plus:
@@ -65,6 +64,8 @@ dependencies:
   package_info_plus: ^5.0.1
   vector_math: ^2.1.4
   qr_flutter: ^4.1.0
+  photo_view:
+  navbar_router: ^0.6.3
 
   # image_cropper: ^3.0.1
 

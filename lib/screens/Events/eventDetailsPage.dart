@@ -112,6 +112,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    String shareContent = 'Check out this event: ${widget.event.eventTitle}\n'
+        'Registration Fee: ${widget.event.registrationFee}\n'
+        '${widget.event.eventDesc}\n'
+        'For more info: ${widget.event.attachmentUrl}';
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -162,7 +166,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             onLongPress: () {
                               showFileOptionsBottomSheet(
                                   context, widget.event.imageUrl,
-                                  shareText: widget.event.eventDesc);
+                                  shareText: shareContent);
                             },
                             child: ClipRRect(
                               borderRadius:

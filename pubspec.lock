@@ -732,10 +732,10 @@ packages:
     dependency: "direct main"
     description:
       name: navbar_router
-      sha256: "8e91ddc43bd3b2f334bb91ce83b281920fc3c4d7f4b81d4741099b8bdbb0f157"
+      sha256: "396d2ce86c9b1d0d109bfd8a555c8c0f01574ab3d1204a41f25cd080c7c595b9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3"
+    version: "0.6.3"
   nm:
     dependency: transitive
     description:
@@ -856,6 +856,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.1"
+  photo_view:
+    dependency: "direct main"
+    description:
+      name: photo_view
+      sha256: "8036802a00bae2a78fc197af8a158e3e2f7b500561ed23b4c458107685e645bb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   platform:
     dependency: transitive
     description:

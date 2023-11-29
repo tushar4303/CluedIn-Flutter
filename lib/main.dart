@@ -5,8 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:async';
 import 'package:navbar_router/navbar_router.dart';
-
 import 'package:cluedin_app/screens/Events/events.dart';
 import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/screens/login_page.dart';
@@ -103,22 +103,43 @@ class HomePage extends StatelessWidget {
     },
   };
 
+  DateTime oldTime = DateTime.now();
+  DateTime newTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return NavbarRouter(
       errorBuilder: (context) {
         return const Center(child: Text('Error 404'));
       },
-      onBackButtonPressed: (isExiting) {
-        return isExiting;
+      onBackButtonPressed: (isExitingApp) {
+        if (isExitingApp) {
+          newTime = DateTime.now();
+          int difference = newTime.difference(oldTime).inMilliseconds;
+          oldTime = newTime;
+          if (difference < 1000) {
+            NavbarNotifier.hideSnackBar(context);
+            return isExitingApp;
+          } else {
+            final state = Scaffold.of(context);
+            NavbarNotifier.showSnackBar(
+              context,
+              "Tap back button again to exit",
+              bottom: state.hasFloatingActionButton ? 0 : kNavbarHeight,
+            );
+            return false;
+          }
+        } else {
+          return isExitingApp;
+        }
       },
-      destinationAnimationCurve: Curves.fastOutSlowIn,
-      destinationAnimationDuration: 700,
+      // destinationAnimationCurve: Curves.fastOutSlowIn,
+      // destinationAnimationDuration: 600,
       decoration: NavbarDecoration(
           backgroundColor: const Color.fromRGBO(251, 251, 252, 1),
           selectedIconTheme: const IconThemeData(color: Colors.black),
           navbarType: BottomNavigationBarType.fixed,
-          elevation: 18,
+          // elevation: 18,
           selectedLabelTextStyle: const TextStyle(color: Colors.black),
           enableFeedback: true),
       destinations: [
