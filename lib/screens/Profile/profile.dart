@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cluedin_app/screens/Profile/MyTickets.dart';
 import 'package:cluedin_app/screens/Profile/profileDetails.dart';
-import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

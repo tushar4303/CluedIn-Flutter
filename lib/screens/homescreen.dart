@@ -3,12 +3,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
-import 'package:cluedin_app/widgets/noInternet.dart';
+import 'package:cluedin_app/widgets/ErrorView.dart';
+import 'package:cluedin_app/widgets/homescreen/videoCard.dart';
+import 'package:cluedin_app/widgets/networkErrorHandling.dart';
 import 'package:cluedin_app/widgets/offline.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:cluedin_app/models/home.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -248,7 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isOffline = false;
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -265,116 +265,129 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 56),
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: errmsg(
-                  "No Internet Connection Available",
-                  isOffline,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            myfuture = loadHomePageData();
+          });
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 56),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: errmsg(
+                    "No Internet Connection Available",
+                    isOffline,
+                  ),
+                  // Show internet connection message on isOffline = true.
                 ),
-                // Show internet connection message on isOffline = true.
-              ),
-              FutureBuilder(
-                future: myfuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.22,
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: <Widget>[
-                                  PageView.builder(
-                                    controller: _pageController,
-                                    itemCount: carousel.slides.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return CarouselCard(
-                                        slide: carousel.slides[index],
-                                      );
-                                    },
-                                    onPageChanged: (int index) {
-                                      setState(() {
-                                        currentPage = index;
-                                      });
-                                    },
-                                  ),
-                                  Positioned(
-                                    bottom: 0.0,
-                                    child: updateIndicators(
-                                      carousel.slides.length,
-                                      currentPage,
+                FutureBuilder(
+                  future: myfuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.22,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    PageView.builder(
+                                      controller: _pageController,
+                                      itemCount: carousel.slides.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return CarouselCard(
+                                          slide: carousel.slides[index],
+                                        );
+                                      },
+                                      onPageChanged: (int index) {
+                                        setState(() {
+                                          currentPage = index;
+                                        });
+                                      },
                                     ),
-                                  ),
-                                ],
+                                    Positioned(
+                                      bottom: 0.0,
+                                      child: updateIndicators(
+                                        carousel.slides.length,
+                                        currentPage,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          const utilityBar(),
-                          const titlebar(
-                            title: "Student Chapters",
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.225,
-                            width: double.infinity,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: PageView.builder(
-                                itemBuilder: (context, index) {
-                                  return ChapterCard(
-                                      chapter: snapshot
-                                          .data!.studentChapters![index]);
-                                },
-                                padEnds: false,
-                                itemCount:
-                                    snapshot.data!.studentChapters!.length,
-                                controller: PageController(
-                                    initialPage: 0, viewportFraction: 0.425),
-                                onPageChanged: (index) {},
+                            const SizedBox(height: 16),
+                            const utilityBar(),
+                            const titlebar(
+                              title: "Student Chapters",
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.225,
+                              width: double.infinity,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: PageView.builder(
+                                  itemBuilder: (context, index) {
+                                    return ChapterCard(
+                                        chapter: snapshot
+                                            .data!.studentChapters![index]);
+                                  },
+                                  padEnds: false,
+                                  itemCount:
+                                      snapshot.data!.studentChapters!.length,
+                                  controller: PageController(
+                                      initialPage: 0, viewportFraction: 0.425),
+                                  onPageChanged: (index) {},
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                          const titlebar(title: "What's new?"),
-                        ],
-                      );
+                            const titlebar(title: "What's new?"),
+                            const SizedBox(height: 16),
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  left: 24, right: 24, bottom: 56),
+                              child: VideoCard(
+                                  videoUrl:
+                                      'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
+                            ),
+                          ],
+                        );
+                      }
+                      if (snapshot.hasError) {
+                        return ErrorHandlingWidget(
+                          error: snapshot.error,
+                          onRetry: () {
+                            setState(() {
+                              myfuture = loadHomePageData();
+                            });
+                          },
+                        );
+                      }
                     }
-                    if (snapshot.hasError) {
-                      print("Error: ${snapshot.error}");
-                      return ErrorView(
-                        onRetry: () {
-                          setState(() {
-                            myfuture = loadHomePageData();
-                          });
-                        },
-                      );
-                    }
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  );
-                },
-              ),
-            ],
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

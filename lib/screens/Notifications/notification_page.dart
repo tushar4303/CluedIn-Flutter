@@ -2,10 +2,10 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
-import 'package:cluedin_app/widgets/noInternet.dart';
+import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:cluedin_app/models/notification.dart';
+import 'package:cluedin_app/widgets/networkErrorHandling.dart';
 import 'package:cluedin_app/widgets/noResultsFound.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
@@ -498,7 +498,8 @@ class _NotificationPageState extends State<NotificationPage> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return ErrorView(
+                    return ErrorHandlingWidget(
+                      error: snapshot.error,
                       onRetry: () {
                         setState(() {
                           myfuture = loadNotifications();

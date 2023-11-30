@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../screens/studentChapterPage.dart';
 
 class ChapterCard extends StatelessWidget {
@@ -30,6 +29,7 @@ class ChapterCard extends StatelessWidget {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.withOpacity(0.025)),
                 boxShadow: <BoxShadow>[
                   BoxShadow(
                       color: const Color.fromARGB(75, 158, 158, 158)

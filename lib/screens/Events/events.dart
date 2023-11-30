@@ -3,9 +3,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/events.dart';
-import 'package:cluedin_app/screens/homescreen.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
-import 'package:cluedin_app/widgets/noInternet.dart';
+import 'package:cluedin_app/widgets/ErrorView.dart';
+import 'package:cluedin_app/widgets/networkErrorHandling.dart';
 import 'package:cluedin_app/widgets/noResultsFound.dart';
 import 'package:cluedin_app/widgets/notificationPage/EventShimmer.dart';
 import 'package:flutter/material.dart';
@@ -175,7 +175,6 @@ class _MyEventsState extends State<MyEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -499,7 +498,8 @@ class _MyEventsState extends State<MyEvents> {
                           ),
                         );
                       } else if (snapshot.hasError) {
-                        return ErrorView(
+                        return ErrorHandlingWidget(
+                          error: snapshot.error,
                           onRetry: () {
                             setState(() {
                               myfuture = loadEvents();

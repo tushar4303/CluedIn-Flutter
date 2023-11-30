@@ -110,29 +110,33 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavbarRouter(
       errorBuilder: (context) {
-        return const Center(child: Text('Error 404'));
+        return Text('Error 404');
       },
       onBackButtonPressed: (isExitingApp) {
-        if (isExitingApp) {
-          newTime = DateTime.now();
-          int difference = newTime.difference(oldTime).inMilliseconds;
-          oldTime = newTime;
-          if (difference < 1000) {
-            NavbarNotifier.hideSnackBar(context);
-            return isExitingApp;
-          } else {
-            final state = Scaffold.of(context);
-            NavbarNotifier.showSnackBar(
-              context,
-              "Tap back button again to exit",
-              bottom: state.hasFloatingActionButton ? 0 : kNavbarHeight,
-            );
-            return false;
-          }
-        } else {
-          return isExitingApp;
-        }
+        print("nikal gaya ");
+        return isExitingApp;
       },
+      // onBackButtonPressed: (isExitingApp) {
+      //   if (isExitingApp) {
+      //     newTime = DateTime.now();
+      //     int difference = newTime.difference(oldTime).inMilliseconds;
+      //     oldTime = newTime;
+      //     if (difference < 1000) {
+      //       NavbarNotifier.hideSnackBar(context);
+      //       return isExitingApp;
+      //     } else {
+      //       final state = Scaffold.of(context);
+      //       NavbarNotifier.showSnackBar(
+      //         context,
+      //         "Tap back button again to exit",
+      //         bottom: state.hasFloatingActionButton ? 0 : kNavbarHeight,
+      //       );
+      //       return false;
+      //     }
+      //   } else {
+      //     return isExitingApp;
+      //   }
+      // },
       // destinationAnimationCurve: Curves.fastOutSlowIn,
       // destinationAnimationDuration: 600,
       decoration: NavbarDecoration(

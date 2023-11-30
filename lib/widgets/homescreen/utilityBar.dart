@@ -13,6 +13,7 @@ class utilityBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24),
       width: double.infinity,
       decoration: BoxDecoration(
+        // border: Border.all(color: Colors.grey.withOpacity(0.025)),
         boxShadow: <BoxShadow>[
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),
