@@ -17,12 +17,12 @@ import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:io';
-import '../notificationService/local_notification_service.dart';
-import '../widgets/homescreen/carouselCard.dart';
-import '../widgets/homescreen/chapterCard.dart';
-import '../widgets/homescreen/titleBar.dart';
-import '../widgets/homescreen/utilityBar.dart';
-import 'login_page.dart';
+import '../../notificationService/local_notification_service.dart';
+import '../../widgets/homescreen/carouselCard.dart';
+import '../../widgets/homescreen/chapterCard.dart';
+import '../../widgets/homescreen/titleBar.dart';
+import '../../widgets/homescreen/utilityBar.dart';
+import '../login_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -56,14 +56,14 @@ dependencies:
   flutter_image_compress: ^1.1.3
   shimmer: ^2.0.0
   webview_flutter:
-  custom_date_range_picker: ^1.0.10
   lottie: ^2.7.0
   package_info_plus: ^5.0.1
   qr_flutter: ^4.1.0
-  navbar_router: ^0.3.3
+  navbar_router: ^0.7.0
   video_player:
   visibility_detector:
   google_fonts: ^4.0.4
+  calendar_view: ^1.0.4
 
   # image_cropper: ^3.0.1
 

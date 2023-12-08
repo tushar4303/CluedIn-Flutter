@@ -1,4 +1,6 @@
+import 'package:cluedin_app/screens/HomeScreen/calendar.dart';
 import 'package:cluedin_app/widgets/webView/webview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -79,6 +81,7 @@ class utilityBar extends StatelessWidget {
                           width: 30, // Adjust the width as needed
                           height: 30, // Adjust the height as needed
                           fit: BoxFit.cover,
+                          repeat: false,
                           reverse:
                               true, // Set this to true to play the animation in reverse
                         ),
@@ -117,6 +120,7 @@ class utilityBar extends StatelessWidget {
                           width: 30, // Adjust the width as needed
                           height: 30, // Adjust the height as needed
                           fit: BoxFit.cover,
+                          repeat: false,
 
                           reverse: true,
                         ),
@@ -163,6 +167,7 @@ class utilityBar extends StatelessWidget {
                           width: 30, // Adjust the width as needed
                           height: 30, // Adjust the height as needed
                           fit: BoxFit.cover,
+                          repeat: false,
                           reverse: true,
                         ),
                         color: Colors.black.withOpacity(0.8),
@@ -184,7 +189,7 @@ class utilityBar extends StatelessWidget {
                   height: 6,
                 ),
                 const Text(
-                  "Moodle-Elearn",
+                  "Moodle",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                 )
               ],
@@ -204,22 +209,21 @@ class utilityBar extends StatelessWidget {
                       IconButton(
                         iconSize: 30,
                         icon: LottieBuilder.asset(
-                          'assets/lottiefiles/website.json', // Replace with the actual path to your Lottie animation
+                          'assets/lottiefiles/academicCalendar.json', // Replace with the actual path to your Lottie animation
                           width: 30, // Adjust the width as needed
                           height: 30, // Adjust the height as needed
                           fit: BoxFit.cover,
+                          repeat: false,
                           reverse: true,
                         ),
                         color: Colors.black.withOpacity(0.8),
                         // tooltip: 'Increase volume by 10',
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const WebViewApp(
-                                        webViewTitle: "DBIT's Official Website",
-                                        webViewLink: 'http://www.dbit.in/',
-                                      )));
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => const MonthViewWidget()),
+                          );
                         },
                       ),
                     ],
@@ -229,7 +233,7 @@ class utilityBar extends StatelessWidget {
                   height: 6,
                 ),
                 const Text(
-                  "Website",
+                  "TermPlan",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                 )
               ],

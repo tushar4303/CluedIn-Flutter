@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:cluedin_app/screens/signUp.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,8 +13,8 @@ import 'package:http/http.dart' as http;
 import 'package:cluedin_app/models/profile.dart';
 import '../main.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +48,13 @@ class LoginPage extends StatelessWidget {
                                 TextSpan(
                                     text: " Sign up",
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  const SignUpPage()),
-                                        );
+                                      ..onTap = () async {
+                                        final url = Uri.parse(
+                                            "http://cluedin.creast.in:5000/signup");
+                                        if (!await launchUrl(url,
+                                            mode: LaunchMode.platformDefault)) {
+                                          throw 'Could not launch $url';
+                                        }
                                       },
                                     style: const TextStyle(
                                         color: Colors.deepPurple,

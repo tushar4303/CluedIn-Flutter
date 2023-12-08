@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:navbar_router/navbar_router.dart';
 import 'package:cluedin_app/screens/Events/events.dart';
-import 'package:cluedin_app/screens/homescreen.dart';
+import 'package:cluedin_app/screens/HomeScreen/homescreen.dart';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/screens/Profile/profile.dart';
@@ -57,18 +58,21 @@ class myApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        navigatorKey: navigatorKey,
-        scaffoldMessengerKey: snackbarKey,
-        themeMode: ThemeMode.light,
-        debugShowCheckedModeBanner: false,
-        theme: MyTheme.lightTheme(context),
-        darkTheme: MyTheme.darkTheme(context),
-        // home: HomePage(),
-        // home: MyPhone(),
-        home: isLoggedIn ? HomePage() : LoginPage()
-        // initialRoute: isLoggedIn ? HomePage() : LoginPage();
-        );
+    return CalendarControllerProvider(
+      controller: EventController(),
+      child: MaterialApp(
+          navigatorKey: navigatorKey,
+          scaffoldMessengerKey: snackbarKey,
+          themeMode: ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          theme: MyTheme.lightTheme(context),
+          darkTheme: MyTheme.darkTheme(context),
+          // home: HomePage(),
+          // home: MyPhone(),
+          home: isLoggedIn ? HomePage() : LoginPage()
+          // initialRoute: isLoggedIn ? HomePage() : LoginPage();
+          ),
+    );
   }
 }
 
@@ -109,36 +113,37 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NavbarRouter(
+      destinationAnimationDuration: 220,
       errorBuilder: (context) {
         return Text('Error 404');
       },
-      onBackButtonPressed: (isExitingApp) {
-        print("nikal gaya ");
-        return isExitingApp;
-      },
       // onBackButtonPressed: (isExitingApp) {
-      //   if (isExitingApp) {
-      //     newTime = DateTime.now();
-      //     int difference = newTime.difference(oldTime).inMilliseconds;
-      //     oldTime = newTime;
-      //     if (difference < 1000) {
-      //       NavbarNotifier.hideSnackBar(context);
-      //       return isExitingApp;
-      //     } else {
-      //       final state = Scaffold.of(context);
-      //       NavbarNotifier.showSnackBar(
-      //         context,
-      //         "Tap back button again to exit",
-      //         bottom: state.hasFloatingActionButton ? 0 : kNavbarHeight,
-      //       );
-      //       return false;
-      //     }
-      //   } else {
-      //     return isExitingApp;
-      //   }
+      //   print("nikal gaya ");
+      //   return isExitingApp;
       // },
-      // destinationAnimationCurve: Curves.fastOutSlowIn,
-      // destinationAnimationDuration: 600,
+      onBackButtonPressed: (isExitingApp) {
+        if (isExitingApp) {
+          newTime = DateTime.now();
+          // time difference between consecutive taps
+          int difference = newTime.difference(oldTime).inMilliseconds;
+          oldTime = newTime;
+          if (difference < 1000) {
+            NavbarNotifier.hideSnackBar(context);
+            return isExitingApp;
+          } else {
+            final state = Scaffold.of(context);
+            NavbarNotifier.showSnackBar(
+              context,
+              "Tap back button again to exit",
+              bottom: state.hasFloatingActionButton ? 0 : kNavbarHeight,
+            );
+            return false;
+          }
+        } else {
+          return isExitingApp;
+        }
+      },
+
       decoration: NavbarDecoration(
           backgroundColor: const Color.fromRGBO(251, 251, 252, 1),
           selectedIconTheme: const IconThemeData(color: Colors.black),
