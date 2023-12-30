@@ -8,7 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:navbar_router/navbar_router.dart';
-import 'package:cluedin_app/screens/Events/events.dart';
+import 'package:cluedin_app/screens/Events/Explore.dart';
 import 'package:cluedin_app/screens/HomeScreen/homescreen.dart';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
@@ -41,7 +41,8 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('userBox');
 
-  bool isLoggedIn = Hive.box('userBox').get('isLoggedIn', defaultValue: false);
+  bool isLoggedIn =
+      await Hive.box('userBox').get('isLoggedIn', defaultValue: false);
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(myApp(isLoggedIn: isLoggedIn));
@@ -79,17 +80,50 @@ class myApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
+  // List<NavbarItem> items = [
+  //   NavbarItem(
+  //     Icons.home_outlined, 'Home',
+  //     // backgroundColor: mediumPurple,
+  //   ),
+  //   NavbarItem(
+  //     Icons.notifications_none_outlined, 'Notifications',
+  //     // backgroundColor: mediumPurple,
+  //   ),
+  //   NavbarItem(
+  //     Icons.explore_outlined, 'Explore',
+  //     // backgroundColor: Colors.orange,
+  //   ),
+  //   NavbarItem(
+  //     Icons.person_outline, 'Profile',
+  //     // backgroundColor: Colors.teal,
+  //   ),
+  // ];
+
   List<NavbarItem> items = [
-    NavbarItem(
-      Icons.home,
-      'Home',
-    ),
-    NavbarItem(
-      Icons.notifications,
-      'Notifications',
-    ),
-    NavbarItem(Icons.explore, 'Explore'),
-    NavbarItem(Icons.person, 'Profile'),
+    NavbarItem(Icons.home_outlined, 'Home',
+        // backgroundColor: mediumPurple,
+        selectedIcon: Icon(
+          Icons.home,
+          size: 26,
+        )),
+    NavbarItem(Icons.notifications_none_outlined, 'Notifications',
+        // backgroundColor: mediumPurple,
+        selectedIcon: Icon(
+          Icons.notifications,
+          size: 26,
+        )),
+    NavbarItem(Icons.explore_outlined, 'Explore',
+        // backgroundColor: Colors.orange,
+        selectedIcon: Icon(
+          Icons.explore,
+          size: 26,
+        )),
+    NavbarItem(Icons.person_outline, 'Profile',
+        // backgroundColor: Colors.teal,
+        selectedIcon: Icon(
+          Icons.person,
+          size: 26,
+        )),
   ];
 
   final Map<int, Map<String, Widget>> _routes = {
@@ -110,17 +144,30 @@ class HomePage extends StatelessWidget {
   DateTime oldTime = DateTime.now();
   DateTime newTime = DateTime.now();
 
+  // void _showWelcomeDialog(BuildContext context) {
+  //   QuickAlert.show(
+  //     context: context,
+  //     type: QuickAlertType.success,
+  //     text: 'Logged in successfully!',
+  //     showConfirmBtn: true,
+  //     confirmBtnText: 'OK',
+  //     onConfirmBtnTap: () {
+  //       // Handle confirm button tap
+  //       Restart.restartApp();
+  //       Navigator.pop(context); // Close the dialog if needed
+  //     },
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return NavbarRouter(
-      destinationAnimationDuration: 220,
+      // type: NavbarType.material3,
+      // destinationAnimationCurve: Curves.fastOutSlowIn,
+      // destinationAnimationDuration: 300,
       errorBuilder: (context) {
         return Text('Error 404');
       },
-      // onBackButtonPressed: (isExitingApp) {
-      //   print("nikal gaya ");
-      //   return isExitingApp;
-      // },
       onBackButtonPressed: (isExitingApp) {
         if (isExitingApp) {
           newTime = DateTime.now();
@@ -143,13 +190,21 @@ class HomePage extends StatelessWidget {
           return isExitingApp;
         }
       },
-
       decoration: NavbarDecoration(
+          borderRadius: BorderRadius.circular(16),
+          // indicatorColor: Color.fromRGBO(138, 138, 138, 0.3),
+          showSelectedLabels: false,
+          isExtended: true,
+          showUnselectedLabels: false,
+          // height: 72,
           backgroundColor: const Color.fromRGBO(251, 251, 252, 1),
           selectedIconTheme: const IconThemeData(color: Colors.black),
+          unselectedIconTheme:
+              const IconThemeData(color: Color.fromRGBO(138, 138, 138, 1)),
           navbarType: BottomNavigationBarType.fixed,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           // elevation: 18,
-          selectedLabelTextStyle: const TextStyle(color: Colors.black),
+          // selectedLabelTextStyle: const TextStyle(color: Colors.black),
           enableFeedback: true),
       destinations: [
         for (int i = 0; i < items.length; i++)
@@ -168,5 +223,8 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+
+  
 
 // ignore_for_file: prefer_const_constructors

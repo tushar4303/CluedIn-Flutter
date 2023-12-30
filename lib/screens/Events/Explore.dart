@@ -15,7 +15,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
-import '../../widgets/eventsPage/eventsCard.dart';
+import '../../widgets/explorePage/eventsCard.dart';
 import '../../widgets/offline.dart';
 import '../login_page.dart';
 
@@ -479,7 +479,7 @@ class _MyEventsState extends State<MyEvents> {
                             loadEvents();
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 54, top: 4),
+                            padding: const EdgeInsets.only(bottom: 72, top: 4),
                             child: GridView.builder(
                               itemCount: _filteredEvents.length,
                               itemBuilder: (context, index) {
@@ -491,7 +491,7 @@ class _MyEventsState extends State<MyEvents> {
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 16.0,
-                                mainAxisSpacing: 12.0,
+                                mainAxisSpacing: 0,
                                 mainAxisExtent: 310.0,
                               ),
                             ),
@@ -516,7 +516,7 @@ class _MyEventsState extends State<MyEvents> {
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 12.0,
+                        mainAxisSpacing: 0,
                         mainAxisExtent: 310.0,
                       ),
                       itemBuilder: (context, index) {

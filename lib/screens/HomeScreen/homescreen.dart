@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
+import 'package:cluedin_app/widgets/homescreen/sectionDivider.dart';
 import 'package:cluedin_app/widgets/homescreen/videoCard.dart';
+import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/networkErrorHandling.dart';
 import 'package:cluedin_app/widgets/offline.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -328,43 +330,146 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             const utilityBar(),
-                            const titlebar(
-                              title: "Student Chapters",
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.225,
-                              width: double.infinity,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: PageView.builder(
-                                  itemBuilder: (context, index) {
-                                    return ChapterCard(
-                                        chapter: snapshot
-                                            .data!.studentChapters![index]);
-                                  },
-                                  padEnds: false,
-                                  itemCount:
-                                      snapshot.data!.studentChapters!.length,
-                                  controller: PageController(
-                                      initialPage: 0, viewportFraction: 0.425),
-                                  onPageChanged: (index) {},
-                                ),
+                            // const titlebar(
+                            //   title: "Student Chapters",
+                            // ),
+                            // const SizedBox(
+                            //   height: 16,
+                            // ),
+                            // SizedBox(
+                            //   height:
+                            //       MediaQuery.of(context).size.height * 0.225,
+                            //   width: double.infinity,
+                            //   child: Padding(
+                            //     padding:
+                            //         const EdgeInsets.symmetric(horizontal: 16),
+                            //     child: PageView.builder(
+                            //       itemBuilder: (context, index) {
+                            //         return ChapterCard(
+                            //             chapter: snapshot
+                            //                 .data!.studentChapters![index]);
+                            //       },
+                            //       padEnds: false,
+                            //       itemCount:
+                            //           snapshot.data!.studentChapters!.length,
+                            //       controller: PageController(
+                            //           initialPage: 0, viewportFraction: 0.425),
+                            //       onPageChanged: (index) {},
+                            //     ),
+                            //   ),
+                            // ),
+                            DefaultTabController(
+                              length: 2, // Number of tabs
+                              child: Column(
+                                children: [
+                                  const Padding(
+                                      padding: EdgeInsets.only(top: 16),
+                                      child: SectionDivider(text: 'EXPLORE')),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 24, bottom: 16),
+                                    child: TabBar(
+                                      tabAlignment: TabAlignment.start,
+                                      isScrollable: true,
+                                      indicator: null,
+
+                                      tabs: [
+                                        Tab(
+                                          text: 'Chapters',
+                                        ),
+                                        Tab(
+                                          text: 'Clubs',
+                                        ),
+                                      ],
+                                      dividerHeight: 0,
+                                      indicatorPadding: EdgeInsets.zero,
+                                      indicatorColor: Colors.black,
+                                      labelColor: Colors
+                                          .black, // Text color of the active tab
+                                      unselectedLabelColor: Color.fromRGBO(
+                                          125,
+                                          125,
+                                          125,
+                                          0.8), // Text color of inactive tabs
+                                      labelStyle: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight
+                                              .w500), // Style of the active tab text
+                                      unselectedLabelStyle: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight
+                                              .w500), // Style of inactive tab text
+                                      // indicator:
+                                      //     BoxDecoration(), // Remove the default indicator
+                                      labelPadding: EdgeInsets.only(right: 16),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.225,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: TabBarView(
+                                        children: [
+                                          // Tab 1: Chapters
+                                          PageView.builder(
+                                            itemBuilder: (context, index) {
+                                              return ChapterCard(
+                                                chapter: snapshot.data!
+                                                    .studentChapters![index],
+                                              );
+                                            },
+                                            padEnds: false,
+                                            itemCount: snapshot
+                                                .data!.studentChapters!.length,
+                                            controller: PageController(
+                                              initialPage: 0,
+                                              viewportFraction: 0.425,
+                                            ),
+                                            onPageChanged: (index) {},
+                                          ),
+                                          // Tab 2: Clubs
+                                          PageView.builder(
+                                            itemBuilder: (context, index) {
+                                              return ChapterCard(
+                                                chapter: snapshot.data!
+                                                    .studentChapters![index],
+                                              );
+                                            },
+                                            padEnds: false,
+                                            itemCount: snapshot
+                                                .data!.studentChapters!.length,
+                                            controller: PageController(
+                                              initialPage: 0,
+                                              viewportFraction: 0.425,
+                                            ),
+                                            onPageChanged: (index) {},
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const titlebar(title: "What's new?"),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 16),
+                              child: SectionDivider(text: "WHAT'S NEW?"),
+                            ),
                             const SizedBox(height: 16),
                             const Padding(
-                              padding: EdgeInsets.only(
-                                  left: 24, right: 24, bottom: 56),
-                              child: VideoCard(
-                                  videoUrl:
-                                      'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
-                            ),
+                                padding: EdgeInsets.only(
+                                    left: 24, right: 24, bottom: 56),
+                                child: YoutubeCard(
+                                  youtubeLink:
+                                      'https://www.youtube.com/watch?v=nVtb2vNUOdU',
+                                )
+                                // child: VideoCard(
+                                //     videoUrl:
+                                //         'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
+                                ),
                           ],
                         );
                       }

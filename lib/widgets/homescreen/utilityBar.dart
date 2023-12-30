@@ -233,7 +233,7 @@ class utilityBar extends StatelessWidget {
                   height: 6,
                 ),
                 const Text(
-                  "TermPlan",
+                  "Term Plan",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                 )
               ],

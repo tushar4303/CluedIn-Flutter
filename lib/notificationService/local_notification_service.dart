@@ -1,9 +1,7 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:navbar_router/navbar_router.dart';
-
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -75,7 +73,7 @@ class LocalNotificationService {
           enableVibration: true,
           channelShowBadge: true,
           icon: "@mipmap/launcher_icon",
-          category: AndroidNotificationCategory("notifications"),
+          category: AndroidNotificationCategory.social,
         ),
       );
 

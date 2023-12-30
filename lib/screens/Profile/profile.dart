@@ -253,7 +253,7 @@ class _MyProfileState extends State<MyProfile> {
             ],
           ),
           const SizedBox(
-            height: 28,
+            height: 20,
           ),
           RichText(
             text: const TextSpan(
@@ -274,7 +274,7 @@ class _MyProfileState extends State<MyProfile> {
             ),
           ),
           const SizedBox(
-            height: 18,
+            height: 4,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

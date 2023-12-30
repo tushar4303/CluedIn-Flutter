@@ -140,20 +140,20 @@ class Events {
   factory Events.fromMap(Map<String, dynamic> map) {
     return Events(
       eventId: map["event_id"],
-      sender_fname: map["sender_fname"],
-      sender_lname: map["sender_lname"],
-      senderRole: map["senderRole"],
-      organizedBy: map["organizedBy"],
-      senderProfilePic: map["senderProfilePic"],
-      eventTitle: map["event_title"],
-      eventLabel: map["event_label"],
-      eventDesc: map["event_desc"],
-      imageUrl: map["event_image_url"],
+      sender_fname: map["sender_fname"] ?? "",
+      sender_lname: map["sender_lname"] ?? "",
+      senderRole: map["senderRole"] ?? "",
+      organizedBy: map["organizedBy"] ?? "",
+      senderProfilePic: map["senderProfilePic"] ?? "",
+      eventTitle: map["event_title"] ?? "",
+      eventLabel: map["event_label"] ?? "",
+      eventDesc: map["event_desc"] ?? "",
+      imageUrl: map["event_image_url"] ?? "",
       attachmentUrl: map["event_attachment_url"] ?? "",
       registrationLink: map["registration_link"] ?? "",
       registrationFee: map["registration_fee"] ?? "",
-      dateOfcreation: DateTime.parse(map["dateOfCreation"]),
-      dateOfexpiration: DateTime.tryParse(map["dateOfExpiration"]),
+      dateOfcreation: DateTime.parse(map["dateOfCreation"] ?? ""),
+      dateOfexpiration: DateTime.tryParse(map["dateOfExpiration"] ?? ""),
     );
   }
 
