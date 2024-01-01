@@ -34,6 +34,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           toolbarHeight: MediaQuery.of(context).size.height * 0.076,
           elevation: 0.3,
           title: const Text(

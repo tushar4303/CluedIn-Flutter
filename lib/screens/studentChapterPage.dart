@@ -2,6 +2,7 @@
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:photo_view/photo_view.dart';
 
 import '../widgets/webView/webview.dart';
 
@@ -122,7 +123,7 @@ class StudentChapterPage extends StatelessWidget {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.only(top: 16, bottom: 16),
                         child: Center(
                           child: SizedBox(
                             width: double.infinity,

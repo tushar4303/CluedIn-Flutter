@@ -462,14 +462,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             const Padding(
                                 padding: EdgeInsets.only(
                                     left: 24, right: 24, bottom: 56),
-                                child: YoutubeCard(
-                                  youtubeLink:
-                                      'https://www.youtube.com/watch?v=nVtb2vNUOdU',
-                                )
+                                child: VideoCard(
+                                    videoUrl:
+                                        "https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view?usp=sharing")
                                 // child: VideoCard(
                                 //     videoUrl:
                                 //         'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
                                 ),
+                            // const SizedBox(height: 16),
+                            // const Padding(
+                            //     padding: EdgeInsets.only(
+                            //         left: 24, right: 24, bottom: 56),
+                            //     child: YoutubeCard(
+                            //       youtubeLink:
+                            //           'https://www.youtube.com/watch?v=nVtb2vNUOdU',
+                            //     )
+                            //     // child: VideoCard(
+                            //     //     videoUrl:
+                            //     //         'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
+                            //     ),
                           ],
                         );
                       }

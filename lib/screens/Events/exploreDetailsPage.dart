@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
+import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/events.dart';
 import '../../widgets/webView/webview.dart';
@@ -184,6 +187,15 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           ),
                         ),
                       ),
+                      if (extractYouTubeLinks(widget.event.eventDesc)
+                          .isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: YoutubeCard(
+                            youtubeLink:
+                                extractYouTubeLinks(widget.event.eventDesc)[0],
+                          ),
+                        ),
                       if (widget.event.registrationFee.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),

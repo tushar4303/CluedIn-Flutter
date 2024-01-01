@@ -61,12 +61,12 @@ class _YoutubeCardState extends State<YoutubeCard> {
     return VisibilityDetector(
       key: Key(widget.youtubeLink), // Ensure a unique key for each instance
       onVisibilityChanged: (visibilityInfo) {
-        if (visibilityInfo.visibleFraction == 0) {
+        if (visibilityInfo.visibleFraction > 0.6) {
           // Video is not visible, pause it
-          _ytController.pauseVideo();
+          _ytController.playVideo();
         } else {
           // Video is visible, play or resume it
-          _ytController.playVideo();
+          _ytController.pauseVideo();
         }
       },
       child: ClipRRect(

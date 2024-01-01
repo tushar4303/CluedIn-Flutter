@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:io';
+import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
+import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +12,7 @@ import 'package:retry/retry.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/models/notification.dart';
-// ignore: depend_on_referenced_packages
+import 'package:photo_view/photo_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -229,6 +231,17 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                               },
                             ),
                           ),
+                        ),
+                      ),
+                    // Display only the first YouTube link
+                    if (extractYouTubeLinks(
+                            widget.notification.notificationMessage)
+                        .isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: YoutubeCard(
+                          youtubeLink: extractYouTubeLinks(
+                              widget.notification.notificationMessage)[0],
                         ),
                       ),
 
