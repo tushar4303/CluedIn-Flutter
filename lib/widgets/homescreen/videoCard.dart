@@ -7,7 +7,7 @@ import 'package:shimmer/shimmer.dart';
 class VideoCard extends StatefulWidget {
   final String videoUrl;
 
-  const VideoCard({Key? key, required this.videoUrl}) : super(key: key);
+  const VideoCard({super.key, required this.videoUrl});
 
   @override
   _VideoCardState createState() => _VideoCardState();

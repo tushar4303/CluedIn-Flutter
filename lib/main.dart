@@ -51,9 +51,9 @@ void main() async {
 class myApp extends StatelessWidget {
   final bool isLoggedIn;
   myApp({
-    Key? key,
+    super.key,
     required this.isLoggedIn,
-  }) : super(key: key);
+  });
   final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey(debugLabel: "Main Navigator"); //
 
@@ -78,7 +78,7 @@ class myApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+  HomePage({super.key});
 
   // List<NavbarItem> items = [
   //   NavbarItem(

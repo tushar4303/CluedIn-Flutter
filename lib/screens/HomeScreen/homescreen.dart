@@ -182,16 +182,8 @@ class _HomeScreenState extends State<HomeScreen> {
         FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
           if (message.notification != null) {
             print('idhar: click hua idhar');
-            // Notifications notification = Notifications.fromMap(message.data);
-            print(message.data);
-            // NavbarNotifier.index = 1;
 
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (BuildContext context) => const NotificationPage(),
-            //   ),
-            // );
+            print(message.data);
           }
         });
       }
@@ -464,23 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     left: 24, right: 24, bottom: 56),
                                 child: VideoCard(
                                     videoUrl:
-                                        "https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view?usp=sharing")
-                                // child: VideoCard(
-                                //     videoUrl:
-                                //         'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
-                                ),
-                            // const SizedBox(height: 16),
-                            // const Padding(
-                            //     padding: EdgeInsets.only(
-                            //         left: 24, right: 24, bottom: 56),
-                            //     child: YoutubeCard(
-                            //       youtubeLink:
-                            //           'https://www.youtube.com/watch?v=nVtb2vNUOdU',
-                            //     )
-                            //     // child: VideoCard(
-                            //     //     videoUrl:
-                            //     //         'https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view'),
-                            //     ),
+                                        "https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view?usp=sharing")),
                           ],
                         );
                       }

@@ -16,7 +16,7 @@ import 'package:retry/retry.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MonthViewWidget extends StatefulWidget {
-  const MonthViewWidget({Key? key}) : super(key: key);
+  const MonthViewWidget({super.key});
 
   @override
   _MonthViewWidgetState createState() => _MonthViewWidgetState();

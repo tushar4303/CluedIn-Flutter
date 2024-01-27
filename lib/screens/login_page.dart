@@ -16,7 +16,7 @@ import 'package:cluedin_app/models/profile.dart';
 import '../main.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class _Logo extends StatelessWidget {
-  const _Logo({Key? key}) : super(key: key);
+  const _Logo();
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +135,7 @@ class _Logo extends StatelessWidget {
 }
 
 class _FormContent extends StatefulWidget {
-  const _FormContent({Key? key}) : super(key: key);
+  const _FormContent();
 
   @override
   State<_FormContent> createState() => __FormContentState();
@@ -198,70 +198,80 @@ class __FormContentState extends State<_FormContent> {
     // getToken();
 
     const r = RetryOptions(maxAttempts: 3);
-    final response = await r.retry(
-      // Make a GET request
-      () => http.post(uri, body: {
-        'usermobno': mobnoController.text,
-        'password': passwordController.text,
-      }).timeout(const Duration(seconds: 2)),
-      // Retry on SocketException or TimeoutException
-      retryIf: (e) => e is SocketException || e is TimeoutException,
-    );
+    try {
+      final response = await r.retry(
+        // Make a GET request
+        () => http.post(uri, body: {
+          'usermobno': mobnoController.text,
+          'password': passwordController.text,
+        }).timeout(const Duration(seconds: 2)),
+        // Retry on SocketException or TimeoutException
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
 
-    if (response.statusCode != 200) {
-      final error = response.body;
-      final decodedData = jsonDecode(error);
-      print(decodedData);
-      var message = decodedData["msg"];
+      if (response.statusCode != 200) {
+        final error = response.body;
+        final decodedData = jsonDecode(error);
+        print(decodedData);
+        var message = decodedData["msg"];
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+        );
+      } else {
+        final UserDetailsJson = response.body;
+        print(UserDetailsJson);
+
+        final userBox = Hive.box('userBox');
+
+        final decodedData = jsonDecode(UserDetailsJson);
+        print(decodedData);
+        var userDetails = decodedData["data"];
+
+        userDetails = UserDetails.fromMap(userDetails);
+        await userBox.put('userid', userDetails.userid);
+        await userBox.put('fname', userDetails.fname);
+        await userBox.put('lname', userDetails.lname);
+        await userBox.put('mobno', userDetails.mobno);
+        await userBox.put('email', userDetails.email);
+        await userBox.put('branchName', userDetails.branchName);
+        await userBox.put('profilePic',
+            "http://cluedin.creast.in:5000/${userDetails.profilePic}");
+        await userBox.put('token', userDetails.token);
+        await userBox.put('isLoggedIn', true);
+
+        await sendToken();
+
+        Fluttertoast.showToast(
+          msg: "logged in successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+        );
+
+        NavbarNotifier.hideBottomNavBar = false;
+
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomePage(),
+          ),
+          (route) => false,
+        );
+
+        // ignore: use_build_context_synchronously
+      }
+    } on Exception {
+      // Handle other exceptions (e.g., generic error message)
       Fluttertoast.showToast(
-        msg: message,
+        msg: "An error occurred. Please try again later.",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
       );
-    } else {
-      final UserDetailsJson = response.body;
-      print(UserDetailsJson);
-
-      final userBox = Hive.box('userBox');
-
-      final decodedData = jsonDecode(UserDetailsJson);
-      print(decodedData);
-      var userDetails = decodedData["data"];
-
-      userDetails = UserDetails.fromMap(userDetails);
-      await userBox.put('userid', userDetails.userid);
-      await userBox.put('fname', userDetails.fname);
-      await userBox.put('lname', userDetails.lname);
-      await userBox.put('mobno', userDetails.mobno);
-      await userBox.put('email', userDetails.email);
-      await userBox.put('branchName', userDetails.branchName);
-      await userBox.put('profilePic',
-          "http://cluedin.creast.in:5000/${userDetails.profilePic}");
-      await userBox.put('token', userDetails.token);
-      await userBox.put('isLoggedIn', true);
-
-      await sendToken();
-
-      Fluttertoast.showToast(
-        msg: "logged in successfully!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-      );
-
-      NavbarNotifier.hideBottomNavBar = false;
-
-      // ignore: use_build_context_synchronously
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => HomePage(),
-        ),
-        (route) => false,
-      );
-
-      // ignore: use_build_context_synchronously
     }
   }
 

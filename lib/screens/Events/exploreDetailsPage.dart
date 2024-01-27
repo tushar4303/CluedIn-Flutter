@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'package:cluedin_app/screens/pdfView.dart';
 import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
@@ -10,17 +11,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../models/events.dart';
 import '../../widgets/webView/webview.dart';
 import '../../models/linkMetaData.dart';
 
 class EventDetailsPage extends StatefulWidget {
   const EventDetailsPage({
-    Key? key,
+    super.key,
     required this.event,
-  }) : super(key: key);
+  });
   final Events event;
 
   @override
@@ -28,8 +27,10 @@ class EventDetailsPage extends StatefulWidget {
 }
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
+  String remotePDFpath = "";
   RichText get timerDisplay {
-    Duration duration = widget.event.dateOfcreation.difference(DateTime.now());
+    Duration duration =
+        widget.event.dateOfexpiration!.difference(DateTime.now());
     var sentAt = DateFormat('MMM d, ' 'yy').format(widget.event.dateOfcreation);
     if (duration.isNegative) {
       return RichText(
@@ -83,6 +84,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    createFileOfPdfUrl(
+            "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}")
+        .then((f) {
+      setState(() {
+        remotePDFpath = f.path;
+      });
+    });
   }
 
   Future<LinkMetadata> fetchLinkMetadata(String link) async {
@@ -253,14 +266,14 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                             242, 243, 245, 1),
                                         child: InkWell(
                                           onTap: () async {
-                                            final url = Uri.parse(
-                                              "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}",
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PDFScreen(
+                                                  path: remotePDFpath,
+                                                ),
+                                              ),
                                             );
-                                            if (!await launchUrl(url,
-                                                mode: LaunchMode
-                                                    .platformDefault)) {
-                                              throw 'Could not launch $url';
-                                            }
                                           },
                                           onLongPress: () async {
                                             showFileOptionsBottomSheet(context,

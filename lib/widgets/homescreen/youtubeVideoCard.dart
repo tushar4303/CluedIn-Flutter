@@ -7,9 +7,9 @@ class YoutubeCard extends StatefulWidget {
   final String youtubeLink;
 
   const YoutubeCard({
-    Key? key,
+    super.key,
     required this.youtubeLink,
-  }) : super(key: key);
+  });
 
   @override
   State<YoutubeCard> createState() => _YoutubeCardState();

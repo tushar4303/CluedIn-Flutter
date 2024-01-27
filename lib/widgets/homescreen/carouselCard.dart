@@ -45,7 +45,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CarouselCard extends StatelessWidget {
-  const CarouselCard({Key? key, required this.slide}) : super(key: key);
+  const CarouselCard({super.key, required this.slide});
 
   final CarouselSlide slide;
 

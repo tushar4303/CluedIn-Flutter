@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cluedin_app/screens/ContactDirectory.dart';
-import 'package:cluedin_app/screens/Profile/MyTickets.dart';
 import 'package:cluedin_app/screens/Profile/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
 import 'package:flutter/cupertino.dart';
@@ -175,7 +174,7 @@ class _MyProfileState extends State<MyProfile> {
                   Navigator.push(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => ContactDirectory()));
+                          builder: (context) => const ContactDirectory()));
                 },
                 leading: LottieBuilder.asset(
                   'assets/lottiefiles/pointofcontact.json', // Replace with the actual path to your Lottie animation

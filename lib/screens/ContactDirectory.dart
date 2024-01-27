@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -40,7 +41,7 @@ class ContactCategory {
 }
 
 class ContactDirectory extends StatefulWidget {
-  const ContactDirectory({Key? key}) : super(key: key);
+  const ContactDirectory({super.key});
 
   @override
   _ContactDirectoryState createState() => _ContactDirectoryState();
@@ -60,7 +61,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
 
   Future<void> fetchAndShowShimmer() async {
     await Future.delayed(
-        Duration(seconds: 1)); // Show shimmer for at least a second
+        const Duration(seconds: 1)); // Show shimmer for at least a second
     fetchData();
   }
 
@@ -172,7 +173,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                   ),
                 ),
               ),
-              ListTileShimmer()
+              const ListTileShimmer()
             ],
           ),
         ),
@@ -195,13 +196,13 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                 child: Center(
                   child: Text(
                     category.name,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: category.contacts.length,
                 itemBuilder: (context, contactIndex) {
                   final contact = category.contacts[contactIndex];
@@ -231,13 +232,13 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                   child: Text(
                     category.name,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: category.contacts.length,
                 itemBuilder: (context, contactIndex) {
                   final contact = category.contacts[contactIndex];
@@ -255,84 +256,124 @@ class _ContactDirectoryState extends State<ContactDirectory> {
     final randomColor =
         Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
-    return Card(
-      color: Colors.white,
-      child: ListTile(
-        isThreeLine: true,
-        visualDensity: VisualDensity(horizontal: -4, vertical: 0),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
-        leading: CircleAvatar(
-          radius: 36,
-          backgroundColor: randomColor,
-          child: Text(
-            contact.name[0].toUpperCase(),
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-        title: Text(
-          contact.name,
-          style: TextStyle(fontWeight: FontWeight.w500),
-          softWrap: true,
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        // Unfocus any text fields when the card is tapped
+        FocusScope.of(context).unfocus();
+      },
+      child: Card(
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (contact.position != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.work, size: 16, color: Colors.grey[700]),
-                    SizedBox(width: 4),
-                    Text(
-                      "${contact.position!}",
-                      softWrap: true,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                    ),
-                  ],
-                ),
-              ),
-            if (contact.email != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.email, size: 16, color: Colors.grey[700]),
-                    SizedBox(width: 4),
-                    Text(
-                      "${contact.email!}",
-                      softWrap: true,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                    ),
-                  ],
-                ),
-              ),
             Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Row(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                radius: 32,
+                backgroundColor: randomColor,
+                child: Text(
+                  contact.name[0].toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      contact.name,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      softWrap: true,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (contact.position != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.work,
+                                    size: 16, color: Colors.grey[700]),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    contact.position!,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey[700]),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (contact.email != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Row(
+                              children: [
+                                Icon(Icons.email,
+                                    size: 16, color: Colors.grey[700]),
+                                const SizedBox(width: 4),
+                                SelectableText(
+                                  contact.email!,
+                                  // softWrap: true,
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[700]),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Row(
+                            children: [
+                              Icon(Icons.phone,
+                                  size: 16, color: Colors.grey[700]),
+                              const SizedBox(width: 4),
+                              SelectableText(
+                                contact.phoneNumber,
+                                // softWrap: true,
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[700]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.phone, size: 16, color: Colors.grey[700]),
-                  SizedBox(width: 4),
-                  Text(
-                    "${contact.phoneNumber}",
-                    softWrap: true,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  IconButton(
+                    icon: const Icon(Icons.phone_outlined),
+                    onPressed: () async {
+                      _launchUrl(Uri.parse("tel:${contact.phoneNumber}"));
+                    },
+                  ),
+                  IconButton(
+                    icon: const FaIcon(
+                        FontAwesomeIcons.whatsapp), // WhatsApp icon
+                    onPressed: () async {
+                      String whatsappUrl =
+                          "https://wa.me/+91${contact.phoneNumber}";
+                      _launchUrl(Uri.parse(whatsappUrl));
+                    },
                   ),
                 ],
               ),
             ),
           ],
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.phone_outlined),
-          onPressed: () {
-            launchUrl(Uri.parse("tel:${contact.phoneNumber}"));
-          },
-        ),
-        onTap: () {
-          // Add additional action when the contact is tapped
-        },
       ),
     );
   }
@@ -362,9 +403,9 @@ class _ContactDirectoryState extends State<ContactDirectory> {
     });
   }
 
-  void launchUrl(Uri uri) async {
-    if (await canLaunch(uri.toString())) {
-      await launch(uri.toString());
+  void _launchUrl(Uri uri) async {
+    if (await canLaunchUrl(uri)) {
+      launchUrl(uri);
     } else {
       throw 'Could not launch $uri';
     }

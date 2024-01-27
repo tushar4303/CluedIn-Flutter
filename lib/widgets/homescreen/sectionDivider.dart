@@ -4,9 +4,9 @@ class SectionDivider extends StatelessWidget {
   final String text;
 
   const SectionDivider({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,15 +2,14 @@
 import 'package:cluedin_app/models/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:photo_view/photo_view.dart';
 
 import '../widgets/webView/webview.dart';
 
 class StudentChapterPage extends StatelessWidget {
   const StudentChapterPage({
-    Key? key,
+    super.key,
     required this.chapter,
-  }) : super(key: key);
+  });
   final StudentChapters chapter;
 
   @override

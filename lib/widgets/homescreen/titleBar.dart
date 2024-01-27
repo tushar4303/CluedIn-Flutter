@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class titlebar extends StatelessWidget {
-  const titlebar({Key? key, required this.title}) : super(key: key);
+  const titlebar({super.key, required this.title});
   final String title;
 
   @override

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:io';
+import 'package:cluedin_app/screens/pdfView.dart';
 import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
@@ -9,10 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retry/retry.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/models/notification.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,9 +21,9 @@ import '../../models/linkMetaData.dart';
 
 class NotificationDetailsPage extends StatefulWidget {
   const NotificationDetailsPage({
-    Key? key,
+    super.key,
     required this.notification,
-  }) : super(key: key);
+  });
   final Notifications notification;
 
   @override
@@ -33,6 +32,7 @@ class NotificationDetailsPage extends StatefulWidget {
 }
 
 class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
+  String remotePDFpath = "";
   Future<LinkMetadata> fetchLinkMetadata(String link) async {
     try {
       // Extract filename using a regular expression
@@ -102,6 +102,13 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
     if (widget.notification.isRead == 0) {
       hasRead();
     }
+    createFileOfPdfUrl(
+            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}")
+        .then((f) {
+      setState(() {
+        remotePDFpath = f.path;
+      });
+    });
   }
 
   @override
@@ -292,14 +299,14 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                           242, 243, 245, 1),
                                       child: InkWell(
                                         onTap: () async {
-                                          final url = Uri.parse(
-                                            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PDFScreen(
+                                                path: remotePDFpath,
+                                              ),
+                                            ),
                                           );
-                                          if (!await launchUrl(url,
-                                              mode:
-                                                  LaunchMode.platformDefault)) {
-                                            throw 'Could not launch $url';
-                                          }
                                         },
                                         onLongPress: () async {
                                           showFileOptionsBottomSheet(context,
