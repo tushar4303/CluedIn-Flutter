@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../screens/Events/exploreDetailsPage.dart';
 
 class EventsWidget extends StatefulWidget {
-  const EventsWidget({super.key, required this.event});
+  const EventsWidget({Key? key, required this.event}) : super(key: key);
   final Events event;
 
   @override
@@ -14,28 +14,61 @@ class EventsWidget extends StatefulWidget {
 }
 
 class _EventsWidgetState extends State<EventsWidget> {
-  bool isEventExpired() {
-    // Compare the current date with the event's date of expiration
+  Color getStatusColor() {
+    // Get the current date
     DateTime currentDate = DateTime.now();
-    return widget.event.dateOfexpiration!.isBefore(currentDate);
+    // Check if the event is upcoming, ongoing, or expired
+    if (widget.event.dateOfexpiration!.isAfter(currentDate)) {
+      // Event is ongoing or upcoming
+      if (widget.event.dateOfexpiration!.difference(currentDate).inDays == 0) {
+        // Event is ongoing
+        return Colors.green;
+      } else {
+        // Event is upcoming
+        return Colors.blue;
+      }
+    } else {
+      // Event is expired
+      return Colors.red;
+    }
+  }
+
+  String getStatusText() {
+    // Get the current date
+    DateTime currentDate = DateTime.now();
+    // Check if the event is upcoming, ongoing, or expired
+    if (widget.event.dateOfexpiration!.isAfter(currentDate)) {
+      // Event is ongoing or upcoming
+      if (widget.event.dateOfexpiration!.difference(currentDate).inDays == 0) {
+        // Event is ongoing
+        return 'Ongoing';
+      } else {
+        // Event is upcoming
+        return 'Upcoming';
+      }
+    } else {
+      // Event is expired
+      return 'Expired';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-        tag: Key(widget.event.eventId.toString()),
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => EventDetailsPage(event: widget.event),
-              ),
-            ).then((_) {
-              setState(() {});
-            });
-          },
-          child: Stack(children: [
+      tag: Key(widget.event.eventId.toString()),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => EventDetailsPage(event: widget.event),
+            ),
+          ).then((_) {
+            setState(() {});
+          });
+        },
+        child: Stack(
+          children: [
             Column(
               children: [
                 ClipRRect(
@@ -45,7 +78,8 @@ class _EventsWidgetState extends State<EventsWidget> {
                       Container(
                         height: 260,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0)),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
                         child: CachedNetworkImage(
                           fit: BoxFit.cover,
                           imageUrl: widget.event.imageUrl,
@@ -65,31 +99,44 @@ class _EventsWidgetState extends State<EventsWidget> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: RichText(
-                                maxLines: 2,
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                                text: TextSpan(
-                                    text: null,
+                              padding:
+                                  const EdgeInsets.only(left: 12, right: 12),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.watch_later_outlined,
+                                    size: 12,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    DateFormat('MMM d, ' 'yy')
+                                        .format(widget.event.dateOfcreation!),
                                     style: const TextStyle(
-                                        fontSize: 12, color: Colors.black87),
-                                    children: [
-                                      const WidgetSpan(
-                                        child: Icon(
-                                          Icons.watch_later_outlined,
-                                          size: 12,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              " ${DateFormat('MMM d, ' 'yy').format(widget.event.dateOfcreation)}",
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500)),
-                                    ]),
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const Spacer(), // Add Spacer here
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: getStatusColor(),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    getStatusText(),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -98,56 +145,24 @@ class _EventsWidgetState extends State<EventsWidget> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text(widget.event.eventTitle,
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600)),
+                  child: Text(
+                    widget.event.eventTitle,
+                    maxLines: 2,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
             // Badge Widget
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isEventExpired()
-                      ? Colors.red.withOpacity(0.75)
-                      : Colors.green.withOpacity(0.75),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 6, // Width of the dot
-                      height: 6, // Height of the dot
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white, // Color of the dot
-                      ),
-                    ),
-                    const SizedBox(width: 4), // Spacing between dot and text
-                    Text(
-                      isEventExpired() ? 'Expired' : 'Ongoing',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }

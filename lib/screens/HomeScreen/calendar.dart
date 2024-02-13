@@ -66,8 +66,8 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
             date: event.dateOfcreation,
             title: event.eventTitle,
             description: event.eventDesc,
-            startTime: event.dateOfcreation,
-            endDate: event.dateOfexpiration,
+            startTime: event.dateOfexpiration,
+            endDate: event.dateOfexpiration!.add(Duration(days: 1)),
             // Add other properties as needed
           );
         }).toList();
@@ -124,8 +124,8 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
           controller: _tabController,
           tabs: const [
             Tab(text: 'Monthly'),
-            Tab(text: 'Weekly'),
-            Tab(text: 'Daily'),
+            // Tab(text: 'Weekly'),
+            // Tab(text: 'Daily'),
           ],
         ),
       ),
@@ -137,6 +137,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
               AsyncSnapshot<List<CalendarEventData<Object?>>?> snapshot) {
             if (isoffline) {
               return ErrorView(
+                lottieJson: 'assets/lottiefiles/noInternet.json',
                 onRetry: () {
                   setState(() {
                     myfuture = fetchEvents();

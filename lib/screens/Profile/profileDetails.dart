@@ -104,13 +104,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   const Divider(),
                   ListTile(
                     leading: const Icon(Icons.admin_panel_settings),
-                    title: const Text("Branch",
+                    title: const Text("Class",
                         textScaler: TextScaler.linear(0.9),
                         style: TextStyle(
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      widget.userDetails.branchName,
+                      "${widget.userDetails.classValue} ${widget.userDetails.branchName} ${widget.userDetails.division}",
                       textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),

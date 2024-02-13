@@ -455,6 +455,7 @@ class _NotificationPageState extends State<NotificationPage> {
               builder: (context, snapshot) {
                 if (isoffline) {
                   return ErrorView(
+                    lottieJson: 'assets/lottiefiles/noInternet.json',
                     onRetry: () {
                       setState(() {
                         myfuture = loadNotifications();

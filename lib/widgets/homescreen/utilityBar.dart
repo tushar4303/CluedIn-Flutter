@@ -1,13 +1,53 @@
 import 'package:cluedin_app/screens/HomeScreen/calendar.dart';
+import 'package:cluedin_app/screens/pdfView.dart';
+import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/widgets/webView/webview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 
-class utilityBar extends StatelessWidget {
+class utilityBar extends StatefulWidget {
   const utilityBar({
     super.key,
   });
+
+  @override
+  State<utilityBar> createState() => _utilityBarState();
+}
+
+class _utilityBarState extends State<utilityBar> {
+  late Future openbox;
+  String remotePDFpath = "";
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    openBox("UserBox");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    openbox = openBox("UserBox");
+    var semester = Hive.box('userBox').get("semester");
+    var bsdId = Hive.box('userBox').get("bsdId");
+
+    createFileOfPdfUrl(
+            'http://cluedin.creast.in:5000/api/app/appTimeTable?bsd_id=$bsdId&semester=$semester',
+            context,
+            includeAuthHeader: true)
+        .then((f) {
+      setState(() {
+        remotePDFpath = f.path;
+      });
+    });
+  }
+
+  Future<Box<dynamic>> openBox(String boxName) async {
+    final box = await Hive.openBox(boxName);
+    return box;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,50 +85,44 @@ class utilityBar extends StatelessWidget {
                       color: const Color.fromRGBO(242, 242, 242, 1)),
                   child: Column(
                     children: [
-                      // IconButton(
-                      //   iconSize: 30,
-                      //   icon: const Icon(Icons.calendar_today),
-                      //   color: Colors.black.withOpacity(0.8),
-                      //   // tooltip: 'Increase volume by 10',
-                      //   onPressed: () {
-                      //     Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) => const WebViewApp(
-                      //                   webViewTitle: 'Class Timetable',
-                      //                   webViewLink:
-                      //                       'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
-                      //                 )));
-                      //   },
-                      // ),
-                      IconButton(
-                        iconSize: 30,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const WebViewApp(
-                                webViewTitle: 'Class Timetable',
-                                webViewLink:
-                                    'http://cluedin.creast.in:5000/file/nm-1679524971299-AdminLTE%203%20%20DataTables.pdf',
+                      FutureBuilder(
+                        future: openbox,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return IconButton(
+                              iconSize: 30,
+                              onPressed: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PDFScreen(
+                                      path: remotePDFpath,
+                                    ),
+                                  ),
+                                );
+                              },
+                              // Instead of Icon, use Lottie.asset
+                              icon: LottieBuilder.asset(
+                                'assets/lottiefiles/timetable.json', // Replace with the actual path to your Lottie animation
+                                width: 30, // Adjust the width as needed
+                                height: 30, // Adjust the height as needed
+                                fit: BoxFit.cover,
+                                repeat: false,
+                                reverse:
+                                    true, // Set this to true to play the animation in reverse
                               ),
-                            ),
-                          );
+                              color: Colors.black.withOpacity(0.8),
+                              // Add tooltip if needed
+                              tooltip: 'Timetable',
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
                         },
-                        // Instead of Icon, use Lottie.asset
-                        icon: LottieBuilder.asset(
-                          'assets/lottiefiles/timetable.json', // Replace with the actual path to your Lottie animation
-                          width: 30, // Adjust the width as needed
-                          height: 30, // Adjust the height as needed
-                          fit: BoxFit.cover,
-                          repeat: false,
-                          reverse:
-                              true, // Set this to true to play the animation in reverse
-                        ),
-                        color: Colors.black.withOpacity(0.8),
-                        // Add tooltip if needed
-                        tooltip: 'Timetable',
-                      ),
+                      )
                     ],
                   ),
                 ),

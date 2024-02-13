@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
@@ -78,8 +79,12 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
                         child: CircularProgressIndicator(),
                       )
                     : Container()
-                : Center(
-                    child: Text(errorMessage),
+                : const ErrorView(
+                    customTitle: 'Resource not found',
+                    errorCode:
+                        'The PDF has probably not been uploaded/updated yet. Ask your class teacher for the updates.',
+                    customSubtitle: '',
+                    lottieJson: 'assets/lottiefiles/noResults.json',
                   )
           ],
         ),

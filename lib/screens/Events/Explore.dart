@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:navbar_router/navbar_router.dart';
 import 'package:retry/retry.dart';
@@ -27,17 +28,41 @@ class MyEvents extends StatefulWidget {
 }
 
 class _MyEventsState extends State<MyEvents> {
+  bool showOngoingEvents = false;
+
+  // List<Events> filter(List<Events> events, laBels, senders) {
+  //   if (!_filters.contains("Technical")) {
+  //     _senders.clear();
+  //   }
+  //   return events
+  //       .where((event) =>
+  //           (laBels.isEmpty || laBels.contains(event.eventLabel)) &&
+  //           (senders.isEmpty || senders.contains(event.organizedBy)) &&
+  //           (_startDate == null || event.dateOfcreation.isAfter(_startDate!)) &&
+  //           (_endDate == null || event.dateOfcreation.isBefore(_endDate!)))
+  //       .toList();
+  // }
+
   List<Events> filter(List<Events> events, laBels, senders) {
     if (!_filters.contains("Technical")) {
       _senders.clear();
     }
+
     return events
         .where((event) =>
             (laBels.isEmpty || laBels.contains(event.eventLabel)) &&
             (senders.isEmpty || senders.contains(event.organizedBy)) &&
             (_startDate == null || event.dateOfcreation.isAfter(_startDate!)) &&
-            (_endDate == null || event.dateOfcreation.isBefore(_endDate!)))
+            (_endDate == null || event.dateOfcreation.isBefore(_endDate!)) &&
+            (!showOngoingEvents || !isEventExpired(event)))
         .toList();
+  }
+
+  bool isEventExpired(Events event) {
+    // Compare the current date with the event's date of expiration
+    DateTime currentDate = DateTime.now();
+    return event.dateOfexpiration != null &&
+        event.dateOfexpiration!.isBefore(currentDate);
   }
 
   StreamSubscription? internetconnection;
@@ -197,21 +222,23 @@ class _MyEventsState extends State<MyEvents> {
                   Transform.translate(
                     offset: const Offset(0.0, -4.0),
                     child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(233, 228, 230, 0.8),
+                      decoration: BoxDecoration(
+                        color: showOngoingEvents
+                            ? Color.fromRGBO(233, 228, 230, 0.8)
+                            : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         visualDensity: VisualDensity.comfortable,
-                        icon: const Icon(
-                          Icons.mark_unread_chat_alt_rounded,
+                        icon: FaIcon(
+                          showOngoingEvents
+                              ? FontAwesomeIcons.calendarDay
+                              : FontAwesomeIcons.calendar,
                           color: Colors.black,
                         ),
                         onPressed: () {
                           setState(() {
-                            // Toggle the state when the icon button is tapped
-
-                            // Filter notifications based on 'showUnread' state
+                            showOngoingEvents = !showOngoingEvents;
                             updateFilteredEvents();
                           });
                         },
@@ -449,6 +476,7 @@ class _MyEventsState extends State<MyEvents> {
                   builder: (context, snapshot) {
                     if (isoffline) {
                       return ErrorView(
+                        lottieJson: 'assets/lottiefiles/noInternet.json',
                         onRetry: () {
                           setState(() {
                             myfuture = loadEvents();

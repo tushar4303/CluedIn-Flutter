@@ -88,14 +88,20 @@ class _MyProfileState extends State<MyProfile> {
                   var lastname = Hive.box('userBox').get("lname");
                   var profilepic = Hive.box('userBox').get("profilePic");
                   final details = UserDetails(
-                      userid: Hive.box('userBox').get("userid"),
-                      fname: firstname,
-                      lname: lastname,
-                      mobno: Hive.box('userBox').get("mobno"),
-                      email: Hive.box('userBox').get("email"),
-                      branchName: Hive.box('userBox').get("branchName"),
-                      profilePic: profilepic,
-                      token: Hive.box('userBox').get("token"));
+                    userid: Hive.box('userBox').get("userid"),
+                    fname: firstname,
+                    lname: lastname,
+                    mobno: Hive.box('userBox').get("mobno"),
+                    email: Hive.box('userBox').get("email"),
+                    branchName: Hive.box('userBox').get("branchName"),
+                    profilePic: profilepic,
+                    semester: Hive.box('userBox').get("semester"),
+                    bsdId: Hive.box('userBox').get("bsdId"),
+                    department: Hive.box('userBox').get("department"),
+                    classValue: Hive.box('userBox').get("classValue"),
+                    division: Hive.box('userBox').get("division"),
+                    token: Hive.box('userBox').get("token"),
+                  );
 
                   final username = firstname + " " + lastname;
                   return ListTile(

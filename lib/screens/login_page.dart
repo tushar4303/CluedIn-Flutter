@@ -239,6 +239,11 @@ class __FormContentState extends State<_FormContent> {
         await userBox.put('branchName', userDetails.branchName);
         await userBox.put('profilePic',
             "http://cluedin.creast.in:5000/${userDetails.profilePic}");
+        await userBox.put('semester', userDetails.semester);
+        await userBox.put('bsdId', userDetails.bsdId);
+        await userBox.put('department', userDetails.department);
+        await userBox.put('classValue', userDetails.classValue);
+        await userBox.put('division', userDetails.division);
         await userBox.put('token', userDetails.token);
         await userBox.put('isLoggedIn', true);
 

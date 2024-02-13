@@ -1,44 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'package:cluedin_app/models/contacts.dart';
+import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-class Contact {
-  final String name;
-  final String phoneNumber;
-  final String? position;
-  final String? email;
-
-  Contact({
-    required this.name,
-    required this.phoneNumber,
-    this.position,
-    this.email,
-  });
-
-  factory Contact.fromJson(Map<String, dynamic> json) {
-    return Contact(
-      name: json['name'],
-      phoneNumber: json['phoneNumber'],
-      position: json['position'],
-      email: json['email'],
-    );
-  }
-}
-
-class ContactCategory {
-  final String name;
-  final List<Contact> contacts;
-
-  ContactCategory({
-    required this.name,
-    required this.contacts,
-  });
-}
 
 class ContactDirectory extends StatefulWidget {
   const ContactDirectory({super.key});
@@ -48,7 +18,8 @@ class ContactDirectory extends StatefulWidget {
 }
 
 class _ContactDirectoryState extends State<ContactDirectory> {
-  late List<ContactCategory> contactCategories;
+  late Future<void> myfuture;
+  late List<ContactCategory> contactCategories = [];
   final TextEditingController _searchController = TextEditingController();
   List<ContactCategory> searchResults = [];
   bool isLoading = true;
@@ -56,7 +27,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
   @override
   void initState() {
     super.initState();
-    fetchAndShowShimmer();
+    myfuture = fetchAndShowShimmer();
   }
 
   Future<void> fetchAndShowShimmer() async {
@@ -85,6 +56,8 @@ class _ContactDirectoryState extends State<ContactDirectory> {
     } on Exception catch (error) {
       print('Error: $error');
     }
+
+    // Move setState outside of the try-catch block
     setState(() {
       isLoading = false;
     });
@@ -139,16 +112,41 @@ class _ContactDirectoryState extends State<ContactDirectory> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 70),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: isLoading
-              ? buildShimmerEffect()
-              : _searchController.text.isEmpty
-                  ? buildContactList(contactCategories)
-                  : buildSearchResults(searchResults),
-        ),
-      ),
+          padding: const EdgeInsets.only(bottom: 70),
+          child: FutureBuilder(
+            future: myfuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return buildShimmerEffect();
+              } else if (snapshot.hasError &&
+                  snapshot.error is SocketException) {
+                // Handle SocketException (no internet connection)
+                return ErrorView(
+                  lottieJson: 'assets/lottiefiles/noInternet.json',
+                  onRetry: () {
+                    setState(() {
+                      // Retry fetching data
+                      myfuture = fetchData();
+                    });
+                  },
+                );
+              } else if (snapshot.hasError) {
+                // Handle other errors
+                return ErrorView(
+                  lottieJson: 'assets/lottiefiles/noInternet.json',
+                  onRetry: () {
+                    setState(() {
+                      // Retry fetching data
+                      myfuture = fetchData();
+                    });
+                  },
+                );
+              } else {
+                // Data fetched successfully
+                return buildContactList(contactCategories);
+              }
+            },
+          )),
     );
   }
 
@@ -196,7 +194,8 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                 child: Center(
                   child: Text(
                     category.name,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -232,7 +231,8 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                   child: Text(
                     category.name,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

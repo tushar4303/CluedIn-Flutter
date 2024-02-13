@@ -103,7 +103,8 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
       hasRead();
     }
     createFileOfPdfUrl(
-            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}")
+            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
+            context)
         .then((f) {
       setState(() {
         remotePDFpath = f.path;

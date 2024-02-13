@@ -90,7 +90,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   void initState() {
     super.initState();
     createFileOfPdfUrl(
-            "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}")
+            "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}",
+            context)
         .then((f) {
       setState(() {
         remotePDFpath = f.path;

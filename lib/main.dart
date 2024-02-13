@@ -18,6 +18,28 @@ import 'package:cluedin_app/widgets/themes.dart';
 import 'firebase_options.dart';
 import 'utils/globals.dart';
 
+import 'package:go_router/go_router.dart';
+
+/// This handles '/' and '/details'.
+final router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (_, __) => Scaffold(
+        appBar: AppBar(title: const Text('Home Screen')),
+      ),
+      routes: [
+        GoRoute(
+          path: 'details',
+          builder: (_, __) => Scaffold(
+            appBar: AppBar(title: const Text('Details Screen')),
+          ),
+        ),
+      ],
+    ),
+  ],
+);
+
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
     // Show a notification and handle tap events
