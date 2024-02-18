@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/models/events.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:cluedin_app/widgets/networkErrorHandling.dart';
@@ -70,7 +71,6 @@ class _MyEventsState extends State<MyEvents> {
   bool showFrom = false;
   //set variable for Connectivity subscription listiner
 
-  final url = "http://128.199.23.207:5000/api/app/appEvent";
   // final url =
   //     "https://gist.githubusercontent.com/tushar4303/675432e0e112e258c971986dbca37156/raw/9352579f1a97a046a7a9917b2e9a596f4ddc4ee0/events.json";
   final _filters = [];
@@ -116,7 +116,7 @@ class _MyEventsState extends State<MyEvents> {
     final response = await r.retry(
       // Make a GET request
       () => http.get(
-        Uri.parse(url),
+        Uri.parse(eventApiUrl),
         headers: {
           'Authorization': 'Bearer $token',
         },

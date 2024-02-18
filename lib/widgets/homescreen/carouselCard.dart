@@ -41,6 +41,7 @@
 // }
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cluedin_app/models/home.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -77,7 +78,7 @@ class CarouselCard extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
             child: CachedNetworkImage(
-              imageUrl: "http://cluedin.creast.in:5000/${slide.photoUrl}",
+              imageUrl: "$baseServerUrl${slide.photoUrl}",
               fit: BoxFit.cover,
               placeholder: (context, url) {
                 return Image.asset(

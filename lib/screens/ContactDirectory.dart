@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:cluedin_app/models/contacts.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
@@ -38,8 +39,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http
-          .get(Uri.parse('http://cluedin.creast.in:5000/contactDirectory'));
+      final response = await http.get(Uri.parse(contactApi));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         contactCategories = data

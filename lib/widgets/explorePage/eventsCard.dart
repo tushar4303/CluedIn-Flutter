@@ -1,4 +1,5 @@
 import 'package:cluedin_app/models/events.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,7 +83,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                         ),
                         child: CachedNetworkImage(
                           fit: BoxFit.cover,
-                          imageUrl: widget.event.imageUrl,
+                          imageUrl: "$baseServerUrl${widget.event.imageUrl}",
                           placeholder: (context, url) {
                             return Image.asset(
                               "assets/images/placeholder.png",

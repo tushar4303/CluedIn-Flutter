@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 // import 'package:path/path.dart';
 // import 'package:async/async.dart';
@@ -27,7 +28,6 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   File? _imageFile;
   final _picker = ImagePicker();
-  String serverUrl = "http://cluedin.creast.in:5000/";
   late String _imageURL = widget.userDetails.profilePic;
 
   @override
@@ -296,10 +296,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       ..writeAsBytesSync(compressedBytes!);
 
     // Create the multipart form data
-    var url = "http://cluedin.creast.in:5000/api/app/updateProfile";
 
     var mobno = Hive.box('userBox').get('mobno');
-    var request = http.MultipartRequest("POST", Uri.parse(url));
+    var request = http.MultipartRequest("POST", Uri.parse(updateProfileUrl));
     request.headers["authorization"] = "Bearer $token";
 
     // Create a MultipartFile from the compressed image
@@ -325,7 +324,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       // Parse the response to get the image URL
       var responseJSON = json.decode(responseString);
 
-      var imageURL = serverUrl + responseJSON["img_url"];
+      var imageURL = baseServerUrl + responseJSON["img_url"];
 
       // Update the _imageURL variable with the new URL
       setState(() {

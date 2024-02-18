@@ -1,6 +1,7 @@
 import 'package:cluedin_app/screens/HomeScreen/calendar.dart';
 import 'package:cluedin_app/screens/pdfView.dart';
 import 'package:cluedin_app/utils/globals.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/webView/webview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,7 @@ class _utilityBarState extends State<utilityBar> {
     var bsdId = Hive.box('userBox').get("bsdId");
 
     createFileOfPdfUrl(
-            'http://cluedin.creast.in:5000/api/app/appTimeTable?bsd_id=$bsdId&semester=$semester',
-            context,
+            '$timetableApi?bsd_id=$bsdId&semester=$semester', context,
             includeAuthHeader: true)
         .then((f) {
       setState(() {

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:cluedin_app/models/notification.dart';
@@ -96,7 +97,7 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Future<List<Notifications>?> loadNotifications() async {
-    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/appNotif');
+    final uri = Uri.parse(notifApiUrl);
     var userid = Hive.box('userBox').get("userid") as int;
     var token = Hive.box('userBox').get("token");
 

@@ -1,3 +1,4 @@
+import 'package:cluedin_app/utils/links.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -5,7 +6,7 @@ class ValidateUser {
   final _error = "";
 
   Future<ValidateApiResponse?> apiCallLogin(Map<String, dynamic> param) async {
-    var url = Uri.parse('http://10.42.0.69:5000/api/app/authAppUser');
+    var url = Uri.parse(authAppUserApi);
     try {
       print("hit k pehle");
       var response = await http.post(url, body: param);

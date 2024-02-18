@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:cluedin_app/screens/pdfView.dart';
 import 'package:cluedin_app/utils/globals.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
@@ -89,9 +90,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
   void initState() {
     super.initState();
-    createFileOfPdfUrl(
-            "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}",
-            context)
+    createFileOfPdfUrl("$baseServerUrl${widget.event.attachmentUrl}", context)
         .then((f) {
       setState(() {
         remotePDFpath = f.path;
@@ -242,7 +241,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       if (widget.event.attachmentUrl.isNotEmpty)
                         FutureBuilder<LinkMetadata>(
                           future: fetchLinkMetadata(
-                              "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}"),
+                              "$baseServerUrl${widget.event.attachmentUrl}"),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
@@ -278,7 +277,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                           },
                                           onLongPress: () async {
                                             showFileOptionsBottomSheet(context,
-                                                "http://cluedin.creast.in:5000/${widget.event.attachmentUrl}",
+                                                "$baseServerUrl${widget.event.attachmentUrl}",
                                                 shareText:
                                                     widget.event.eventDesc);
                                           },
@@ -371,7 +370,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                       builder: (context) => WebViewApp(
                                         webViewTitle: "Register now!",
                                         webViewLink:
-                                            "http://cluedin.creast.in:5000/${widget.event.registrationLink}",
+                                            "$baseServerUrl${widget.event.registrationLink}",
                                       ),
                                     ),
                                   );
@@ -395,7 +394,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           children: [
                             CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  "http://cluedin.creast.in:5000/${widget.event.senderProfilePic}"),
+                                  "$baseServerUrl${widget.event.senderProfilePic}"),
                             ),
                             const SizedBox(
                               width: 16,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cluedin_app/screens/pdfView.dart';
 import 'package:cluedin_app/utils/globals.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
@@ -63,7 +64,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
 
   Future hasRead() async {
     print("inside has read");
-    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/notifReadStatus');
+    final uri = Uri.parse(notifReadStatus);
     var hasRead = widget.notification.isRead;
     var userId = Hive.box('userBox').get("userid") as int;
     var nmId = widget.notification.notificationId;
@@ -103,8 +104,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
       hasRead();
     }
     createFileOfPdfUrl(
-            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
-            context)
+            "$baseServerUrl${widget.notification.attachmentUrl}", context)
         .then((f) {
       setState(() {
         remotePDFpath = f.path;
@@ -172,7 +172,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         children: [
                           CircleAvatar(
                             backgroundImage: NetworkImage(
-                                "http://cluedin.creast.in:5000/${widget.notification.senderProfilePic}"),
+                                "$baseServerUrl${widget.notification.senderProfilePic}"),
                           ),
                           const SizedBox(
                             width: 8,
@@ -221,7 +221,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                         child: InkWell(
                           onLongPress: () {
                             showFileOptionsBottomSheet(context,
-                                "http://cluedin.creast.in:5000/${widget.notification.imageUrl}",
+                                "$baseServerUrl${widget.notification.imageUrl}",
                                 shareText:
                                     widget.notification.notificationMessage);
                           },
@@ -230,7 +230,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                 const BorderRadius.all(Radius.circular(16)),
                             child: CachedNetworkImage(
                               imageUrl:
-                                  "http://cluedin.creast.in:5000/${widget.notification.imageUrl}",
+                                  "$baseServerUrl${widget.notification.imageUrl}",
                               placeholder: (context, url) {
                                 return Image.asset(
                                   "assets/images/placeholder_landscape.png",
@@ -276,7 +276,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                     if (widget.notification.attachmentUrl.isNotEmpty)
                       FutureBuilder<LinkMetadata>(
                         future: fetchLinkMetadata(
-                            "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}"),
+                            "$baseServerUrl${widget.notification.attachmentUrl}"),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
@@ -311,7 +311,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                         },
                                         onLongPress: () async {
                                           showFileOptionsBottomSheet(context,
-                                              "http://cluedin.creast.in:5000/${widget.notification.attachmentUrl}",
+                                              "$baseServerUrl${widget.notification.attachmentUrl}",
                                               shareText: widget.notification
                                                   .notificationMessage);
                                         },

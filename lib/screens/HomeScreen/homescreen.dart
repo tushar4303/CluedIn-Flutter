@@ -25,6 +25,7 @@ import '../../widgets/homescreen/chapterCard.dart';
 import '../../widgets/homescreen/titleBar.dart';
 import '../../widgets/homescreen/utilityBar.dart';
 import '../login_page.dart';
+import '../../utils/links.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late CarouselModel carousel;
 
   late Future<HomeModel?> myfuture;
-  final url = "http://128.199.23.207:5000/api/app/homeapi";
 
   DateTime today = DateTime.now();
 
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final response = await r.retry(
       // Make a GET request
       () => http.get(
-        Uri.parse(url),
+        Uri.parse(homeApiUrl),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -322,78 +322,52 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             const utilityBar(),
-                            // const titlebar(
-                            //   title: "Student Chapters",
-                            // ),
-                            // const SizedBox(
-                            //   height: 16,
-                            // ),
-                            // SizedBox(
-                            //   height:
-                            //       MediaQuery.of(context).size.height * 0.225,
-                            //   width: double.infinity,
-                            //   child: Padding(
-                            //     padding:
-                            //         const EdgeInsets.symmetric(horizontal: 16),
-                            //     child: PageView.builder(
-                            //       itemBuilder: (context, index) {
-                            //         return ChapterCard(
-                            //             chapter: snapshot
-                            //                 .data!.studentChapters![index]);
-                            //       },
-                            //       padEnds: false,
-                            //       itemCount:
-                            //           snapshot.data!.studentChapters!.length,
-                            //       controller: PageController(
-                            //           initialPage: 0, viewportFraction: 0.425),
-                            //       onPageChanged: (index) {},
-                            //     ),
-                            //   ),
-                            // ),
+                            const Padding(
+                                padding: EdgeInsets.only(top: 16),
+                                child: SectionDivider(text: 'EXPLORE')),
                             DefaultTabController(
                               length: 2, // Number of tabs
                               child: Column(
                                 children: [
                                   const Padding(
-                                      padding: EdgeInsets.only(top: 16),
-                                      child: SectionDivider(text: 'EXPLORE')),
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 24, bottom: 16),
-                                    child: TabBar(
-                                      tabAlignment: TabAlignment.start,
-                                      isScrollable: true,
-                                      indicator: null,
-
-                                      tabs: [
-                                        Tab(
-                                          text: 'Chapters',
-                                        ),
-                                        Tab(
-                                          text: 'Clubs',
-                                        ),
-                                      ],
-                                      dividerHeight: 0,
-                                      indicatorPadding: EdgeInsets.zero,
-                                      indicatorColor: Colors.black,
-                                      labelColor: Colors
-                                          .black, // Text color of the active tab
-                                      unselectedLabelColor: Color.fromRGBO(
-                                          125,
-                                          125,
-                                          125,
-                                          0.8), // Text color of inactive tabs
-                                      labelStyle: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight
-                                              .w500), // Style of the active tab text
-                                      unselectedLabelStyle: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight
-                                              .w500), // Style of inactive tab text
-                                      // indicator:
-                                      //     BoxDecoration(), // Remove the default indicator
-                                      labelPadding: EdgeInsets.only(right: 16),
+                                    padding: EdgeInsets.only(bottom: 16),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: TabBar(
+                                        padding: EdgeInsets.only(left: 32),
+                                        splashFactory: NoSplash.splashFactory,
+                                        isScrollable: true,
+                                        tabAlignment: TabAlignment.start,
+                                        indicator: null,
+                                        tabs: [
+                                          Tab(
+                                            text: 'Chapters',
+                                          ),
+                                          Tab(
+                                            text: 'Clubs',
+                                          ),
+                                        ],
+                                        dividerHeight: 0,
+                                        indicatorPadding: EdgeInsets.zero,
+                                        indicatorColor: Colors.black,
+                                        labelColor: Colors
+                                            .black, // Text color of the active tab
+                                        unselectedLabelColor: Color.fromRGBO(
+                                            125,
+                                            125,
+                                            125,
+                                            0.8), // Text color of inactive tabs
+                                        labelStyle: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight
+                                                .w500), // Style of the active tab text
+                                        unselectedLabelStyle: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight
+                                                .w500), // Style of inactive tab text
+                                        labelPadding:
+                                            EdgeInsets.only(right: 16),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(

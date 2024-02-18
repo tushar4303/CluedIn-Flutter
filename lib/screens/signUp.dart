@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,8 +50,7 @@ class SignUpPage extends StatelessWidget {
                                     text: " Sign up",
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () async {
-                                        final url = Uri.parse(
-                                            "http://cluedin.creast.in:5000/signup");
+                                        final url = Uri.parse(signUpUrl);
                                         if (!await launchUrl(url,
                                             mode: LaunchMode.platformDefault)) {
                                           throw 'Could not launch $url';
@@ -163,7 +163,7 @@ class __FormContentState extends State<_FormContent> {
 
   Future sendToken() async {
     print("inside send token");
-    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/firebaseToken');
+    final uri = Uri.parse(sendFcmApi);
     int userid = Hive.box('userBox').get("userid") as int;
     var fcmtoken = Hive.box('userBox').get("fcmtoken");
 
@@ -192,7 +192,7 @@ class __FormContentState extends State<_FormContent> {
   }
 
   Future<void> signIn() async {
-    final uri = Uri.http('cluedin.creast.in:5000', '/api/app/authAppUser');
+    final uri = Uri.parse(authAppUserApi);
     // getToken();
 
     const r = RetryOptions(maxAttempts: 3);
@@ -234,8 +234,8 @@ class __FormContentState extends State<_FormContent> {
       await userBox.put('mobno', userDetails.mobno);
       await userBox.put('email', userDetails.email);
       await userBox.put('branchName', userDetails.branchName);
-      await userBox.put('profilePic',
-          "http://cluedin.creast.in:5000/${userDetails.profilePic}");
+      await userBox.put(
+          'profilePic', "$baseServerUrl${userDetails.profilePic}");
       await userBox.put('token', userDetails.token);
       await userBox.put('isLoggedIn', true);
 
@@ -391,8 +391,7 @@ class __FormContentState extends State<_FormContent> {
                       text: "Get help signing in",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          final url =
-                              Uri.parse("http://cluedin.creast.in:5000/signup");
+                          final url = Uri.parse(signUpUrl);
                           if (!await launchUrl(url,
                               mode: LaunchMode.platformDefault)) {
                             throw 'Could not launch $url';

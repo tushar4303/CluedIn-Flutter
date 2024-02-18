@@ -1,3 +1,4 @@
+import 'package:cluedin_app/utils/links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cluedin_app/models/notification.dart';
@@ -47,7 +48,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
           },
           leading: CircleAvatar(
             backgroundImage: NetworkImage(
-                "http://cluedin.creast.in:5000/${widget.notification.senderProfilePic}"),
+                "$baseServerUrl${widget.notification.senderProfilePic}"),
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

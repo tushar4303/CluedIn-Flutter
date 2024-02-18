@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:cluedin_app/screens/Events/exploreDetailsPage.dart';
+import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/networkErrorHandling.dart';
@@ -27,7 +28,6 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
   late EventController eventController;
   late TabController _tabController;
   late Future<List<CalendarEventData>?> myfuture;
-  final url = "http://128.199.23.207:5000/api/app/appEvent";
   StreamSubscription? internetconnection;
   bool isoffline = false;
   bool showFrom = false;
@@ -40,7 +40,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
       final response = await r.retry(
         // Make a GET request
         () => http.get(
-          Uri.parse(url),
+          Uri.parse(eventApiUrl),
           headers: {
             'Authorization': 'Bearer $token',
           },
@@ -66,8 +66,8 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
             date: event.dateOfcreation,
             title: event.eventTitle,
             description: event.eventDesc,
-            startTime: event.dateOfexpiration,
-            endDate: event.dateOfexpiration!.add(Duration(days: 1)),
+            startTime: event.dateOfcreation,
+            endDate: event.dateOfexpiration,
             // Add other properties as needed
           );
         }).toList();
