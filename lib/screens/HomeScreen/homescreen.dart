@@ -15,6 +15,7 @@ import 'package:navbar_router/navbar_router.dart';
 import 'package:cluedin_app/models/home.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -81,16 +82,22 @@ class _HomeScreenState extends State<HomeScreen> {
         print(carousel.slides.length);
 
         final studentChaptersJson = decodedData["student_chapters"];
+        final studentClubsJson = decodedData["student_clubs"];
         final studentChapters = List.from(studentChaptersJson)
             .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
             .toList();
+        final studentClubs = List.from(studentClubsJson)
+            .map<StudentClubs>((chapter) => StudentClubs.fromMap(chapter))
+            .toList();
         studentChapters.shuffle(Random());
+        studentClubs.shuffle(Random());
         // print(studentChapters.length);
 
         // Load carousel
 
         final homeModel = HomeModel(
           studentChapters: studentChapters,
+          studentClubs: studentClubs,
           carousel: carousel,
         );
 
@@ -154,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
     );
+    requestingNotificationPermission();
     connectivityHelper.initConnectivityListener();
     myfuture = loadHomePageData();
     _pageController = PageController(initialPage: 0);
@@ -225,12 +233,39 @@ class _HomeScreenState extends State<HomeScreen> {
       sound: true,
     );
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print("user granted permission");
+      print("User granted permission");
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print("user granted provisional authorization");
+      print("User granted provisional authorization");
     } else {
-      print("user declined or has not accepted permisiion");
+      print("User declined or has not accepted permission");
+
+      // Show a dialog or snackbar to inform the user about missing important updates
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Notification Permission Required'),
+            content: Text(
+                'Allowing notifications ensures you receive important updates and information. Would you like to enable notifications?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('No, Thanks'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Enable Notifications'),
+                onPressed: () {
+                  // Open app settings to allow the user to enable notifications manually
+                  openAppSettings();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
@@ -380,6 +415,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: TabBarView(
                                         children: [
                                           // Tab 1: Chapters
+
+                                          // Tab 1: Chapters
                                           PageView.builder(
                                             itemBuilder: (context, index) {
                                               return ChapterCard(
@@ -396,17 +433,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             onPageChanged: (index) {},
                                           ),
-                                          // Tab 2: Clubs
+
+// Tab 2: Clubs
                                           PageView.builder(
                                             itemBuilder: (context, index) {
                                               return ChapterCard(
-                                                chapter: snapshot.data!
-                                                    .studentChapters![index],
+                                                chapter: snapshot
+                                                        .data!.studentClubs![
+                                                    index], // Assuming studentClubs is a List<StudentChapters>
                                               );
                                             },
                                             padEnds: false,
                                             itemCount: snapshot
-                                                .data!.studentChapters!.length,
+                                                .data!.studentClubs!.length,
                                             controller: PageController(
                                               initialPage: 0,
                                               viewportFraction: 0.425,

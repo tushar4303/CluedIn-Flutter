@@ -18,16 +18,14 @@ class _EventsWidgetState extends State<EventsWidget> {
   Color getStatusColor() {
     // Get the current date
     DateTime currentDate = DateTime.now();
-    // Check if the event is upcoming, ongoing, or expired
-    if (widget.event.dateOfexpiration!.isAfter(currentDate)) {
-      // Event is ongoing or upcoming
-      if (widget.event.dateOfexpiration!.difference(currentDate).inDays == 0) {
-        // Event is ongoing
-        return Colors.green;
-      } else {
-        // Event is upcoming
-        return Colors.blue;
-      }
+    // Check if the event is ongoing, upcoming, or expired
+    if (widget.event.dateOfEvent.isBefore(currentDate) &&
+        widget.event.dateOfExpiration!.isAfter(currentDate)) {
+      // Event is ongoing
+      return Colors.green;
+    } else if (widget.event.dateOfEvent.isAfter(currentDate)) {
+      // Event is upcoming
+      return Colors.blue;
     } else {
       // Event is expired
       return Colors.red;
@@ -37,16 +35,14 @@ class _EventsWidgetState extends State<EventsWidget> {
   String getStatusText() {
     // Get the current date
     DateTime currentDate = DateTime.now();
-    // Check if the event is upcoming, ongoing, or expired
-    if (widget.event.dateOfexpiration!.isAfter(currentDate)) {
-      // Event is ongoing or upcoming
-      if (widget.event.dateOfexpiration!.difference(currentDate).inDays == 0) {
-        // Event is ongoing
-        return 'Ongoing';
-      } else {
-        // Event is upcoming
-        return 'Upcoming';
-      }
+    // Check if the event is ongoing, upcoming, or expired
+    if (widget.event.dateOfEvent.isBefore(currentDate) &&
+        widget.event.dateOfExpiration!.isAfter(currentDate)) {
+      // Event is ongoing
+      return 'Ongoing';
+    } else if (widget.event.dateOfEvent.isAfter(currentDate)) {
+      // Event is upcoming
+      return 'Upcoming';
     } else {
       // Event is expired
       return 'Expired';
@@ -112,7 +108,7 @@ class _EventsWidgetState extends State<EventsWidget> {
                                   const SizedBox(width: 4),
                                   Text(
                                     DateFormat('MMM d, ' 'yy')
-                                        .format(widget.event.dateOfcreation!),
+                                        .format(widget.event.dateOfCreation),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.white,

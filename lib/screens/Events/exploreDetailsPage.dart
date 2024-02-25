@@ -31,8 +31,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   String remotePDFpath = "";
   RichText get timerDisplay {
     Duration duration =
-        widget.event.dateOfexpiration!.difference(DateTime.now());
-    var sentAt = DateFormat('MMM d, ' 'yy').format(widget.event.dateOfcreation);
+        widget.event.dateOfExpiration!.difference(DateTime.now());
+    var sentAt = DateFormat('MMM d, ' 'yy').format(widget.event.dateOfCreation);
     if (duration.isNegative) {
       return RichText(
         text: TextSpan(
@@ -180,15 +180,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: InkWell(
                             onLongPress: () {
-                              showFileOptionsBottomSheet(
-                                  context, widget.event.imageUrl,
+                              showFileOptionsBottomSheet(context,
+                                  "$baseServerUrl${widget.event.imageUrl}",
                                   shareText: shareContent);
                             },
                             child: ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(16)),
                               child: CachedNetworkImage(
-                                imageUrl: widget.event.imageUrl,
+                                imageUrl:
+                                    "$baseServerUrl${widget.event.imageUrl}",
                                 placeholder: (context, url) {
                                   return Image.asset(
                                     "assets/images/placeholder.png",
@@ -414,7 +415,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                       children: <TextSpan>[
                                         TextSpan(
                                           text:
-                                              " @${widget.event.sender_fname} ${widget.event.sender_lname}",
+                                              " @${widget.event.senderFname} ${widget.event.senderLname}",
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w500),
                                         )

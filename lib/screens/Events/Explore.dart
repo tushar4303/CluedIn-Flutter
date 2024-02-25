@@ -53,8 +53,8 @@ class _MyEventsState extends State<MyEvents> {
         .where((event) =>
             (laBels.isEmpty || laBels.contains(event.eventLabel)) &&
             (senders.isEmpty || senders.contains(event.organizedBy)) &&
-            (_startDate == null || event.dateOfcreation.isAfter(_startDate!)) &&
-            (_endDate == null || event.dateOfcreation.isBefore(_endDate!)) &&
+            (_startDate == null || event.dateOfCreation.isAfter(_startDate!)) &&
+            (_endDate == null || event.dateOfCreation.isBefore(_endDate!)) &&
             (!showOngoingEvents || !isEventExpired(event)))
         .toList();
   }
@@ -62,8 +62,8 @@ class _MyEventsState extends State<MyEvents> {
   bool isEventExpired(Events event) {
     // Compare the current date with the event's date of expiration
     DateTime currentDate = DateTime.now();
-    return event.dateOfexpiration != null &&
-        event.dateOfexpiration!.isBefore(currentDate);
+    return event.dateOfExpiration != null &&
+        event.dateOfExpiration!.isBefore(currentDate);
   }
 
   StreamSubscription? internetconnection;

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'dart:math';
 import 'package:cluedin_app/models/contacts.dart';
 import 'package:cluedin_app/utils/links.dart';
@@ -25,10 +27,21 @@ class _ContactDirectoryState extends State<ContactDirectory> {
   List<ContactCategory> searchResults = [];
   bool isLoading = true;
 
+  Future<String> fetchRandomEmojiAvatar() async {
+    final response = await http.get(Uri.parse(
+        'https://api.dicebear.com/7.x/fun-emoji/svg?backgroundColor=b6e3f4,c0aede,d1d4f9&radius=20'));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load avatar');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     myfuture = fetchAndShowShimmer();
+    fetchRandomEmojiAvatar();
   }
 
   Future<void> fetchAndShowShimmer() async {
@@ -84,9 +97,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                 const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
             child: TextField(
               controller: _searchController,
-              onChanged: (value) {
-                searchContacts(value);
-              },
+              onChanged: searchContacts, // Changed here
               decoration: InputDecoration(
                 hintText: "Search contacts...",
                 prefixIcon: const Icon(Icons.search),
@@ -112,41 +123,42 @@ class _ContactDirectoryState extends State<ContactDirectory> {
         ),
       ),
       body: Padding(
-          padding: const EdgeInsets.only(bottom: 70),
-          child: FutureBuilder(
-            future: myfuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return buildShimmerEffect();
-              } else if (snapshot.hasError &&
-                  snapshot.error is SocketException) {
-                // Handle SocketException (no internet connection)
-                return ErrorView(
-                  lottieJson: 'assets/lottiefiles/noInternet.json',
-                  onRetry: () {
-                    setState(() {
-                      // Retry fetching data
-                      myfuture = fetchData();
-                    });
-                  },
-                );
-              } else if (snapshot.hasError) {
-                // Handle other errors
-                return ErrorView(
-                  lottieJson: 'assets/lottiefiles/noInternet.json',
-                  onRetry: () {
-                    setState(() {
-                      // Retry fetching data
-                      myfuture = fetchData();
-                    });
-                  },
-                );
-              } else {
-                // Data fetched successfully
-                return buildContactList(contactCategories);
-              }
-            },
-          )),
+        padding: const EdgeInsets.only(bottom: 70),
+        child: FutureBuilder(
+          future: myfuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return buildShimmerEffect();
+            } else if (snapshot.hasError && snapshot.error is SocketException) {
+              // Handle SocketException (no internet connection)
+              return ErrorView(
+                lottieJson: 'assets/lottiefiles/noInternet.json',
+                onRetry: () {
+                  setState(() {
+                    // Retry fetching data
+                    myfuture = fetchData();
+                  });
+                },
+              );
+            } else if (snapshot.hasError) {
+              // Handle other errors
+              return ErrorView(
+                lottieJson: 'assets/lottiefiles/noInternet.json',
+                onRetry: () {
+                  setState(() {
+                    // Retry fetching data
+                    myfuture = fetchData();
+                  });
+                },
+              );
+            } else {
+              // Data fetched successfully
+              return buildContactList(
+                  searchResults.isNotEmpty ? searchResults : contactCategories);
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -253,8 +265,8 @@ class _ContactDirectoryState extends State<ContactDirectory> {
   }
 
   Widget buildContactListItem(Contact contact) {
-    final randomColor =
-        Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    // Define a constant color for the avatar background
+    final avatarBackgroundColor = Colors.white;
 
     return GestureDetector(
       onTap: () {
@@ -267,13 +279,41 @@ class _ContactDirectoryState extends State<ContactDirectory> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
               child: CircleAvatar(
                 radius: 32,
-                backgroundColor: randomColor,
-                child: Text(
-                  contact.name[0].toUpperCase(),
-                  style: const TextStyle(color: Colors.white),
+                backgroundColor: avatarBackgroundColor,
+                child: FutureBuilder<String>(
+                  future:
+                      fetchRandomEmojiAvatar(), // Fetch avatar for each contact
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Show shimmer effect while loading avatars
+                      return SizedBox(
+                        width: 64,
+                        height: 64,
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      // Handle error gracefully
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      // Use the fetched SVG avatar
+                      return SvgPicture.string(
+                        snapshot.data!,
+                        // Set default SVG content if snapshot.data is null
+                        placeholderBuilder: (context) =>
+                            CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
@@ -285,7 +325,8 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                   children: [
                     Text(
                       contact.name,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.black),
                       softWrap: true,
                     ),
                     Column(
@@ -321,7 +362,6 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                                 const SizedBox(width: 4),
                                 SelectableText(
                                   contact.email!,
-                                  // softWrap: true,
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey[700]),
                                 ),
@@ -337,7 +377,6 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                               const SizedBox(width: 4),
                               SelectableText(
                                 contact.phoneNumber,
-                                // softWrap: true,
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.grey[700]),
                               ),
@@ -361,8 +400,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                     },
                   ),
                   IconButton(
-                    icon: const FaIcon(
-                        FontAwesomeIcons.whatsapp), // WhatsApp icon
+                    icon: const FaIcon(FontAwesomeIcons.whatsapp),
                     onPressed: () async {
                       String whatsappUrl =
                           "https://wa.me/+91${contact.phoneNumber}";
@@ -380,26 +418,34 @@ class _ContactDirectoryState extends State<ContactDirectory> {
 
   void searchContacts(String query) {
     setState(() {
-      searchResults = contactCategories
-          .map((category) => ContactCategory(
-                name: category.name,
-                contacts: category.contacts
-                    .where((contact) =>
-                        contact.name
-                            .toLowerCase()
-                            .contains(query.toLowerCase()) ||
-                        (contact.position != null &&
-                            contact.position!
-                                .toLowerCase()
-                                .contains(query.toLowerCase())) ||
-                        (contact.email != null &&
-                            contact.email!
-                                .toLowerCase()
-                                .contains(query.toLowerCase())) ||
-                        contact.phoneNumber.contains(query))
-                    .toList(),
-              ))
-          .toList();
+      if (query.isEmpty) {
+        // If the search query is empty, show all contacts
+        searchResults = contactCategories;
+      } else {
+        // Filter contacts based on the search query
+        searchResults = contactCategories
+            .map((category) => ContactCategory(
+                  name: category.name,
+                  contacts: category.contacts
+                      .where((contact) =>
+                          contact.name
+                              .toLowerCase()
+                              .contains(query.toLowerCase()) ||
+                          (contact.position != null &&
+                              contact.position!
+                                  .toLowerCase()
+                                  .contains(query.toLowerCase())) ||
+                          (contact.email != null &&
+                              contact.email!
+                                  .toLowerCase()
+                                  .contains(query.toLowerCase())) ||
+                          contact.phoneNumber.contains(query))
+                      .toList(),
+                ))
+            .where((category) => category.contacts
+                .isNotEmpty) // Remove categories with no matching contacts
+            .toList();
+      }
     });
   }
 

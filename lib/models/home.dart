@@ -1,9 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class HomeModel {
   final List<StudentChapters>? studentChapters;
+  final List<StudentClubs>? studentClubs;
   final CarouselModel? carousel;
 
-  HomeModel({required this.studentChapters, required this.carousel});
+  HomeModel(
+      {required this.studentChapters,
+      required this.studentClubs,
+      required this.carousel});
 }
 
 class StudentChapters {
@@ -46,6 +50,49 @@ class StudentChapters {
   @override
   String toString() {
     return 'StudentChapters(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website)';
+  }
+}
+
+class StudentClubs {
+  final String title;
+  final int establisedIn;
+  final String desc;
+  final String logo;
+  final String coverPic;
+  final String website;
+
+  StudentClubs({
+    required this.title,
+    required this.establisedIn,
+    required this.desc,
+    required this.logo,
+    required this.coverPic,
+    required this.website,
+  });
+
+  factory StudentClubs.fromMap(Map<String, dynamic> map) {
+    return StudentClubs(
+      title: map["title"],
+      establisedIn: map["Established_in"],
+      desc: map["desc"],
+      logo: map["logo"],
+      coverPic: map["cover_pic"],
+      website: map["website"],
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        "title": title,
+        "Established_in": establisedIn,
+        "desc": desc,
+        "logo": logo,
+        "cover_pic": coverPic,
+        "website": website,
+      };
+
+  @override
+  String toString() {
+    return 'StudentClubs(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website)';
   }
 }
 

@@ -1,7 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: camel_case_types
+import 'package:cluedin_app/screens/resetPasssword.dart';
+import 'package:cluedin_app/screens/resetPasswordScreen.dart';
+import 'package:cluedin_app/screens/signUpPasswordScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -14,31 +18,9 @@ import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/screens/Profile/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
-
+import 'package:uni_links/uni_links.dart';
 import 'firebase_options.dart';
 import 'utils/globals.dart';
-
-import 'package:go_router/go_router.dart';
-
-/// This handles '/' and '/details'.
-final router = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (_, __) => Scaffold(
-        appBar: AppBar(title: const Text('Home Screen')),
-      ),
-      routes: [
-        GoRoute(
-          path: 'details',
-          builder: (_, __) => Scaffold(
-            appBar: AppBar(title: const Text('Details Screen')),
-          ),
-        ),
-      ],
-    ),
-  ],
-);
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   if (message.notification != null) {
@@ -49,6 +31,8 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
 // FlutterLocalNotificationsPlugin notificationsPlugin =
 //     FlutterLocalNotificationsPlugin();
+// Define a global key for the navigator
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   SystemChrome.setPreferredOrientations([
@@ -67,7 +51,95 @@ void main() async {
       await Hive.box('userBox').get('isLoggedIn', defaultValue: false);
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  initUniLinks();
   runApp(myApp(isLoggedIn: isLoggedIn));
+}
+
+void initUniLinks() async {
+  // Handle initial URI when the app launches
+  try {
+    Uri? initialUri = await getInitialUri();
+    if (initialUri != null) {
+      handleDeepLink(initialUri);
+    }
+  } on PlatformException {
+    // Handle exception if getInitialUri() fails
+  }
+
+  // Listen for URI links when the app is already running
+  uriLinkStream.listen((Uri? uri) {
+    if (uri != null) {
+      handleDeepLink(uri);
+    }
+  });
+}
+
+void handleDeepLink(Uri uri) {
+  if (uri.pathSegments.length >= 3 &&
+      uri.pathSegments[0] == 'api' &&
+      uri.pathSegments[1] == 'app') {
+    if (uri.pathSegments[2] == 'request-signup' &&
+        uri.pathSegments.length >= 4) {
+      // Reset password link
+      String userIdString = uri.pathSegments[3];
+      int? userId = int.tryParse(userIdString); // Convert to number
+
+      String token = uri.pathSegments.length >= 5 ? uri.pathSegments[4] : '';
+
+      if (userId != null) {
+        navigateToSignUpPasswordScreen(userId, token);
+      } else {
+        print('Invalid user ID format');
+      }
+    } else if (uri.pathSegments[2] == 'request-reset-password' &&
+        uri.pathSegments.length >= 4) {
+      // Sign-up password link
+      String userIdString = uri.pathSegments[3];
+      int? userId = int.tryParse(userIdString); // Convert to number
+
+      String token = uri.pathSegments.length >= 5 ? uri.pathSegments[4] : '';
+
+      if (userId != null) {
+        navigateToResetPasswordScreen(userId, token);
+      } else {
+        print('Invalid user ID format');
+      }
+    } else {
+      print('Unknown deep link type');
+    }
+  } else {
+    print('Invalid deep link format');
+  }
+}
+
+void navigateToResetPasswordScreen(int userId, String token) {
+  navigatorKey.currentState?.push(
+    CupertinoPageRoute(
+      builder: (context) => ResetPasswordPage(
+        userId: userId,
+        token: token,
+      ),
+    ),
+  );
+
+  print(token);
+  print("Navigating to ResetPasswordPage");
+  print(userId);
+}
+
+void navigateToSignUpPasswordScreen(int userId, String token) {
+  navigatorKey.currentState?.push(
+    CupertinoPageRoute(
+      builder: (context) => SignUpPasswordPage(
+        userId: userId,
+        token: token,
+      ),
+    ),
+  );
+
+  print(token);
+  print("Navigating to SignUpPasswordPage");
+  print(userId);
 }
 
 class myApp extends StatelessWidget {
@@ -76,25 +148,20 @@ class myApp extends StatelessWidget {
     super.key,
     required this.isLoggedIn,
   });
-  final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey(debugLabel: "Main Navigator"); //
 
   @override
   Widget build(BuildContext context) {
     return CalendarControllerProvider(
       controller: EventController(),
       child: MaterialApp(
-          navigatorKey: navigatorKey,
-          scaffoldMessengerKey: snackbarKey,
-          themeMode: ThemeMode.light,
-          debugShowCheckedModeBanner: false,
-          theme: MyTheme.lightTheme(context),
-          darkTheme: MyTheme.darkTheme(context),
-          // home: HomePage(),
-          // home: MyPhone(),
-          home: isLoggedIn ? HomePage() : LoginPage()
-          // initialRoute: isLoggedIn ? HomePage() : LoginPage();
-          ),
+        navigatorKey: navigatorKey,
+        scaffoldMessengerKey: snackbarKey,
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        theme: MyTheme.lightTheme(context),
+        darkTheme: MyTheme.darkTheme(context),
+        home: isLoggedIn ? HomePage() : LoginPage(),
+      ),
     );
   }
 }
@@ -165,21 +232,6 @@ class HomePage extends StatelessWidget {
 
   DateTime oldTime = DateTime.now();
   DateTime newTime = DateTime.now();
-
-  // void _showWelcomeDialog(BuildContext context) {
-  //   QuickAlert.show(
-  //     context: context,
-  //     type: QuickAlertType.success,
-  //     text: 'Logged in successfully!',
-  //     showConfirmBtn: true,
-  //     confirmBtnText: 'OK',
-  //     onConfirmBtnTap: () {
-  //       // Handle confirm button tap
-  //       Restart.restartApp();
-  //       Navigator.pop(context); // Close the dialog if needed
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

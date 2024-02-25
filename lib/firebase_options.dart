@@ -44,40 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD3_QbP9odQjyQs6bDPf1v9BTaRYx3FXBg',
-    appId: '1:100872515087:web:2a417b0b7dbc954886bd7a',
-    messagingSenderId: '100872515087',
-    projectId: 'cluedin-e47b2',
-    authDomain: 'cluedin-e47b2.firebaseapp.com',
-    storageBucket: 'cluedin-e47b2.appspot.com',
-    measurementId: 'G-SGBHTBP6WD',
+    apiKey: 'AIzaSyBadurAExX4ZFXWGCytIZxevmQRBXBQwQQ',
+    appId: '1:474604492516:web:e161ddfc9abae5df53bef1',
+    messagingSenderId: '474604492516',
+    projectId: 'cluedin-379910',
+    authDomain: 'cluedin-379910.firebaseapp.com',
+    storageBucket: 'cluedin-379910.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCkhr-cCUjl4BoVYNIWnbDr5iCvPXn1uv0',
-    appId: '1:100872515087:android:ba4af5a4003bf98486bd7a',
-    messagingSenderId: '100872515087',
-    projectId: 'cluedin-e47b2',
-    storageBucket: 'cluedin-e47b2.appspot.com',
+    apiKey: 'AIzaSyA1NH0I6ZKjDTL9d5zxGPSjQveg4tjE0Bs',
+    appId: '1:474604492516:android:91bb73a806a4b20653bef1',
+    messagingSenderId: '474604492516',
+    projectId: 'cluedin-379910',
+    storageBucket: 'cluedin-379910.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD8Jzv1c0XwkAzLNLdcag-vEhbyLw6SgX4',
-    appId: '1:100872515087:ios:959df518b7798cca86bd7a',
-    messagingSenderId: '100872515087',
-    projectId: 'cluedin-e47b2',
-    storageBucket: 'cluedin-e47b2.appspot.com',
-    iosClientId: '100872515087-kf546q4tmedqet89stdp89ma8a6blr3a.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCQqcwGwJ5ISlbxo-JlZ6rvK1qeYvoRJaM',
+    appId: '1:474604492516:ios:5e9f4eb5bef4c09153bef1',
+    messagingSenderId: '474604492516',
+    projectId: 'cluedin-379910',
+    storageBucket: 'cluedin-379910.appspot.com',
     iosBundleId: 'com.example.cluedinApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD8Jzv1c0XwkAzLNLdcag-vEhbyLw6SgX4',
-    appId: '1:100872515087:ios:959df518b7798cca86bd7a',
-    messagingSenderId: '100872515087',
-    projectId: 'cluedin-e47b2',
-    storageBucket: 'cluedin-e47b2.appspot.com',
-    iosClientId: '100872515087-kf546q4tmedqet89stdp89ma8a6blr3a.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCQqcwGwJ5ISlbxo-JlZ6rvK1qeYvoRJaM',
+    appId: '1:474604492516:ios:5e9f4eb5bef4c09153bef1',
+    messagingSenderId: '474604492516',
+    projectId: 'cluedin-379910',
+    storageBucket: 'cluedin-379910.appspot.com',
     iosBundleId: 'com.example.cluedinApp',
   );
 }

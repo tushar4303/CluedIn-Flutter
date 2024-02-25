@@ -1,4 +1,4 @@
-package com.example.cluedin_app
+package `in`.creast.cluedin_app
 
 import io.flutter.embedding.android.FlutterActivity
 

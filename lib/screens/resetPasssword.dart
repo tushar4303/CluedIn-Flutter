@@ -6,8 +6,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cluedin_app/screens/login_page.dart';
 
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({
+class ResetPassword extends StatelessWidget {
+  const ResetPassword({
     Key? key,
   }) : super(key: key);
 
@@ -127,27 +127,19 @@ class __FormContentState extends State<_FormContent> {
         _isLoading = true;
       });
 
-      // Log request body
-      final requestBody = {
-        'userEmail': emailController.text,
-      };
-      print('Request Body: $requestBody');
-
       final response = await http.post(
-        Uri.parse(requestSignUpUrl),
-        body: requestBody,
+        Uri.parse(requestResetPassword),
+        body: {
+          'userEmail': emailController.text,
+        },
       );
 
       setState(() {
         _isLoading = false;
       });
 
-      // Log response body
-      final responseBody = response.body;
-      print('Response Body: $responseBody');
-
       if (response.statusCode == 200) {
-        final data = json.decode(responseBody);
+        final data = json.decode(response.body);
         final bool success = data['success'];
         final String message = data['message'];
 
@@ -159,9 +151,6 @@ class __FormContentState extends State<_FormContent> {
           ),
         );
       } else {
-        print('Error occurred. Response status code: ${response.statusCode}');
-        print('Error response body: $responseBody');
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Error occurred. Please try again.'),
@@ -232,7 +221,7 @@ class __FormContentState extends State<_FormContent> {
                         ),
                       )
                     : Text(
-                        _isEmailSent ? 'Check your mailbox' : 'Sign Up',
+                        _isEmailSent ? 'Check your mailbox' : 'Reset Password',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

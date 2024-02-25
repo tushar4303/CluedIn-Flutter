@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:cluedin_app/screens/resetPasssword.dart';
 import 'package:cluedin_app/screens/signUp.dart';
 import 'package:cluedin_app/utils/links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -409,11 +410,11 @@ class __FormContentState extends State<_FormContent> {
                       text: "Get help signing in",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          final url = Uri.parse(signUpUrl);
-                          if (!await launchUrl(url,
-                              mode: LaunchMode.platformDefault)) {
-                            throw 'Could not launch $url';
-                          }
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => const ResetPassword()),
+                          );
                         },
                       style: const TextStyle(
                           color: Colors.deepPurple,

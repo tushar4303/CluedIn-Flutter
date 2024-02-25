@@ -45,7 +45,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.cluedin"
+        applicationId "in.creast.cluedin_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
@@ -54,13 +54,20 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+    release {
+        storeFile file("C:/Users/padhy/cluedin.jks")
+        storePassword "\$Cam4loif"
+        keyAlias "keepsyouposted"
+        keyPassword "\$Cam4loif"
+    }
+}
+
     buildTypes {
-       release {
-        //     minifyEnabled false
-        // shrinkResources false
-           signingConfig signingConfigs.debug
-       }
-   }
+    release {
+        signingConfig signingConfigs.release
+    }
+}
 }
 
 flutter {

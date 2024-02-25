@@ -1,41 +1,34 @@
 {
   "project_info": {
-    "project_number": "100872515087",
-    "project_id": "cluedin-e47b2",
-    "storage_bucket": "cluedin-e47b2.appspot.com"
+    "project_number": "474604492516",
+    "project_id": "cluedin-379910",
+    "storage_bucket": "cluedin-379910.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:100872515087:android:ba4af5a4003bf98486bd7a",
+        "mobilesdk_app_id": "1:474604492516:android:91bb73a806a4b20653bef1",
         "android_client_info": {
-          "package_name": "com.example.cluedin"
+          "package_name": "in.creast.cluedin_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "100872515087-9h8041r65kvqh56rae58npu2a8ic3ci9.apps.googleusercontent.com",
+          "client_id": "474604492516-d44810u318r3hnfhoiktiqneagrfi335.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCkhr-cCUjl4BoVYNIWnbDr5iCvPXn1uv0"
+          "current_key": "AIzaSyA1NH0I6ZKjDTL9d5zxGPSjQveg4tjE0Bs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "100872515087-9h8041r65kvqh56rae58npu2a8ic3ci9.apps.googleusercontent.com",
+              "client_id": "474604492516-d44810u318r3hnfhoiktiqneagrfi335.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "100872515087-5lhcp2un63e7knmevve8489mri5312eo.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.cluedin"
-              }
             }
           ]
         }

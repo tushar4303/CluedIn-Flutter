@@ -105,8 +105,8 @@ class Labels {
 
 class Events {
   final int eventId;
-  final String sender_fname;
-  final String sender_lname;
+  final String senderFname;
+  final String senderLname;
   final String senderRole;
   final String organizedBy;
   final String senderProfilePic;
@@ -117,31 +117,38 @@ class Events {
   final String attachmentUrl;
   final String registrationLink;
   final String registrationFee;
-  final DateTime dateOfcreation;
-  final DateTime? dateOfexpiration;
+  final DateTime dateOfCreation;
+  final DateTime dateOfEvent;
+  final DateTime? dateOfExpiration;
 
-  Events(
-      {required this.eventId,
-      required this.sender_fname,
-      required this.sender_lname,
-      required this.senderRole,
-      required this.organizedBy,
-      required this.senderProfilePic,
-      required this.eventTitle,
-      required this.eventLabel,
-      required this.eventDesc,
-      required this.imageUrl,
-      required this.attachmentUrl,
-      required this.registrationLink,
-      required this.registrationFee,
-      required this.dateOfcreation,
-      this.dateOfexpiration});
+  Events({
+    required this.eventId,
+    required this.senderFname,
+    required this.senderLname,
+    required this.senderRole,
+    required this.organizedBy,
+    required this.senderProfilePic,
+    required this.eventTitle,
+    required this.eventLabel,
+    required this.eventDesc,
+    required this.imageUrl,
+    required this.attachmentUrl,
+    required this.registrationLink,
+    required this.registrationFee,
+    required this.dateOfCreation,
+    required this.dateOfEvent,
+    this.dateOfExpiration,
+  });
 
   factory Events.fromMap(Map<String, dynamic> map) {
+    print("Date of Creation String: ${map["dateOfCreation"]}");
+    print("Date of Event String: ${map["dateOfEvent"]}");
+    print("Date of Expiration String: ${map["dateOfExpiration"]}");
+
     return Events(
       eventId: map["event_id"],
-      sender_fname: map["sender_fname"] ?? "",
-      sender_lname: map["sender_lname"] ?? "",
+      senderFname: map["sender_fname"] ?? "",
+      senderLname: map["sender_lname"] ?? "",
       senderRole: map["senderRole"] ?? "",
       organizedBy: map["organizedBy"] ?? "",
       senderProfilePic: map["senderProfilePic"] ?? "",
@@ -152,31 +159,43 @@ class Events {
       attachmentUrl: map["event_attachment_url"] ?? "",
       registrationLink: map["registration_link"] ?? "",
       registrationFee: map["registration_fee"] ?? "",
-      dateOfcreation: DateTime.parse(map["dateOfCreation"] ?? ""),
-      dateOfexpiration: DateTime.tryParse(map["dateOfExpiration"] ?? ""),
+      dateOfCreation: DateTime.parse(map["dateOfCreation"]),
+      dateOfEvent: map["dateOfEvent"].isNotEmpty
+          ? DateTime.parse(map["dateOfEvent"])
+          : DateTime.parse(map["dateOfCreation"]),
+      dateOfExpiration: map["dateOfExpiration"] != null
+          ? DateTime.parse(map["dateOfExpiration"])
+          : null,
     );
   }
 
-  toMap() => {
-        "event_id": eventId,
-        "sender_fname": sender_fname,
-        "sender_lname": sender_lname,
-        "senderRole": senderRole,
-        "organizedBy": organizedBy,
-        "senderProfilePic": senderProfilePic,
-        "event_title": eventTitle,
-        "event_label": eventLabel,
-        "event_desc": eventDesc,
-        "event_image_url": imageUrl,
-        "event_attachment_url": attachmentUrl,
-        "registration_link": registrationLink,
-        "registration_fee": registrationFee,
-        "dateOfCreation": dateOfcreation,
-        "dateOfExpiration": dateOfexpiration,
-      };
+  Map<String, dynamic> toMap() {
+    return {
+      "event_id": eventId,
+      "sender_fname": senderFname,
+      "sender_lname": senderLname,
+      "senderRole": senderRole,
+      "organizedBy": organizedBy,
+      "senderProfilePic": senderProfilePic,
+      "event_title": eventTitle,
+      "event_label": eventLabel,
+      "event_desc": eventDesc,
+      "event_image_url": imageUrl,
+      "event_attachment_url": attachmentUrl,
+      "registration_link": registrationLink,
+      "registration_fee": registrationFee,
+      "dateOfCreation": dateOfCreation.toIso8601String(),
+      "dateOfEvent": dateOfEvent.toIso8601String(),
+      "dateOfExpiration": dateOfExpiration?.toIso8601String(),
+    };
+  }
+
+  factory Events.fromJson(String source) => Events.fromMap(json.decode(source));
+
+  String toJson() => json.encode(toMap());
 
   @override
   String toString() {
-    return 'Events(eventId: $eventId, sender_fname: $sender_fname, sender_lname: $sender_lname, senderRole: $senderRole, organizedBy: $organizedBy, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfcreation: $dateOfcreation, dateOfexpiration: $dateOfexpiration)';
+    return 'Events(eventId: $eventId, senderFname: $senderFname, senderLname: $senderLname, senderRole: $senderRole, organizedBy: $organizedBy, senderProfilePic: $senderProfilePic, eventTitle: $eventTitle, eventLabel: $eventLabel, eventDesc: $eventDesc, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, registrationLink: $registrationLink, registrationFee: $registrationFee, dateOfCreation: $dateOfCreation, dateOfEvent: $dateOfEvent, dateOfExpiration: $dateOfExpiration)';
   }
 }

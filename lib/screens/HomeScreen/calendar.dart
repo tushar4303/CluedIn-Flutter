@@ -63,11 +63,11 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
 
         final calendarEvents = EventModel.events?.map((event) {
           return CalendarEventData(
-            date: event.dateOfcreation,
+            date: event.dateOfEvent,
             title: event.eventTitle,
             description: event.eventDesc,
-            startTime: event.dateOfcreation,
-            endDate: event.dateOfexpiration,
+            startTime: event.dateOfEvent,
+            endDate: event.dateOfExpiration,
             // Add other properties as needed
           );
         }).toList();
@@ -86,7 +86,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     connectivityHelper = ConnectivityHelper(
       onConnectivityChanged: (bool isConnected) {
         setState(() {
@@ -124,8 +124,6 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
           controller: _tabController,
           tabs: const [
             Tab(text: 'Monthly'),
-            // Tab(text: 'Weekly'),
-            // Tab(text: 'Daily'),
           ],
         ),
       ),
@@ -157,123 +155,82 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
                     },
                   );
                 }
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    fetchEvents();
-                  },
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      MonthView(
-                        headerStyle: const HeaderStyle(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+                if (EventModel.events != null) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      fetchEvents();
+                    },
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        MonthView(
+                          headerStyle: const HeaderStyle(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            headerTextStyle: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
                           ),
-                          headerTextStyle: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
+                          headerStringBuilder: (date, {secondaryDate}) {
+                            final monthAbbreviation =
+                                _getMonthAbbreviation(date.month);
+                            final year = date.year;
 
-                        headerStringBuilder: (date, {secondaryDate}) {
-                          final monthAbbreviation =
-                              _getMonthAbbreviation(date.month);
-                          final year = date.year;
-
-                          return '$monthAbbreviation $year';
-                        },
-                        controller: eventController,
-                        showBorder: false,
-                        minMonth: DateTime(2023),
-                        maxMonth: DateTime(2050),
-                        initialMonth: DateTime.now(),
-                        useAvailableVerticalSpace: true,
-                        // cellAspectRatio: 1,
-                        onPageChange: (date, pageIndex) =>
-                            print("$date, $pageIndex"),
-                        onCellTap: (events, date) {
-                          print('Events for ${date.day}: ${events.length}');
-                        },
-
-                        startDay: WeekDays.sunday,
-                        onEventTap: (eventData, date) {
-                          final selectedEvent =
-                              EventModel.events?.firstWhere((event) {
-                            return event.dateOfcreation == eventData.date &&
-                                event.eventTitle == eventData.title &&
-                                event.eventDesc == eventData.description &&
-                                event.dateOfexpiration == eventData.endDate;
-                          });
-
-                          if (selectedEvent != null) {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) =>
-                                    EventDetailsPage(event: selectedEvent),
-                              ),
-                            ).then((_) {
-                              setState(() {});
+                            return '$monthAbbreviation $year';
+                          },
+                          controller: eventController,
+                          showBorder: false,
+                          minMonth: DateTime(2023),
+                          maxMonth: DateTime(2050),
+                          initialMonth: DateTime.now(),
+                          useAvailableVerticalSpace: true,
+                          onPageChange: (date, pageIndex) =>
+                              print("$date, $pageIndex"),
+                          onCellTap: (events, date) {
+                            print('Events for ${date.day}: ${events.length}');
+                          },
+                          startDay: WeekDays.sunday,
+                          onEventTap: (eventData, date) {
+                            final selectedEvent =
+                                EventModel.events?.firstWhere((event) {
+                              return event.dateOfEvent == eventData.date &&
+                                  event.eventTitle == eventData.title &&
+                                  event.eventDesc == eventData.description &&
+                                  event.dateOfExpiration == eventData.endDate;
                             });
-                          }
-                        },
 
-                        onDateLongPress: (date) => print(date),
-                      ),
-                      WeekView(
-                        controller: eventController,
-                        // eventTileBuilder: (date, events, boundry, start, end) {
-                        //   // Return your widget to display as event tile.
-                        //   return Container();
-                        // },
-                        // fullDayEventBuilder: (events, date) {
-                        //   // Return your widget to display full day event view.
-                        //   return Container();
-                        // },
-                        // showLiveTimeLineInAllDays:
-                        //     true, // To display live time line in all pages in week view.
-
-                        minDay: DateTime(1990),
-                        maxDay: DateTime(2050),
-                        initialDay: DateTime.now(),
-                        // heightPerMinute:
-                        //     1, // height occupied by 1 minute time span.
-                        // eventArranger:
-                        //     const SideEventArranger(), // To define how simultaneous events will be arranged.
-                        // onEventTap: (events, date) => print(events),
-                        // onDateLongPress: (date) => print(date),
-                        // startDay: WeekDays
-                        //     .sunday, // To change the first day of the week.
-                      ),
-                      DayView(
-                        controller: eventController,
-                        eventTileBuilder: (date, events, boundry, start, end) {
-                          // Return your widget to display as event tile.
-                          return Container();
-                        },
-                        fullDayEventBuilder: (events, date) {
-                          // Return your widget to display full day event view.
-                          return Container();
-                        },
-                        showVerticalLine:
-                            true, // To display live time line in day view.
-                        showLiveTimeLineInAllDays:
-                            true, // To display live time line in all pages in day view.
-                        minDay: DateTime(2020),
-                        maxDay: DateTime(2050),
-                        initialDay: DateTime.now(),
-                        heightPerMinute:
-                            1, // height occupied by 1 minute time span.
-                        eventArranger:
-                            const SideEventArranger(), // To define how simultaneous events will be arranged.
-                        onEventTap: (events, date) => print(events),
-                        onDateLongPress: (date) => print(date),
-                      )
-                    ],
-                  ),
-                );
+                            if (selectedEvent != null) {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      EventDetailsPage(event: selectedEvent),
+                                ),
+                              ).then((_) {
+                                setState(() {});
+                              });
+                            }
+                          },
+                          onDateLongPress: (date) => print(date),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return ErrorHandlingWidget(
+                    error: "Event data is null",
+                    onRetry: () {
+                      setState(() {
+                        myfuture = fetchEvents();
+                      });
+                    },
+                  );
+                }
               } else if (snapshot.hasError) {
+                print(snapshot.error.toString());
                 return ErrorHandlingWidget(
                   error: snapshot.error,
                   onRetry: () {
@@ -284,6 +241,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
                 );
               }
             }
+
             // Show shimmer while waiting for data
             return ShimmerCalendarLayout();
           },
