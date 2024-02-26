@@ -7,6 +7,7 @@ import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
+import 'package:cluedin_app/widgets/webView/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mime/mime.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/linkMetaData.dart';
 
@@ -334,7 +336,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                                                   color: Colors.black
                                                       .withOpacity(0.5),
                                                 ),
-                                                const SizedBox(width: 16),
+                                                const SizedBox(width: 8),
                                                 Text(
                                                   displayFilename,
                                                   maxLines: 2,
@@ -373,6 +375,53 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
                           }
                         },
                       ),
+                    if (widget.notification.nm_registration_url.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 16, bottom: 12), // Increased bottom padding
+                        child: Center(
+                          child: SizedBox(
+                            height: 50, // Adjust the height as needed
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.black),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: const Text(
+                                "Registration link",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: () async {
+                                if (widget.notification.nm_registration_url
+                                        .contains('google.com/forms') ||
+                                    widget.notification.nm_registration_url
+                                        .contains('tinyurl.com')) {
+                                  await _launchUrl(
+                                      widget.notification.nm_registration_url);
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => WebViewApp(
+                                        webViewTitle: "Registration link",
+                                        webViewLink: widget
+                                            .notification.nm_registration_url,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -402,5 +451,13 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
     }
     // Default icon
     return Icons.insert_drive_file;
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

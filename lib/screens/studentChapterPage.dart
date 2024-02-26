@@ -7,9 +7,9 @@ import '../widgets/webView/webview.dart';
 
 class StudentChapterPage extends StatelessWidget {
   const StudentChapterPage({
-    Key? key,
+    super.key,
     required this.chapter,
-  }) : super(key: key);
+  });
 
   final dynamic chapter;
 

@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navbar_router/navbar_router.dart';
@@ -304,15 +305,20 @@ class __FormContentState extends State<_FormContent> {
             TextFormField(
               controller: mobnoController,
               style: const TextStyle(fontSize: 16),
+
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(
+                    10), // Limit input length programmatically
+              ],
+              keyboardType: TextInputType.phone, // Set keyboard type to phone
               validator: (value) {
-                // add email validation
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
                 }
 
                 bool phoneValid = RegExp(r"^[0-9]{10}$").hasMatch(value);
                 if (!phoneValid) {
-                  return 'Please enter a valid number';
+                  return 'Please enter a valid 10-digit number';
                 }
 
                 return null;
@@ -322,7 +328,8 @@ class __FormContentState extends State<_FormContent> {
                 hintText: 'Enter your phone no',
                 prefixIcon: Icon(Icons.call),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
               ),
             ),
             _gap(),

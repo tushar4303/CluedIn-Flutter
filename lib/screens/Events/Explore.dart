@@ -224,7 +224,7 @@ class _MyEventsState extends State<MyEvents> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: showOngoingEvents
-                            ? Color.fromRGBO(233, 228, 230, 0.8)
+                            ? const Color.fromRGBO(233, 228, 230, 0.8)
                             : Colors.transparent,
                         shape: BoxShape.circle,
                       ),

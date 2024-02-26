@@ -71,6 +71,10 @@ dependencies:
 
   # image_cropper: ^3.0.1
 
+  collection: any
+  mime: any
+  timeago: any
+  http_parser: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -85,7 +89,6 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.16
   change_app_package_name:
-  mime:
 
 flutter_native_splash:
   color: "#ffffff"

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:cluedin_app/screens/login_page.dart';
 import 'package:cluedin_app/utils/links.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +10,10 @@ class ResetPasswordPage extends StatelessWidget {
   final String token;
 
   const ResetPasswordPage({
-    Key? key,
+    super.key,
     required this.userId,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +111,7 @@ class _FormContent extends StatefulWidget {
   final int userId;
   final String token;
 
-  const _FormContent({Key? key, required this.userId, required this.token})
-      : super(key: key);
+  const _FormContent({required this.userId, required this.token});
 
   @override
   State<_FormContent> createState() => __FormContentState();
@@ -284,7 +282,7 @@ class __FormContentState extends State<_FormContent> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => LoginPage(),
+          builder: (BuildContext context) => const LoginPage(),
         ),
         (route) => false,
       );
@@ -292,7 +290,7 @@ class __FormContentState extends State<_FormContent> {
     } else {
       // Show error to user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to reset password. Please try again later.'),
           backgroundColor: Colors.red,
         ),

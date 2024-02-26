@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/events.dart';
 import '../../widgets/webView/webview.dart';
 import '../../models/linkMetaData.dart';
@@ -364,17 +365,27 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                   "Register Now!",
                                   style: TextStyle(color: Colors.white),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => WebViewApp(
-                                        webViewTitle: "Register now!",
-                                        webViewLink:
-                                            "$baseServerUrl${widget.event.registrationLink}",
+                                onPressed: () async {
+                                  // Check if the link is a Google Form link or a TinyURL
+                                  if (widget.event.registrationLink
+                                          .contains('google.com/forms') ||
+                                      widget.event.registrationLink
+                                          .contains('tinyurl.com')) {
+                                    await _launchUrl(
+                                        widget.event.registrationLink);
+                                  } else {
+                                    // If it's not a Google Form link or TinyURL, navigate to WebViewApp
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WebViewApp(
+                                          webViewTitle: "Register now!",
+                                          webViewLink:
+                                              widget.event.registrationLink,
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 },
                               ),
                             ),
@@ -471,5 +482,13 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     }
     // Default icon
     return Icons.insert_drive_file;
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

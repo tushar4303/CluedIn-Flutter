@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'dart:math';
 import 'package:cluedin_app/models/contacts.dart';
 import 'package:cluedin_app/utils/links.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
@@ -266,7 +265,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
 
   Widget buildContactListItem(Contact contact) {
     // Define a constant color for the avatar background
-    final avatarBackgroundColor = Colors.white;
+    const avatarBackgroundColor = Colors.white;
 
     return GestureDetector(
       onTap: () {
@@ -310,7 +309,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                         snapshot.data!,
                         // Set default SVG content if snapshot.data is null
                         placeholderBuilder: (context) =>
-                            CircularProgressIndicator(),
+                            const CircularProgressIndicator(),
                       );
                     }
                   },
@@ -396,7 +395,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                   IconButton(
                     icon: const Icon(Icons.phone_outlined),
                     onPressed: () async {
-                      _launchUrl(Uri.parse("tel:${contact.phoneNumber}"));
+                      _handlePhoneCall(contact.phoneNumber);
                     },
                   ),
                   IconButton(
@@ -404,7 +403,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                     onPressed: () async {
                       String whatsappUrl =
                           "https://wa.me/+91${contact.phoneNumber}";
-                      _launchUrl(Uri.parse(whatsappUrl));
+                      _handleWhatsapp(contact.phoneNumber);
                     },
                   ),
                 ],
@@ -449,11 +448,38 @@ class _ContactDirectoryState extends State<ContactDirectory> {
     });
   }
 
-  void _launchUrl(Uri uri) async {
+  void _launchUrl(Uri uri, String phoneNumber) async {
     if (await canLaunchUrl(uri)) {
       launchUrl(uri);
     } else {
       throw 'Could not launch $uri';
+    }
+  }
+
+  void _handlePhoneCall(String phoneNumber) {
+    final RegExp regExp = RegExp(r'\d{10}');
+    final Iterable<Match> matches = regExp.allMatches(phoneNumber);
+    if (matches.isNotEmpty) {
+      final String phoneNo = matches.first.group(0)!;
+      final Uri uri = Uri.parse("tel:$phoneNo");
+      _launchUrl(uri, phoneNo);
+    } else {
+      // Handle other formats like (Ext: XXX)
+      print("Invalid phone number format: $phoneNumber");
+    }
+  }
+
+  void _handleWhatsapp(String phoneNumber) {
+    final RegExp regExp = RegExp(r'\d{10}');
+    final Iterable<Match> matches = regExp.allMatches(phoneNumber);
+    if (matches.isNotEmpty) {
+      final String phoneNo = matches.first.group(0)!;
+      final String whatsappUrl = "https://wa.me/+91$phoneNo";
+      final Uri uri = Uri.parse(whatsappUrl);
+      _launchUrl(uri, phoneNo);
+    } else {
+      // Handle other formats like (Ext: XXX)
+      print("Invalid phone number format: $phoneNumber");
     }
   }
 }

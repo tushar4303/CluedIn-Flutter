@@ -27,7 +27,7 @@ class _MyProfileState extends State<MyProfile> {
 
   void shareApp() {
     const String text =
-        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://github.com/tushar4303/CluedIn-Flutter/]";
+        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://staycluedin.vercel.app/";
 
     Share.share(text);
   }
@@ -238,7 +238,7 @@ class _MyProfileState extends State<MyProfile> {
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () async {
                   final url = Uri.parse(
-                    "https://github.com/tushar4303/CluedIn-Flutter",
+                    "https://staycluedin.vercel.app/",
                   );
                   if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
                     throw 'Could not launch $url';

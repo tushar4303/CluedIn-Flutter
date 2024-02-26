@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: camel_case_types
-import 'package:cluedin_app/screens/resetPasssword.dart';
 import 'package:cluedin_app/screens/resetPasswordScreen.dart';
 import 'package:cluedin_app/screens/signUpPasswordScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -144,7 +143,7 @@ void navigateToSignUpPasswordScreen(int userId, String token) {
 
 class myApp extends StatelessWidget {
   final bool isLoggedIn;
-  myApp({
+  const myApp({
     super.key,
     required this.isLoggedIn,
   });

@@ -9,13 +9,13 @@ class ErrorView extends StatelessWidget {
   final String lottieJson;
 
   const ErrorView({
-    Key? key,
+    super.key,
     this.onRetry,
     this.customTitle = 'Well, this is awkward!',
     this.errorCode = 'We don\'t seem to be connected...',
     this.customSubtitle = 'Check your internet and try again',
     required this.lottieJson, // Require lottieJson parameter
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -245,18 +245,18 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Notification Permission Required'),
-            content: Text(
+            title: const Text('Notification Permission Required'),
+            content: const Text(
                 'Allowing notifications ensures you receive important updates and information. Would you like to enable notifications?'),
             actions: <Widget>[
               TextButton(
-                child: Text('No, Thanks'),
+                child: const Text('No, Thanks'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: Text('Enable Notifications'),
+                child: const Text('Enable Notifications'),
                 onPressed: () {
                   // Open app settings to allow the user to enable notifications manually
                   openAppSettings();
@@ -469,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     left: 24, right: 24, bottom: 56),
                                 child: VideoCard(
                                     videoUrl:
-                                        "https://drive.google.com/file/d/1Rcmg2wZJ_Dwhg37Se3T2oKq_oEvsLVQB/view?usp=sharing")),
+                                        "https://drive.google.com/file/d/1X62xUL5skhU0ZwytE93ZVNGt1bDqqq2l/view?usp=sharing")),
                           ],
                         );
                       }

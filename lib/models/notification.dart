@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:collection/collection.dart';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 class NotificationModel {
   static List<String>? labels;
   static List<String>? senderRoles;
@@ -111,6 +109,7 @@ class Notifications {
   final String senderProfilePic;
   final String notificationTitle;
   final String notificationLabel;
+  final String nm_registration_url;
   final String notificationMessage;
   final String imageUrl;
   final String attachmentUrl;
@@ -125,6 +124,7 @@ class Notifications {
       required this.senderProfilePic,
       required this.notificationTitle,
       required this.notificationLabel,
+      required this.nm_registration_url,
       required this.notificationMessage,
       required this.imageUrl,
       required this.attachmentUrl,
@@ -132,6 +132,7 @@ class Notifications {
       required this.isRead});
 
   factory Notifications.fromMap(Map<String, dynamic> map) {
+    print("Date of Creation String: ${map["nm_registration_url"]}");
     return Notifications(
         notificationId: map["notification_id"],
         sender_fname: map["sender_fname"],
@@ -143,6 +144,7 @@ class Notifications {
         notificationMessage: map["notification_message"],
         imageUrl: map["image_url"] ?? "",
         attachmentUrl: map["attachment_url"] ?? "",
+        nm_registration_url: map["nm_registration_url"] ?? "",
         dateOfcreation: DateTime.parse(map["dateOfCreation"]),
         isRead: map["isRead"]);
   }
@@ -158,12 +160,13 @@ class Notifications {
         "notification_message": notificationMessage,
         "image_url": imageUrl,
         "attachment_url": attachmentUrl,
+        "nm_registration_url": nm_registration_url,
         "dateOfCreation": dateOfcreation,
         "isRead": isRead
       };
 
   @override
   String toString() {
-    return 'Notifications(notificationId: $notificationId, sender_fname: $sender_fname, sender_lname: $sender_lname, senderRole: $senderRole, senderProfilePic: $senderProfilePic, notificationTitle: $notificationTitle, notificationLabel: $notificationLabel, notificationMessage: $notificationMessage, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, dateOfcreation: $dateOfcreation, isRead: $isRead)';
+    return 'Notifications(notificationId: $notificationId, sender_fname: $sender_fname, sender_lname: $sender_lname, senderRole: $senderRole, senderProfilePic: $senderProfilePic, notificationTitle: $notificationTitle, notificationLabel: $notificationLabel, notificationMessage: $notificationMessage, imageUrl: $imageUrl, attachmentUrl: $attachmentUrl, nm_registration_url: $nm_registration_url dateOfcreation: $dateOfcreation, isRead: $isRead)';
   }
 }

@@ -110,7 +110,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           color: Color.fromRGBO(134, 134, 134, 1),
                         )),
                     subtitle: Text(
-                      "${widget.userDetails.classValue} ${widget.userDetails.branchName} ${widget.userDetails.division}",
+                      "${widget.userDetails.classValue} ${widget.userDetails.branchName} ${widget.userDetails.division} (SEM ${widget.userDetails.semester})",
                       textScaler: const TextScaler.linear(1.2),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 30, 29, 29)),

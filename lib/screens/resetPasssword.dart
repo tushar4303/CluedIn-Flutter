@@ -8,8 +8,8 @@ import 'package:cluedin_app/screens/login_page.dart';
 
 class ResetPassword extends StatelessWidget {
   const ResetPassword({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class __FormContentState extends State<_FormContent> {
   final TextEditingController emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  bool _isEmailSent = false;
+  final bool _isEmailSent = false;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {

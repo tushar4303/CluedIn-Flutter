@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../screens/Events/exploreDetailsPage.dart';
 
 class EventsWidget extends StatefulWidget {
-  const EventsWidget({Key? key, required this.event}) : super(key: key);
+  const EventsWidget({super.key, required this.event});
   final Events event;
 
   @override

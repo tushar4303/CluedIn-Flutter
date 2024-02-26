@@ -33,15 +33,6 @@ class _utilityBarState extends State<utilityBar> {
     openbox = openBox("UserBox");
     var semester = Hive.box('userBox').get("semester");
     var bsdId = Hive.box('userBox').get("bsdId");
-
-    createFileOfPdfUrl(
-            '$timetableApi?bsd_id=$bsdId&semester=$semester', context,
-            includeAuthHeader: true)
-        .then((f) {
-      setState(() {
-        remotePDFpath = f.path;
-      });
-    });
   }
 
   Future<Box<dynamic>> openBox(String boxName) async {
@@ -93,6 +84,21 @@ class _utilityBarState extends State<utilityBar> {
                             return IconButton(
                               iconSize: 30,
                               onPressed: () async {
+                                var semester =
+                                    await Hive.box('userBox').get("semester");
+                                var bsdId =
+                                    await Hive.box('userBox').get("bsdId");
+
+                                createFileOfPdfUrl(
+                                        '$timetableApi?bsd_id=$bsdId&semester=$semester',
+                                        context,
+                                        includeAuthHeader: true)
+                                    .then((f) {
+                                  setState(() {
+                                    remotePDFpath = f.path;
+                                  });
+                                });
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

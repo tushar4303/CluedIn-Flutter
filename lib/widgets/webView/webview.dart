@@ -7,10 +7,11 @@ import 'package:cluedin_app/widgets/webView/web_view_stack.dart';
 
 class WebViewApp extends StatefulWidget {
   const WebViewApp({
-    super.key,
-    this.webViewTitle = "Flutter WebView",
+    Key? key,
+    required this.webViewTitle,
     required this.webViewLink,
-  });
+  }) : super(key: key);
+
   final String webViewTitle;
   final String webViewLink;
 
@@ -19,7 +20,6 @@ class WebViewApp extends StatefulWidget {
 }
 
 class _WebViewAppState extends State<WebViewApp> {
-  // Add from here...
   late final WebViewController controller;
 
   @override
@@ -29,22 +29,20 @@ class _WebViewAppState extends State<WebViewApp> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..loadRequest(
         Uri.parse(widget.webViewLink),
-      );
+      )
+      ..clearCache();
   }
-  // ...to here.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.webViewTitle),
-        // Add from here...
         actions: [
           NavigationControls(controller: controller),
         ],
-        // ...to here.
       ),
-      body: WebViewStack(controller: controller), // MODIFY
+      body: WebViewStack(controller: controller),
     );
   }
 }
