@@ -40,7 +40,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
       final response = await r.retry(
         // Make a GET request
         () => http.get(
-          Uri.parse(eventApiUrl),
+          Uri.parse(calendarApiUrl),
           headers: {
             'Authorization': 'Bearer $token',
           },
@@ -53,7 +53,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
         final eventsJson = response.body;
         final decodedData = jsonDecode(eventsJson);
         var eventsData = decodedData["events"];
-
+        var acadCalendarData = decodedData["calendarEvents"];
         EventModel.labels = List.from(decodedData["labels"]);
         EventModel.organizers = List.from(decodedData["organizers"]);
 
@@ -61,21 +61,50 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
             .map<Events>((event) => Events.fromMap(event))
             .toList();
 
-        final calendarEvents = EventModel.events?.map((event) {
-          return CalendarEventData(
-            date: event.dateOfEvent,
-            title: event.eventTitle,
-            description: event.eventDesc,
-            startTime: event.dateOfEvent,
-            endDate: event.dateOfExpiration,
-            // Add other properties as needed
-          );
-        }).toList();
-        if (calendarEvents != null) {
+        // print(EventModel.events);
+
+        EventModel.calendarEvents = List.from(acadCalendarData)
+            .map<AcademicEvent>(
+                (academicEvent) => AcademicEvent.fromMap(academicEvent))
+            .toList();
+
+        // print(EventModel.calendarEvents);
+
+        final calendarEvents = <CalendarEventData>[];
+
+        if (EventModel.events != null) {
+          calendarEvents.addAll(EventModel.events!.map((event) {
+            return CalendarEventData(
+                date: event.dateOfEvent,
+                title: event.eventTitle,
+                description: event.eventDesc,
+                startTime: event.dateOfEvent,
+                endDate: event.dateOfExpiration,
+                color: Colors.lightGreen
+                // Add other properties as needed
+                );
+          }));
+        }
+
+        if (EventModel.calendarEvents != null) {
+          calendarEvents.addAll(EventModel.calendarEvents!.map((event) {
+            return CalendarEventData(
+                date: event.dateOfEvent,
+                title: event.eventName,
+                description: "Academic Calendar Event",
+                startTime: event.dateOfEvent,
+                endDate: event.dateOfExpiry,
+                color: Colors.lightBlue
+                // Add other properties as needed
+                );
+          }));
+        }
+
+        if (calendarEvents.isNotEmpty) {
           eventController.addAll(calendarEvents);
         }
 
-        return calendarEvents ?? [];
+        return calendarEvents;
       } else {
         throw Exception("Failed to load events");
       }

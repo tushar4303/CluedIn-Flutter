@@ -89,25 +89,31 @@ class _utilityBarState extends State<utilityBar> {
                                 var bsdId =
                                     await Hive.box('userBox').get("bsdId");
 
-                                createFileOfPdfUrl(
-                                        '$timetableApi?bsd_id=$bsdId&semester=$semester',
-                                        context,
-                                        includeAuthHeader: true)
-                                    .then((f) {
-                                  setState(() {
-                                    remotePDFpath = f.path;
-                                  });
-                                });
+                                try {
+                                  var file = await createFileOfPdfUrl(
+                                    '$timetableApi?bsd_id=$bsdId&semester=$semester',
+                                    context,
+                                    includeAuthHeader: true,
+                                  );
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PDFScreen(
-                                      path: remotePDFpath,
+                                  setState(() {
+                                    remotePDFpath = file.path;
+                                  });
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PDFScreen(
+                                        path: remotePDFpath,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } catch (e) {
+                                  print("Error fetching PDF: $e");
+                                  // Handle error appropriately, e.g., show a dialog
+                                }
                               },
+
                               // Instead of Icon, use Lottie.asset
                               icon: LottieBuilder.asset(
                                 'assets/lottiefiles/timetable.json', // Replace with the actual path to your Lottie animation

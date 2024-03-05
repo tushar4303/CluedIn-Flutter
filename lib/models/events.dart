@@ -7,6 +7,7 @@ class EventModel {
   static List<String>? labels;
   static List<String>? organizers;
   static List<Events>? events;
+  static List<AcademicEvent>? calendarEvents; // New list for academic events
 }
 
 class Organizers {
@@ -101,6 +102,57 @@ class Labels {
 
   @override
   int get hashCode => labels.hashCode;
+}
+
+class AcademicEvent {
+  final int aceId;
+  final String eventName;
+  final int eventCategoryId;
+  final DateTime dateOfEvent;
+  final DateTime dateOfExpiry;
+
+  AcademicEvent({
+    required this.aceId,
+    required this.eventName,
+    required this.eventCategoryId,
+    required DateTime dateOfEvent,
+    required DateTime dateOfExpiry,
+  })  : dateOfEvent = dateOfEvent,
+        dateOfExpiry = dateOfExpiry.isAfter(dateOfEvent)
+            ? dateOfExpiry
+            : dateOfEvent.add(Duration(
+                days:
+                    1)); // Set dateOfExpiry to be at least one day after dateOfEvent
+
+  factory AcademicEvent.fromMap(Map<String, dynamic> map) {
+    return AcademicEvent(
+      aceId: map['ace_id'],
+      eventName: map['ac_eventName'],
+      eventCategoryId: map['ac_eventCategory_id'],
+      dateOfEvent: DateTime.parse(map['dateOfEvent']),
+      dateOfExpiry: DateTime.parse(map['dateOfExpiry']),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'ace_id': aceId,
+      'ac_eventName': eventName,
+      'ac_eventCategory_id': eventCategoryId,
+      'dateOfEvent': dateOfEvent.toIso8601String(),
+      'dateOfExpiry': dateOfExpiry.toIso8601String(),
+    };
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory AcademicEvent.fromJson(String source) =>
+      AcademicEvent.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'AcademicEvent(aceId: $aceId, eventName: $eventName, eventCategoryId: $eventCategoryId, dateOfEvent: $dateOfEvent, dateOfExpiry: $dateOfExpiry)';
+  }
 }
 
 class Events {

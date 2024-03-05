@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
   late PageController _pageController;
   late CarouselModel carousel;
+  late String videoLink;
 
   late Future<HomeModel?> myfuture;
 
@@ -83,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final studentChaptersJson = decodedData["student_chapters"];
         final studentClubsJson = decodedData["student_clubs"];
+        videoLink = decodedData["featured_video"];
         final studentChapters = List.from(studentChaptersJson)
             .map<StudentChapters>((chapter) => StudentChapters.fromMap(chapter))
             .toList();
@@ -464,12 +466,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: SectionDivider(text: "WHAT'S NEW?"),
                             ),
                             const SizedBox(height: 16),
-                            const Padding(
-                                padding: EdgeInsets.only(
-                                    left: 24, right: 24, bottom: 56),
-                                child: VideoCard(
-                                    videoUrl:
-                                        "https://drive.google.com/file/d/1X62xUL5skhU0ZwytE93ZVNGt1bDqqq2l/view?usp=sharing")),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 24, right: 24, bottom: 56),
+                              child: VideoCard(videoUrl: videoLink),
+                            ),
                           ],
                         );
                       }

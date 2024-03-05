@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" android:host="cluedin.creast.in"/>
-                <data android:scheme="https" />
+                <data android:scheme="https" android:host="cluedin.creast.in"/>
             </intent-filter>
 
             

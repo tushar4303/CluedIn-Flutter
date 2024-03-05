@@ -285,46 +285,46 @@ class _MyProfileState extends State<MyProfile> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () async {
-                  final url = Uri.parse(
-                    "https://github.com/tushar4303/CluedIn-Flutter/releases/tag/v$appVersion",
-                  );
-                  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
-                    throw 'Could not launch $url';
-                  }
-                },
-                child: const Text(
-                  "Changelogs",
-                  style:
-                      TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
-                ),
-              ),
-              const SizedBox(
-                width: 6,
-              ),
-              const Text(
-                "|",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(
-                width: 6,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  final url = Uri.parse(
-                    "https://github.com/tushar4303/CluedIn-Flutter/blob/main/PRIVACY_POLICY.md",
-                  );
-                  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
-                    throw 'Could not launch $url';
-                  }
-                },
-                child: const Text(
-                  "Privacy policy",
-                  style:
-                      TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
-                ),
-              )
+              // GestureDetector(
+              //   onTap: () async {
+              //     final url = Uri.parse(
+              //       "https://github.com/tushar4303/CluedIn-Flutter/releases/tag/v$appVersion",
+              //     );
+              //     if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+              //       throw 'Could not launch $url';
+              //     }
+              //   },
+              //   child: const Text(
+              //     "Changelogs",
+              //     style:
+              //         TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   width: 6,
+              // ),
+              // const Text(
+              //   "|",
+              //   style: TextStyle(fontSize: 16, color: Colors.grey),
+              // ),
+              // const SizedBox(
+              //   width: 6,
+              // ),
+              // GestureDetector(
+              //   onTap: () async {
+              //     final url = Uri.parse(
+              //       "https://github.com/tushar4303/CluedIn-Flutter/blob/main/PRIVACY_POLICY.md",
+              //     );
+              //     if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+              //       throw 'Could not launch $url';
+              //     }
+              //   },
+              //   child: const Text(
+              //     "Privacy policy",
+              //     style:
+              //         TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
+              //   ),
+              // )
             ],
           ),
           const SizedBox(

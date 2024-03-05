@@ -11,6 +11,8 @@ String notifApiUrl = "${baseServerUrl}api/app/appNotif";
 
 String eventApiUrl = "${baseServerUrl}api/app/appEvent";
 
+String calendarApiUrl = "${baseServerUrl}api/app/appCalendar";
+
 String updateProfileUrl = "${baseServerUrl}api/app/updateProfile";
 
 String contactApi = "${baseServerUrl}contactDirectory";
