@@ -496,6 +496,7 @@ class _MyEventsState extends State<MyEvents> {
                                 showFrom = false;
                                 _startDate = null;
                                 _endDate = null;
+                                showOngoingEvents = false;
                                 _filteredEvents.clear();
                                 myfuture = loadEvents();
                               });

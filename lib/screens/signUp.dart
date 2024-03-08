@@ -127,40 +127,50 @@ class __FormContentState extends State<_FormContent> {
         _isLoading = true;
       });
 
-      // Log request body
-      final requestBody = {
-        'userEmail': emailController.text,
-      };
-      print('Request Body: $requestBody');
-
-      final response = await http.post(
-        Uri.parse(requestSignUpUrl),
-        body: requestBody,
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Log response body
-      final responseBody = response.body;
-      print('Response Body: $responseBody');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(responseBody);
-        final bool success = data['success'];
-        final String message = data['message'];
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Check your mailbox' : message,
-            ),
-          ),
+      try {
+        final response = await http.post(
+          Uri.parse(requestSignUpUrl),
+          body: {
+            'userEmail': emailController.text,
+          },
         );
-      } else {
-        print('Error occurred. Response status code: ${response.statusCode}');
-        print('Error response body: $responseBody');
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          final bool success = data['success'];
+          final String message = data['message'];
+          print(message);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                message,
+              ),
+            ),
+          );
+        } else {
+          final data = json.decode(response.body);
+          final String message = data['message'];
+          print(message);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                message.isNotEmpty
+                    ? message
+                    : 'Error occurred. Please try again.',
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

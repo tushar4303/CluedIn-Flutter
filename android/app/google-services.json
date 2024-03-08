@@ -7,14 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:474604492516:android:91bb73a806a4b20653bef1",
+        "mobilesdk_app_id": "1:474604492516:android:ca83f5765e84d77253bef1",
         "android_client_info": {
-          "package_name": "in.creast.cluedin_app"
+          "package_name": "in.dbit.cluedin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "474604492516-d44810u318r3hnfhoiktiqneagrfi335.apps.googleusercontent.com",
+          "client_id": "474604492516-g2f4spdsk3uocv2cvb1ug1hgrh62frd1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +27,36 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "474604492516-d44810u318r3hnfhoiktiqneagrfi335.apps.googleusercontent.com",
+              "client_id": "474604492516-g2f4spdsk3uocv2cvb1ug1hgrh62frd1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474604492516:android:a9976ab511fcc3a253bef1",
+        "android_client_info": {
+          "package_name": "in.dbit.cluedin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474604492516-g2f4spdsk3uocv2cvb1ug1hgrh62frd1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1NH0I6ZKjDTL9d5zxGPSjQveg4tjE0Bs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474604492516-g2f4spdsk3uocv2cvb1ug1hgrh62frd1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

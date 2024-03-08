@@ -1,5 +1,5 @@
 // Base server URL
-String baseServerUrl = "https://cluedin.creast.in/";
+String baseServerUrl = "https://cluedin.dbit.in/";
 
 String homeApiUrl = "${baseServerUrl}api/app/homeapi";
 

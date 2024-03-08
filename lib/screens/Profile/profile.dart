@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cluedin_app/screens/ContactDirectory.dart';
 import 'package:cluedin_app/screens/Profile/profileDetails.dart';
 import 'package:cluedin_app/widgets/customDivider.dart';
@@ -10,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/webView/webview.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -25,9 +27,40 @@ class _MyProfileState extends State<MyProfile> {
   late PackageInfo packageInfo;
   late String appVersion;
 
+  final InAppReview _inAppReview = InAppReview.instance;
+
+  void rateUs() async {
+    if (await _inAppReview.isAvailable()) {
+      _inAppReview.requestReview();
+    } else {
+      // In-app review is not available, open the app store
+      String appStoreUrl;
+      if (Platform.isAndroid) {
+        // Play Store URL
+        appStoreUrl =
+            'https://play.google.com/store/apps/details?id=in.dbit.cluedin_app';
+      } else if (Platform.isIOS) {
+        // App Store URL
+        appStoreUrl = 'https://apps.apple.com/app/<your_app_id>';
+      } else {
+        throw 'Unsupported platform';
+      }
+
+      if (appStoreUrl.isNotEmpty) {
+        if (await canLaunchUrl(Uri.parse(appStoreUrl))) {
+          await launchUrl(Uri.parse(appStoreUrl));
+        } else {
+          throw 'Could not launch $appStoreUrl';
+        }
+      } else {
+        throw 'App store URL is not provided';
+      }
+    }
+  }
+
   void shareApp() {
     const String text =
-        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://staycluedin.vercel.app/";
+        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://play.google.com/store/apps/details?id=in.dbit.cluedin_app";
 
     Share.share(text);
   }
@@ -219,7 +252,9 @@ class _MyProfileState extends State<MyProfile> {
                 // horizontalTitleGap: 0,
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                onTap: () {},
+                onTap: () {
+                  rateUs();
+                },
                 leading: LottieBuilder.asset(
                   'assets/lottiefiles/rating.json', // Replace with the actual path to your Lottie animation
                   width: 28, // Adjust the width as needed
@@ -280,59 +315,11 @@ class _MyProfileState extends State<MyProfile> {
             ),
           ),
           const SizedBox(
-            height: 4,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // GestureDetector(
-              //   onTap: () async {
-              //     final url = Uri.parse(
-              //       "https://github.com/tushar4303/CluedIn-Flutter/releases/tag/v$appVersion",
-              //     );
-              //     if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
-              //       throw 'Could not launch $url';
-              //     }
-              //   },
-              //   child: const Text(
-              //     "Changelogs",
-              //     style:
-              //         TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   width: 6,
-              // ),
-              // const Text(
-              //   "|",
-              //   style: TextStyle(fontSize: 16, color: Colors.grey),
-              // ),
-              // const SizedBox(
-              //   width: 6,
-              // ),
-              // GestureDetector(
-              //   onTap: () async {
-              //     final url = Uri.parse(
-              //       "https://github.com/tushar4303/CluedIn-Flutter/blob/main/PRIVACY_POLICY.md",
-              //     );
-              //     if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
-              //       throw 'Could not launch $url';
-              //     }
-              //   },
-              //   child: const Text(
-              //     "Privacy policy",
-              //     style:
-              //         TextStyle(fontSize: 13, color: Colors.deepPurpleAccent),
-              //   ),
-              // )
-            ],
-          ),
-          const SizedBox(
-            height: 20,
+            height: 10,
           ),
           Text("Version $appVersion"),
           const SizedBox(
-            height: 28,
+            height: 64,
           ),
         ]),
       ),

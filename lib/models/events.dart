@@ -107,14 +107,14 @@ class Labels {
 class AcademicEvent {
   final int aceId;
   final String eventName;
-  final int eventCategoryId;
+  final String eventCategory;
   final DateTime dateOfEvent;
   final DateTime dateOfExpiry;
 
   AcademicEvent({
     required this.aceId,
     required this.eventName,
-    required this.eventCategoryId,
+    required this.eventCategory,
     required DateTime dateOfEvent,
     required DateTime dateOfExpiry,
   })  : dateOfEvent = dateOfEvent,
@@ -128,7 +128,7 @@ class AcademicEvent {
     return AcademicEvent(
       aceId: map['ace_id'],
       eventName: map['ac_eventName'],
-      eventCategoryId: map['ac_eventCategory_id'],
+      eventCategory: map['event_category'],
       dateOfEvent: DateTime.parse(map['dateOfEvent']),
       dateOfExpiry: DateTime.parse(map['dateOfExpiry']),
     );
@@ -138,7 +138,7 @@ class AcademicEvent {
     return {
       'ace_id': aceId,
       'ac_eventName': eventName,
-      'ac_eventCategory_id': eventCategoryId,
+      'event_category': eventCategory,
       'dateOfEvent': dateOfEvent.toIso8601String(),
       'dateOfExpiry': dateOfExpiry.toIso8601String(),
     };
@@ -151,7 +151,7 @@ class AcademicEvent {
 
   @override
   String toString() {
-    return 'AcademicEvent(aceId: $aceId, eventName: $eventName, eventCategoryId: $eventCategoryId, dateOfEvent: $dateOfEvent, dateOfExpiry: $dateOfExpiry)';
+    return 'AcademicEvent(aceId: $aceId, eventName: $eventName, eventCategory: $eventCategory, dateOfEvent: $dateOfEvent, dateOfExpiry: $dateOfExpiry)';
   }
 }
 

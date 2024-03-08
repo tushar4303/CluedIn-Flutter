@@ -127,30 +127,51 @@ class __FormContentState extends State<_FormContent> {
         _isLoading = true;
       });
 
-      final response = await http.post(
-        Uri.parse(requestResetPassword),
-        body: {
-          'userEmail': emailController.text,
-        },
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final bool success = data['success'];
-        final String message = data['message'];
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success ? 'Check your mailbox' : message,
-            ),
-          ),
+      try {
+        final response = await http.post(
+          Uri.parse(requestResetPassword),
+          body: {
+            'userEmail': emailController.text,
+          },
         );
-      } else {
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          final bool success = data['success'];
+          final String message = data['message'];
+          print(message);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                message,
+              ),
+            ),
+          );
+        } else {
+          final data = json.decode(response.body);
+          final String message = data['message'];
+          print(message);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                message.isNotEmpty
+                    ? message
+                    : 'Error occurred. Please try again.',
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Error occurred. Please try again.'),

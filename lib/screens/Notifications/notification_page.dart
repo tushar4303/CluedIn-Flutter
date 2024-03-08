@@ -476,7 +476,9 @@ class _NotificationPageState extends State<NotificationPage> {
                             showFrom = false;
                             _startDate = null;
                             _endDate = null;
+                            showUnread = false;
                             _filteredNotifications.clear();
+
                             myfuture = loadNotifications();
                           });
                         },
