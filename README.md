@@ -5,6 +5,12 @@ CluedIn is an app that helps you stay up-to-date with all the latest updates and
 
 ![Apple iPhone 11 Pro Max Presentation](https://user-images.githubusercontent.com/88235295/230158183-ef189204-365d-4eea-8160-0bf16e2e8596.png)
 
+
+https://github.com/tushar4303/CluedIn-Flutter/assets/88235295/95e28d1d-732b-4026-aa91-d86c83202aa0
+
+
+
+
 ## Features
 
 - Auto logout for added security when logging in from a new device.
