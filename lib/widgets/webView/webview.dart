@@ -7,10 +7,10 @@ import 'package:cluedin_app/widgets/webView/web_view_stack.dart';
 
 class WebViewApp extends StatefulWidget {
   const WebViewApp({
-    Key? key,
+    super.key,
     required this.webViewTitle,
     required this.webViewLink,
-  }) : super(key: key);
+  });
 
   final String webViewTitle;
   final String webViewLink;

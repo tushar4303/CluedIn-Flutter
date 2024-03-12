@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:cluedin_app/models/contacts.dart';
 import 'package:cluedin_app/utils/links.dart';
-import 'package:cluedin_app/widgets/ErrorView.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';

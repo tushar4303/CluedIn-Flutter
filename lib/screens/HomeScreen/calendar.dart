@@ -746,7 +746,7 @@ class _MonthViewWidgetState extends State<MonthViewWidget>
                                                   ? const Text(
                                                       'Tap for more info')
                                                   : Text(
-                                                      eventData.description!),
+                                                      eventData.description),
                                               onTap: () {
                                                 // Handle tap logic here
                                                 final selectedEvent = EventModel

@@ -467,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             Padding(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                   left: 24, right: 24, bottom: 56),
                               child: VideoCard(videoUrl: videoLink),
                             ),

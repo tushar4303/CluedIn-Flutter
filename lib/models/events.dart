@@ -120,7 +120,7 @@ class AcademicEvent {
   })  : dateOfEvent = dateOfEvent,
         dateOfExpiry = dateOfExpiry.isAfter(dateOfEvent)
             ? dateOfExpiry
-            : dateOfEvent.add(Duration(
+            : dateOfEvent.add(const Duration(
                 days:
                     1)); // Set dateOfExpiry to be at least one day after dateOfEvent
 
