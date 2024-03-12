@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cluedin_app/screens/login_page.dart';
+import 'package:cluedin_app/utils/globals.dart';
 import 'package:cluedin_app/utils/links.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/gestures.dart';
@@ -148,6 +149,9 @@ class __FormContentState extends State<_FormContent> {
                 }
                 if (value.length < 6) {
                   return 'Password must be at least 6 characters';
+                }
+                if (!isPasswordComplex(value)) {
+                  return 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character';
                 }
                 return null;
               },

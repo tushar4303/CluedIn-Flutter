@@ -44,7 +44,7 @@ class ResetPassword extends StatelessWidget {
                                     text: "Sign in",
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute(
                                                 builder: (context) =>
@@ -84,7 +84,7 @@ class ResetPassword extends StatelessWidget {
                                 text: "Sign in",
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         CupertinoPageRoute(
                                             builder: (context) =>

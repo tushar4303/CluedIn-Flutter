@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -69,6 +70,9 @@ class _ContactDirectoryState extends State<ContactDirectory> {
       print('Error: $error');
     }
 
+    // Set searchResults to contain all contacts once contactCategories is populated
+    searchResults = List.from(contactCategories);
+
     // Move setState outside of the try-catch block
     setState(() {
       isLoading = false;
@@ -80,7 +84,6 @@ class _ContactDirectoryState extends State<ContactDirectory> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         centerTitle: true,
         elevation: 0.3,
         scrolledUnderElevation: 0.6,
@@ -96,7 +99,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                 const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
             child: TextField(
               controller: _searchController,
-              onChanged: searchContacts, // Changed here
+              onChanged: searchContacts,
               decoration: InputDecoration(
                 hintText: "Search contacts...",
                 prefixIcon: const Icon(Icons.search),
@@ -123,40 +126,29 @@ class _ContactDirectoryState extends State<ContactDirectory> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 70),
-        child: FutureBuilder(
-          future: myfuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return buildShimmerEffect();
-            } else if (snapshot.hasError && snapshot.error is SocketException) {
-              // Handle SocketException (no internet connection)
-              return ErrorView(
-                lottieJson: 'assets/lottiefiles/noInternet.json',
-                onRetry: () {
-                  setState(() {
-                    // Retry fetching data
-                    myfuture = fetchData();
-                  });
-                },
-              );
-            } else if (snapshot.hasError) {
-              // Handle other errors
-              return ErrorView(
-                lottieJson: 'assets/lottiefiles/noInternet.json',
-                onRetry: () {
-                  setState(() {
-                    // Retry fetching data
-                    myfuture = fetchData();
-                  });
-                },
-              );
-            } else {
-              // Data fetched successfully
-              return buildContactList(
-                  searchResults.isNotEmpty ? searchResults : contactCategories);
-            }
-          },
-        ),
+        child: isLoading
+            ? buildShimmerEffect()
+            : searchResults.isNotEmpty
+                ? buildContactList(searchResults)
+                : Center(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32, right: 32),
+                          child:
+                              Lottie.asset('assets/lottiefiles/noResults.json'),
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          'No Results Found',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
       ),
     );
   }
@@ -418,7 +410,7 @@ class _ContactDirectoryState extends State<ContactDirectory> {
   void searchContacts(String query) {
     setState(() {
       if (query.isEmpty) {
-        // If the search query is empty, show all contacts
+        // Assign contactCategories to searchResults when the query is empty
         searchResults = contactCategories;
       } else {
         // Filter contacts based on the search query

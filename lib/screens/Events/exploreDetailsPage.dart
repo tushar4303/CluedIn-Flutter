@@ -142,6 +142,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                     const SliverAppBar(
                       floating: true,
+                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
                     )
                   ],
               body: Padding(

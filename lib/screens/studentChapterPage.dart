@@ -22,6 +22,7 @@ class StudentChapterPage extends StatelessWidget {
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             const SliverAppBar(
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
               floating: true,
             )
           ],

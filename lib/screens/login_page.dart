@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
                                     text: " Sign up",
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute(
                                               builder: (context) =>
@@ -417,7 +417,7 @@ class __FormContentState extends State<_FormContent> {
                       text: "Get help signing in",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute(
                                 builder: (context) => const ResetPassword()),

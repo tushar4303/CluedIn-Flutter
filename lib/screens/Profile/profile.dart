@@ -27,42 +27,79 @@ class _MyProfileState extends State<MyProfile> {
   late PackageInfo packageInfo;
   late String appVersion;
 
+  bool _isSharing = false;
+  bool _isRating = false;
+
   final InAppReview _inAppReview = InAppReview.instance;
 
+  void rateUsDebounced() {
+    _rateUsDebouncer.debounce(() => rateUs());
+  }
+
   void rateUs() async {
-    if (await _inAppReview.isAvailable()) {
-      _inAppReview.requestReview();
-    } else {
-      // In-app review is not available, open the app store
-      String appStoreUrl;
-      if (Platform.isAndroid) {
-        // Play Store URL
-        appStoreUrl =
-            'https://play.google.com/store/apps/details?id=in.dbit.cluedin_app';
-      } else if (Platform.isIOS) {
-        // App Store URL
-        appStoreUrl = 'https://apps.apple.com/app/<your_app_id>';
+    if (!_isRating) {
+      _isRating = true;
+
+      if (await _inAppReview.isAvailable()) {
+        _inAppReview.requestReview();
       } else {
-        throw 'Unsupported platform';
+        // In-app review is not available, open the app store
+        String appStoreUrl;
+        if (Platform.isAndroid) {
+          // Play Store URL
+          appStoreUrl =
+              'https://play.google.com/store/apps/details?id=in.dbit.cluedin_app';
+        } else if (Platform.isIOS) {
+          // App Store URL (replace <your_app_id> with your actual App Store ID)
+          appStoreUrl = 'https://apps.apple.com/app/<your_app_id>';
+        } else {
+          throw 'Unsupported platform';
+        }
+
+        if (appStoreUrl.isNotEmpty) {
+          if (await canLaunchUrl(Uri.parse(appStoreUrl))) {
+            await launchUrl(Uri.parse(appStoreUrl));
+          } else {
+            throw 'Could not launch $appStoreUrl';
+          }
+        } else {
+          throw 'App store URL is not provided';
+        }
       }
 
-      if (appStoreUrl.isNotEmpty) {
-        if (await canLaunchUrl(Uri.parse(appStoreUrl))) {
-          await launchUrl(Uri.parse(appStoreUrl));
-        } else {
-          throw 'Could not launch $appStoreUrl';
-        }
-      } else {
-        throw 'App store URL is not provided';
-      }
+      // Reset the flag after function execution
+      _isRating = false;
     }
   }
 
-  void shareApp() {
-    const String text =
-        "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://play.google.com/store/apps/details?id=in.dbit.cluedin_app";
+  void shareAppDebounced() {
+    _shareDebouncer.debounce(() => shareApp());
+  }
 
-    Share.share(text);
+  final _shareDebouncer = Debouncer(milliseconds: 500);
+  final Debouncer _rateUsDebouncer = Debouncer(milliseconds: 500);
+
+  void shareApp() async {
+    if (!_isSharing) {
+      setState(() {
+        _isSharing = true;
+      });
+
+      const String text =
+          "Check out CluedIn app! Stay up-to-date with all the latest updates and events. Download now: [https://play.google.com/store/apps/details?id=in.dbit.cluedin_app]";
+
+      try {
+        // Show share dialog
+        await Share.share(text);
+      } catch (e) {
+        print('Error sharing: $e');
+      } finally {
+        // Reset sharing flag
+        setState(() {
+          _isSharing = false;
+        });
+      }
+    }
   }
 
   void initializePackageInfo() async {
@@ -95,7 +132,7 @@ class _MyProfileState extends State<MyProfile> {
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
           automaticallyImplyLeading: false,
           toolbarHeight: MediaQuery.of(context).size.height * 0.096,
           elevation: 0.3,
@@ -176,15 +213,17 @@ class _MyProfileState extends State<MyProfile> {
               child: Center(
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WebViewApp(
-                                  webViewTitle: "CluedIn Feedback form",
-                                  webViewLink:
-                                      'https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link',
-                                )));
+                  onTap: () async {
+                    await _launchUrl(
+                        "https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link");
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const WebViewApp(
+                    //               webViewTitle: "CluedIn Feedback form",
+                    //               webViewLink:
+                    //                   'https://docs.google.com/forms/d/e/1FAIpQLSfSKWO1hU-WhnOd0MBH32VOrlfnirZebrjN5-PXl0v42VRHCw/viewform?usp=sf_link',
+                    //             )));
                   },
                   title: const Padding(
                     padding: EdgeInsets.only(bottom: 4),
@@ -234,8 +273,11 @@ class _MyProfileState extends State<MyProfile> {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {
-                  shareApp();
+                  if (!_isSharing) {
+                    shareAppDebounced();
+                  }
                 },
+
                 leading: LottieBuilder.asset(
                   'assets/lottiefiles/share.json', // Replace with the actual path to your Lottie animation
                   width: 28, // Adjust the width as needed
@@ -253,7 +295,7 @@ class _MyProfileState extends State<MyProfile> {
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                 onTap: () {
-                  rateUs();
+                  rateUsDebounced();
                 },
                 leading: LottieBuilder.asset(
                   'assets/lottiefiles/rating.json', // Replace with the actual path to your Lottie animation
@@ -324,5 +366,27 @@ class _MyProfileState extends State<MyProfile> {
         ]),
       ),
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  void debounce(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

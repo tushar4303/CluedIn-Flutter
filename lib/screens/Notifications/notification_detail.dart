@@ -134,6 +134,7 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               const SliverAppBar(
                 floating: true,
+                backgroundColor: Color.fromARGB(255, 255, 255, 255),
               )
             ],
             body: Padding(

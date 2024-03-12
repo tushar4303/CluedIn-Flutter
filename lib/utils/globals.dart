@@ -90,3 +90,10 @@ List<String> extractYouTubeLinks(String message) {
   final Iterable<RegExpMatch> matches = regex.allMatches(message);
   return matches.map((match) => match.group(0)!).toList();
 }
+
+bool isPasswordComplex(String value) {
+  // Regex to check for at least one uppercase letter, one lowercase letter, one digit, and one special character
+  final RegExp regex = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$');
+  return regex.hasMatch(value);
+}
