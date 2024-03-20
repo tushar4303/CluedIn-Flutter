@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
+import 'package:upgrader/upgrader.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../notificationService/local_notification_service.dart';
@@ -436,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             onPageChanged: (index) {},
                                           ),
 
-// Tab 2: Clubs
+                                          // Tab 2: Clubs
                                           PageView.builder(
                                             itemBuilder: (context, index) {
                                               return ChapterCard(
