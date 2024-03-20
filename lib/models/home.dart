@@ -17,6 +17,7 @@ class StudentChapters {
   final String logo;
   final String coverPic;
   final String website;
+  final List<String>? gallery;
 
   StudentChapters({
     required this.title,
@@ -25,6 +26,7 @@ class StudentChapters {
     required this.logo,
     required this.coverPic,
     required this.website,
+    this.gallery,
   });
 
   factory StudentChapters.fromMap(Map<String, dynamic> map) {
@@ -35,6 +37,9 @@ class StudentChapters {
       logo: map["logo"],
       coverPic: map["cover_pic"],
       website: map["website"],
+      gallery: map["gallery"] != null
+          ? List<String>.from(map["gallery"])
+          : null, // Added gallery parsing
     );
   }
 
@@ -45,11 +50,12 @@ class StudentChapters {
         "logo": logo,
         "cover_pic": coverPic,
         "website": website,
+        "gallery": gallery,
       };
 
   @override
   String toString() {
-    return 'StudentChapters(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website)';
+    return 'StudentChapters(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website, gallery: $gallery)';
   }
 }
 
@@ -60,6 +66,7 @@ class StudentClubs {
   final String logo;
   final String coverPic;
   final String website;
+  final List<String>? gallery;
 
   StudentClubs({
     required this.title,
@@ -68,6 +75,7 @@ class StudentClubs {
     required this.logo,
     required this.coverPic,
     required this.website,
+    this.gallery,
   });
 
   factory StudentClubs.fromMap(Map<String, dynamic> map) {
@@ -78,6 +86,9 @@ class StudentClubs {
       logo: map["logo"],
       coverPic: map["cover_pic"],
       website: map["website"],
+      gallery: map["gallery"] != null
+          ? List<String>.from(map["gallery"])
+          : null, // Added gallery parsing
     );
   }
 
@@ -88,11 +99,12 @@ class StudentClubs {
         "logo": logo,
         "cover_pic": coverPic,
         "website": website,
+        "gallery": gallery,
       };
 
   @override
   String toString() {
-    return 'StudentClubs(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website)';
+    return 'StudentClubs(title: $title, establisedIn: $establisedIn, desc: $desc, logo: $logo, coverPic: $coverPic, website: $website, gallery: $gallery)';
   }
 }
 

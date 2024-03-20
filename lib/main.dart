@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
+
 import 'package:calendar_view/calendar_view.dart';
 import 'package:navbar_router/navbar_router.dart';
 import 'package:cluedin_app/screens/Events/Explore.dart';
@@ -18,6 +19,7 @@ import 'package:cluedin_app/screens/Notifications/notification_page.dart';
 import 'package:cluedin_app/screens/Profile/profile.dart';
 import 'package:cluedin_app/widgets/themes.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:upgrader/upgrader.dart';
 import 'firebase_options.dart';
 import 'utils/globals.dart';
 
@@ -51,7 +53,15 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   initUniLinks();
-  runApp(myApp(isLoggedIn: isLoggedIn));
+  final upgrader = Upgrader(
+    minAppVersion: "1.2.3",
+    appcastConfig: AppcastConfiguration(
+      url:
+          "https://raw.githubusercontent.com/tushar4303/CluedIn-Flutter/main/appcast.xml",
+      supportedOS: ['android'],
+    ),
+  );
+  runApp(myApp(isLoggedIn: isLoggedIn, upgrader: upgrader));
 }
 
 void initUniLinks() async {
@@ -143,9 +153,11 @@ void navigateToSignUpPasswordScreen(int userId, String token) {
 
 class myApp extends StatelessWidget {
   final bool isLoggedIn;
+  final Upgrader upgrader;
   const myApp({
     super.key,
     required this.isLoggedIn,
+    required this.upgrader,
   });
 
   @override
@@ -159,7 +171,9 @@ class myApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: MyTheme.lightTheme(context),
         darkTheme: MyTheme.darkTheme(context),
-        home: isLoggedIn ? HomePage() : LoginPage(),
+        home: isLoggedIn
+            ? UpgradeAlert(child: HomePage(), upgrader: upgrader)
+            : UpgradeAlert(child: LoginPage(), upgrader: upgrader),
       ),
     );
   }

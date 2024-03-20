@@ -9,6 +9,7 @@ import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:cluedin_app/widgets/webView/webview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retry/retry.dart';
@@ -125,305 +126,315 @@ class _NotificationDetailsPageState extends State<NotificationDetailsPage> {
         );
         return true; // Return true to allow the back navigation, false to prevent it
       },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          // appBar: SliverAppBar(),
-          body: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              const SliverAppBar(
-                floating: true,
-                backgroundColor: Color.fromARGB(255, 255, 255, 255),
-              )
-            ],
-            body: Padding(
-              padding: const EdgeInsets.only(
-                  left: 24, right: 24, bottom: 54, top: 8),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 8, bottom: 16),
-                      decoration: const BoxDecoration(
-                          color: Color.fromRGBO(240, 221, 245, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          widget.notification.notificationLabel,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(30, 29, 29, 0.8)),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white, // Set status bar color here
+          statusBarIconBrightness:
+              Brightness.dark, // Set status bar icons brightness
+        ),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            // appBar: SliverAppBar(),
+            body: NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                const SliverAppBar(
+                  floating: true,
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                )
+              ],
+              body: Padding(
+                padding: const EdgeInsets.only(
+                    left: 24, right: 24, bottom: 54, top: 8),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 16),
+                        decoration: const BoxDecoration(
+                            color: Color.fromRGBO(240, 221, 245, 1),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            widget.notification.notificationLabel,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(30, 29, 29, 0.8)),
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.notification.notificationTitle,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 28,
-                          color: Color.fromARGB(255, 30, 29, 29)),
-                    ),
-                    //start
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "$baseServerUrl${widget.notification.senderProfilePic}"),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: widget.notification.senderRole,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text:
-                                          " @${widget.notification.sender_fname} ${widget.notification.sender_lname}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w400),
-                                    )
+                      Text(
+                        widget.notification.notificationTitle,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 28,
+                            color: Color.fromARGB(255, 30, 29, 29)),
+                      ),
+                      //start
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  "$baseServerUrl${widget.notification.senderProfilePic}"),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: widget.notification.senderRole,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            " @${widget.notification.sender_fname} ${widget.notification.sender_lname}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later_outlined,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(
+                                      width: 2,
+                                    ),
+                                    Text(timeago.format(
+                                        widget.notification.dateOfcreation)),
                                   ],
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.watch_later_outlined,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(
-                                    width: 2,
-                                  ),
-                                  Text(timeago.format(
-                                      widget.notification.dateOfcreation)),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
 
-                    if (widget.notification.imageUrl.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: InkWell(
-                          onLongPress: () {
-                            showFileOptionsBottomSheet(context,
-                                "$baseServerUrl${widget.notification.imageUrl}",
-                                shareText:
-                                    widget.notification.notificationMessage);
-                          },
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
-                            child: CachedNetworkImage(
-                              imageUrl:
+                      if (widget.notification.imageUrl.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: InkWell(
+                            onLongPress: () {
+                              showFileOptionsBottomSheet(context,
                                   "$baseServerUrl${widget.notification.imageUrl}",
-                              placeholder: (context, url) {
-                                return Image.asset(
-                                  "assets/images/placeholder_landscape.png",
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                                  shareText:
+                                      widget.notification.notificationMessage);
+                            },
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "$baseServerUrl${widget.notification.imageUrl}",
+                                placeholder: (context, url) {
+                                  return Image.asset(
+                                    "assets/images/placeholder_landscape.png",
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    // Display only the first YouTube link
-                    if (extractYouTubeLinks(
-                            widget.notification.notificationMessage)
-                        .isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: YoutubeCard(
-                          youtubeLink: extractYouTubeLinks(
-                              widget.notification.notificationMessage)[0],
+                      // Display only the first YouTube link
+                      if (extractYouTubeLinks(
+                              widget.notification.notificationMessage)
+                          .isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: YoutubeCard(
+                            youtubeLink: extractYouTubeLinks(
+                                widget.notification.notificationMessage)[0],
+                          ),
+                        ),
+
+                      GestureDetector(
+                        onTap: () {
+                          // Clear the text selection when tapping outside the SelectableText region
+                          if (FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: SelectableText(
+                            widget.notification.notificationMessage,
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
                       ),
 
-                    GestureDetector(
-                      onTap: () {
-                        // Clear the text selection when tapping outside the SelectableText region
-                        if (FocusScope.of(context).hasPrimaryFocus) {
-                          FocusScope.of(context).unfocus();
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: SelectableText(
-                          widget.notification.notificationMessage,
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                      const SizedBox(
+                        height: 8,
                       ),
-                    ),
 
-                    const SizedBox(
-                      height: 8,
-                    ),
+                      if (widget.notification.attachmentUrl.isNotEmpty)
+                        FutureBuilder<LinkMetadata>(
+                          future: fetchLinkMetadata(
+                              "$baseServerUrl${widget.notification.attachmentUrl}"),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              if (snapshot.hasData) {
+                                final metadata = snapshot.data!;
 
-                    if (widget.notification.attachmentUrl.isNotEmpty)
-                      FutureBuilder<LinkMetadata>(
-                        future: fetchLinkMetadata(
-                            "$baseServerUrl${widget.notification.attachmentUrl}"),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasData) {
-                              final metadata = snapshot.data!;
-
-                              // Display filename with ellipsis if it's too long
-                              final displayFilename = metadata.title.length > 20
-                                  ? '${metadata.title.substring(0, 15)}..'
-                                  : metadata.title;
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    child: Material(
-                                      color: const Color.fromRGBO(
-                                          242, 243, 245, 1),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PDFScreen(
-                                                path: remotePDFpath,
+                                // Display filename with ellipsis if it's too long
+                                final displayFilename =
+                                    metadata.title.length > 20
+                                        ? '${metadata.title.substring(0, 15)}..'
+                                        : metadata.title;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      child: Material(
+                                        color: const Color.fromRGBO(
+                                            242, 243, 245, 1),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PDFScreen(
+                                                  path: remotePDFpath,
+                                                ),
                                               ),
+                                            );
+                                          },
+                                          onLongPress: () async {
+                                            showFileOptionsBottomSheet(context,
+                                                "$baseServerUrl${widget.notification.attachmentUrl}",
+                                                shareText: widget.notification
+                                                    .notificationMessage);
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                              horizontal: 22,
                                             ),
-                                          );
-                                        },
-                                        onLongPress: () async {
-                                          showFileOptionsBottomSheet(context,
-                                              "$baseServerUrl${widget.notification.attachmentUrl}",
-                                              shareText: widget.notification
-                                                  .notificationMessage);
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                            horizontal: 22,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8, right: 8),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                // Dynamically display icon based on MIME type
-                                                Icon(
-                                                  getIconForMimeType(
-                                                      metadata.mimeType),
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  displayFilename,
-                                                  maxLines: 2,
-                                                  style: const TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        27, 96, 173, 1),
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8, right: 8),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  // Dynamically display icon based on MIME type
+                                                  Icon(
+                                                    getIconForMimeType(
+                                                        metadata.mimeType),
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
                                                   ),
-                                                ),
-                                                const SizedBox(width: 16),
-                                                // Add code to display document size
-                                                Text(
-                                                  'Size: ${metadata.size}', // Use the actual document size from metadata
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14,
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    displayFilename,
+                                                    maxLines: 2,
+                                                    style: const TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          27, 96, 173, 1),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  const SizedBox(width: 16),
+                                                  // Add code to display document size
+                                                  Text(
+                                                    'Size: ${metadata.size}', // Use the actual document size from metadata
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
+                                  ],
+                                );
+                              } else {
+                                // Handle the case when metadata is not available
+                                return Container();
+                              }
                             } else {
-                              // Handle the case when metadata is not available
-                              return Container();
+                              // Handle loading state
+                              return const ShimmerForAttachment();
                             }
-                          } else {
-                            // Handle loading state
-                            return const ShimmerForAttachment();
-                          }
-                        },
-                      ),
-                    if (widget.notification.nm_registration_url.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16, bottom: 12), // Increased bottom padding
-                        child: Center(
-                          child: SizedBox(
-                            height: 50, // Adjust the height as needed
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.black),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                              child: const Text(
-                                "Registration link",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () async {
-                                if (widget.notification.nm_registration_url
-                                        .contains('google.com/forms') ||
-                                    widget.notification.nm_registration_url
-                                        .contains('tinyurl.com')) {
-                                  await _launchUrl(
-                                      widget.notification.nm_registration_url);
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => WebViewApp(
-                                        webViewTitle: "Registration link",
-                                        webViewLink: widget
-                                            .notification.nm_registration_url,
-                                      ),
+                          },
+                        ),
+                      if (widget.notification.nm_registration_url.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16, bottom: 12), // Increased bottom padding
+                          child: Center(
+                            child: SizedBox(
+                              height: 50, // Adjust the height as needed
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                  );
-                                }
-                              },
+                                  ),
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.black),
+                                ),
+                                clipBehavior: Clip.hardEdge,
+                                child: const Text(
+                                  "Registration link",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () async {
+                                  if (widget.notification.nm_registration_url
+                                          .contains('google.com/forms') ||
+                                      widget.notification.nm_registration_url
+                                          .contains('tinyurl.com')) {
+                                    await _launchUrl(widget
+                                        .notification.nm_registration_url);
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WebViewApp(
+                                          webViewTitle: "Registration link",
+                                          webViewLink: widget
+                                              .notification.nm_registration_url,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

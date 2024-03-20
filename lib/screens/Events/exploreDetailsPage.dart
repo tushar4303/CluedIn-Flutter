@@ -7,6 +7,7 @@ import 'package:cluedin_app/widgets/ShimmerForAttachment.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
 import 'package:cluedin_app/widgets/showFileShareBottomsheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // ignore: depend_on_referenced_packages
@@ -133,334 +134,347 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         'Registration Fee: ${widget.event.registrationFee}\n'
         '${widget.event.eventDesc}\n'
         'For more info: ${widget.event.attachmentUrl}';
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: Colors.white,
-          // appBar: SliverAppBar(),
-          body: NestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    const SliverAppBar(
-                      floating: true,
-                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                    )
-                  ],
-              body: Padding(
-                padding: const EdgeInsets.only(
-                    left: 24, right: 24, bottom: 54, top: 8),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 8, bottom: 16),
-                        decoration: const BoxDecoration(
-                            color: Color.fromRGBO(240, 221, 245, 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            widget.event.eventLabel,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromRGBO(30, 29, 29, 0.8)),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // Set status bar color here
+        statusBarIconBrightness:
+            Brightness.dark, // Set status bar icons brightness
+      ),
+      child: SafeArea(
+        child: Scaffold(
+            backgroundColor: Colors.white,
+            // appBar: SliverAppBar(),
+            body: NestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                      const SliverAppBar(
+                        floating: true,
+                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                      )
+                    ],
+                body: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 24, right: 24, bottom: 54, top: 8),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 8, bottom: 16),
+                          decoration: const BoxDecoration(
+                              color: Color.fromRGBO(240, 221, 245, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              widget.event.eventLabel,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromRGBO(30, 29, 29, 0.8)),
+                            ),
                           ),
                         ),
-                      ),
-                      Text(
-                        widget.event.eventTitle,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 32,
-                            color: Color.fromARGB(255, 30, 29, 29)),
-                      ),
-                      timerDisplay,
-                      Hero(
-                        tag: Key(widget.event.eventId.toString()),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: InkWell(
-                            onLongPress: () {
-                              showFileOptionsBottomSheet(context,
-                                  "$baseServerUrl${widget.event.imageUrl}",
-                                  shareText: shareContent);
-                            },
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(16)),
-                              child: CachedNetworkImage(
-                                imageUrl:
+                        Text(
+                          widget.event.eventTitle,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 32,
+                              color: Color.fromARGB(255, 30, 29, 29)),
+                        ),
+                        timerDisplay,
+                        Hero(
+                          tag: Key(widget.event.eventId.toString()),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: InkWell(
+                              onLongPress: () {
+                                showFileOptionsBottomSheet(context,
                                     "$baseServerUrl${widget.event.imageUrl}",
-                                placeholder: (context, url) {
-                                  return Image.asset(
-                                    "assets/images/placeholder.png",
-                                    fit: BoxFit.cover,
-                                  );
-                                },
+                                    shareText: shareContent);
+                              },
+                              child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(16)),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "$baseServerUrl${widget.event.imageUrl}",
+                                  placeholder: (context, url) {
+                                    return Image.asset(
+                                      "assets/images/placeholder.png",
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      if (extractYouTubeLinks(widget.event.eventDesc)
-                          .isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: YoutubeCard(
-                            youtubeLink:
-                                extractYouTubeLinks(widget.event.eventDesc)[0],
+                        if (extractYouTubeLinks(widget.event.eventDesc)
+                            .isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: YoutubeCard(
+                              youtubeLink: extractYouTubeLinks(
+                                  widget.event.eventDesc)[0],
+                            ),
+                          ),
+                        if (widget.event.registrationFee.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              "Registration Fee: ${widget.event.registrationFee}",
+                              textScaler: const TextScaler.linear(1.1),
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        GestureDetector(
+                          onTap: () {
+                            // Clear the text selection when tapping outside the SelectableText region
+                            if (FocusScope.of(context).hasPrimaryFocus) {
+                              FocusScope.of(context).unfocus();
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: SelectableText(
+                              widget.event.eventDesc,
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
                         ),
-                      if (widget.event.registrationFee.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            "Registration Fee: ${widget.event.registrationFee}",
-                            textScaler: const TextScaler.linear(1.1),
-                            textAlign: TextAlign.left,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
+                        const SizedBox(
+                          height: 16,
                         ),
-                      GestureDetector(
-                        onTap: () {
-                          // Clear the text selection when tapping outside the SelectableText region
-                          if (FocusScope.of(context).hasPrimaryFocus) {
-                            FocusScope.of(context).unfocus();
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: SelectableText(
-                            widget.event.eventDesc,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      if (widget.event.attachmentUrl.isNotEmpty)
-                        FutureBuilder<LinkMetadata>(
-                          future: fetchLinkMetadata(
-                              "$baseServerUrl${widget.event.attachmentUrl}"),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              if (snapshot.hasData) {
-                                final metadata = snapshot.data!;
+                        if (widget.event.attachmentUrl.isNotEmpty)
+                          FutureBuilder<LinkMetadata>(
+                            future: fetchLinkMetadata(
+                                "$baseServerUrl${widget.event.attachmentUrl}"),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasData) {
+                                  final metadata = snapshot.data!;
 
-                                // Display filename with ellipsis if it's too long
-                                final displayFilename =
-                                    metadata.title.length > 20
-                                        ? '${metadata.title.substring(0, 15)}..'
-                                        : metadata.title;
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10)),
-                                      child: Material(
-                                        color: const Color.fromRGBO(
-                                            242, 243, 245, 1),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => PDFScreen(
-                                                  path: remotePDFpath,
+                                  // Display filename with ellipsis if it's too long
+                                  final displayFilename = metadata
+                                              .title.length >
+                                          20
+                                      ? '${metadata.title.substring(0, 15)}..'
+                                      : metadata.title;
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10)),
+                                        child: Material(
+                                          color: const Color.fromRGBO(
+                                              242, 243, 245, 1),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PDFScreen(
+                                                    path: remotePDFpath,
+                                                  ),
                                                 ),
+                                              );
+                                            },
+                                            onLongPress: () async {
+                                              showFileOptionsBottomSheet(
+                                                  context,
+                                                  "$baseServerUrl${widget.event.attachmentUrl}",
+                                                  shareText:
+                                                      widget.event.eventDesc);
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 16,
+                                                horizontal: 22,
                                               ),
-                                            );
-                                          },
-                                          onLongPress: () async {
-                                            showFileOptionsBottomSheet(context,
-                                                "$baseServerUrl${widget.event.attachmentUrl}",
-                                                shareText:
-                                                    widget.event.eventDesc);
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 16,
-                                              horizontal: 22,
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8, right: 8),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  // Dynamically display icon based on MIME type
-                                                  Icon(
-                                                    getIconForMimeType(
-                                                        metadata.mimeType),
-                                                    color: Colors.black
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                  const SizedBox(width: 16),
-                                                  Text(
-                                                    displayFilename,
-                                                    maxLines: 2,
-                                                    style: const TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          27, 96, 173, 1),
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8, right: 8),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    // Dynamically display icon based on MIME type
+                                                    Icon(
+                                                      getIconForMimeType(
+                                                          metadata.mimeType),
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
                                                     ),
-                                                  ),
-                                                  const SizedBox(width: 16),
-                                                  // Add code to display document size
-                                                  Text(
-                                                    'Size: ${metadata.size}', // Use the actual document size from metadata
-                                                    style: const TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 14,
+                                                    const SizedBox(width: 16),
+                                                    Text(
+                                                      displayFilename,
+                                                      maxLines: 2,
+                                                      style: const TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            27, 96, 173, 1),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                    const SizedBox(width: 16),
+                                                    // Add code to display document size
+                                                    Text(
+                                                      'Size: ${metadata.size}', // Use the actual document size from metadata
+                                                      style: const TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                );
+                                    ],
+                                  );
+                                } else {
+                                  // Handle the case when metadata is not available
+                                  return Container();
+                                }
                               } else {
-                                // Handle the case when metadata is not available
-                                return Container();
+                                // Handle loading state
+                                return const ShimmerForAttachment();
                               }
-                            } else {
-                              // Handle loading state
-                              return const ShimmerForAttachment();
-                            }
-                          },
-                        ),
-                      if (widget.event.registrationLink.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 16, bottom: 12), // Increased bottom padding
-                          child: Center(
-                            child: SizedBox(
-                              height: 50, // Adjust the height as needed
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.black),
-                                ),
-                                clipBehavior: Clip.hardEdge,
-                                child: const Text(
-                                  "Register Now!",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () async {
-                                  // Check if the link is a Google Form link or a TinyURL
-                                  if (widget.event.registrationLink
-                                          .contains('google.com/forms') ||
-                                      widget.event.registrationLink
-                                          .contains('tinyurl.com')) {
-                                    await _launchUrl(
-                                        widget.event.registrationLink);
-                                  } else {
-                                    // If it's not a Google Form link or TinyURL, navigate to WebViewApp
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => WebViewApp(
-                                          webViewTitle: "Register now!",
-                                          webViewLink:
-                                              widget.event.registrationLink,
-                                        ),
+                            },
+                          ),
+                        if (widget.event.registrationLink.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16,
+                                bottom: 12), // Increased bottom padding
+                            child: Center(
+                              child: SizedBox(
+                                height: 50, // Adjust the height as needed
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                    );
-                                  }
-                                },
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.black),
+                                  ),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: const Text(
+                                    "Register Now!",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () async {
+                                    // Check if the link is a Google Form link or a TinyURL
+                                    if (widget.event.registrationLink
+                                            .contains('google.com/forms') ||
+                                        widget.event.registrationLink
+                                            .contains('tinyurl.com')) {
+                                      await _launchUrl(
+                                          widget.event.registrationLink);
+                                    } else {
+                                      // If it's not a Google Form link or TinyURL, navigate to WebViewApp
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => WebViewApp(
+                                            webViewTitle: "Register now!",
+                                            webViewLink:
+                                                widget.event.registrationLink,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
                             ),
                           ),
+                        const SizedBox(
+                          height: 24,
                         ),
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400]!.withOpacity(0.5),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "$baseServerUrl${widget.event.senderProfilePic}"),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      text: widget.event.senderRole,
+                        Divider(
+                          thickness: 0.5,
+                          color: Colors.grey[400]!.withOpacity(0.5),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    "$baseServerUrl${widget.event.senderProfilePic}"),
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        text: widget.event.senderRole,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text:
+                                                " @${widget.event.senderFname} ${widget.event.senderLname}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(
+                                      widget.event.organizedBy,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text:
-                                              " @${widget.event.senderFname} ${widget.event.senderLname}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    widget.event.organizedBy,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400]!.withOpacity(0.5),
-                      ),
-                      const SizedBox(
-                        height: 48,
-                      ),
-                    ],
+                        Divider(
+                          thickness: 0.5,
+                          color: Colors.grey[400]!.withOpacity(0.5),
+                        ),
+                        const SizedBox(
+                          height: 48,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ))),
+                ))),
+      ),
     );
   }
 
