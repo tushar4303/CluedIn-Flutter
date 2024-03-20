@@ -28,24 +28,29 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   }
 }
 
-// FlutterLocalNotificationsPlugin notificationsPlugin =
+// FlutterLocalNotificationsPlugin notificationsPlugin = 
 //     FlutterLocalNotificationsPlugin();
 // Define a global key for the navigator
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    name: "CluedIn",
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  // Initialize Firebase
+  try {
+    await Firebase.initializeApp(
+      name: "CluedIn",
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    print('Error initializing Firebase: $e');
+  }
+
+  // Initialize Hive
   await Hive.initFlutter();
   await Hive.openBox('userBox');
 
+  // Check if user is logged in
   bool isLoggedIn =
       await Hive.box('userBox').get('isLoggedIn', defaultValue: false);
 

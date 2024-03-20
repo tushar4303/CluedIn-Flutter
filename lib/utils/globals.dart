@@ -46,7 +46,7 @@ Future<File> createFileOfPdfUrl(String filrUrl, BuildContext context,
     if (response.statusCode == 200) {
       var bytes = await consolidateHttpClientResponseBytes(response);
       var dir = await getApplicationDocumentsDirectory();
-      print("Download files");
+      // print("Download files");
       print("${dir.path}/$filename");
       File file = File("${dir.path}/$filename");
 
