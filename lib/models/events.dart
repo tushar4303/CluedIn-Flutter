@@ -193,9 +193,9 @@ class Events {
   });
 
   factory Events.fromMap(Map<String, dynamic> map) {
-    print("Date of Creation String: ${map["dateOfCreation"]}");
-    print("Date of Event String: ${map["dateOfEvent"]}");
-    print("Date of Expiration String: ${map["dateOfExpiration"]}");
+    // print("Date of Creation String: ${map["dateOfCreation"]}");
+    // print("Date of Event String: ${map["dateOfEvent"]}");
+    // print("Date of Expiration String: ${map["dateOfExpiration"]}");
 
     return Events(
       eventId: map["event_id"],

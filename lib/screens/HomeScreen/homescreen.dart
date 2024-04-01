@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (message.notification != null) {
             print('idhar: click hua idhar');
 
-            print(message.data);
+            // print(message.data);
           }
         });
       }

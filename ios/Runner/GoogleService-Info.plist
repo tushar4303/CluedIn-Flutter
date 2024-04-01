@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>205483583189-6nr014rrmf085h4mt0nep8o8ftt58du9.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.205483583189-6nr014rrmf085h4mt0nep8o8ftt58du9</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBGJ0eBY4NBfC34-zdb9aS6x5KCYcgphlU</string>
+	<string>AIzaSyCQqcwGwJ5ISlbxo-JlZ6rvK1qeYvoRJaM</string>
 	<key>GCM_SENDER_ID</key>
-	<string>205483583189</string>
+	<string>474604492516</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.cluedinApp</string>
 	<key>PROJECT_ID</key>
-	<string>cluedin-1266f</string>
+	<string>cluedin-379910</string>
 	<key>STORAGE_BUCKET</key>
-	<string>cluedin-1266f.appspot.com</string>
+	<string>cluedin-379910.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:205483583189:ios:bcb027ffb2387ac077e45c</string>
+	<string>1:474604492516:ios:5e9f4eb5bef4c09153bef1</string>
 </dict>
 </plist>
