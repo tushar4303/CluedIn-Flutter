@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:flutter/services.dart';
 import 'package:cluedin_app/models/contacts.dart';
 import 'package:cluedin_app/utils/links.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cluedin_app/widgets/notificationPage/NotificationShimmer.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,22 @@ class _ContactDirectoryState extends State<ContactDirectory> {
   final TextEditingController _searchController = TextEditingController();
   List<ContactCategory> searchResults = [];
   bool isLoading = true;
+
+  void _copyToClipboard(String text, String dataType) {
+    Clipboard.setData(ClipboardData(text: text));
+    String message = dataType == 'phone'
+        ? 'Copied phone number to clipboard'
+        : 'Copied email to clipboard';
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.grey[800],
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
 
   Future<String> fetchRandomEmojiAvatar() async {
     final response = await http.get(Uri.parse(
@@ -344,32 +361,49 @@ class _ContactDirectoryState extends State<ContactDirectory> {
                         if (contact.email != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0),
+                            child: GestureDetector(
+                              onLongPress: () {
+                                if (contact.email != null) {
+                                  _copyToClipboard(contact.email!, 'email');
+                                }
+                              },
+                              onTap: () {
+                                if (contact.email != null) {
+                                  _handleEmail(contact.email!);
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.email,
+                                      size: 16, color: Colors.grey[700]),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    contact.email ?? '',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey[700]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: GestureDetector(
+                            onLongPress: () {
+                              _copyToClipboard(contact.phoneNumber!, 'phone');
+                            },
                             child: Row(
                               children: [
-                                Icon(Icons.email,
+                                Icon(Icons.phone,
                                     size: 16, color: Colors.grey[700]),
                                 const SizedBox(width: 4),
-                                SelectableText(
-                                  contact.email!,
+                                Text(
+                                  contact.phoneNumber,
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey[700]),
                                 ),
                               ],
                             ),
-                          ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Row(
-                            children: [
-                              Icon(Icons.phone,
-                                  size: 16, color: Colors.grey[700]),
-                              const SizedBox(width: 4),
-                              SelectableText(
-                                contact.phoneNumber,
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[700]),
-                              ),
-                            ],
                           ),
                         ),
                       ],
@@ -457,6 +491,14 @@ class _ContactDirectoryState extends State<ContactDirectory> {
       // Handle other formats like (Ext: XXX)
       print("Invalid phone number format: $phoneNumber");
     }
+  }
+
+  void _handleEmail(String email) {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    _launchUrl(uri, email);
   }
 
   void _handleWhatsapp(String phoneNumber) {

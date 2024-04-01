@@ -7,9 +7,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
-
 import 'package:calendar_view/calendar_view.dart';
 import 'package:navbar_router/navbar_router.dart';
 import 'package:cluedin_app/screens/Events/Explore.dart';
@@ -52,6 +52,12 @@ void main() async {
       await Hive.box('userBox').get('isLoggedIn', defaultValue: false);
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  await FlutterDownloader.initialize(
+      debug:
+          false, // optional: set to false to disable printing logs to console (default: true)
+      ignoreSsl:
+          true // option: set to false to disable working with http links (default: false)
+      );
   initUniLinks();
   final upgrader = Upgrader(
     minAppVersion: "1.2.3",
