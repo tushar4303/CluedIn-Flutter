@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:cluedin_app/widgets/connectivityTest.dart';
 import 'package:cluedin_app/widgets/ErrorView.dart';
+import 'package:cluedin_app/widgets/homescreen/lostAndFoundBanner.dart';
 import 'package:cluedin_app/widgets/homescreen/sectionDivider.dart';
 import 'package:cluedin_app/widgets/homescreen/videoCard.dart';
 import 'package:cluedin_app/widgets/homescreen/youtubeVideoCard.dart';
@@ -468,10 +469,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 24, right: 24, bottom: 56),
+                              padding:
+                                  const EdgeInsets.only(left: 24, right: 24),
                               child: VideoCard(videoUrl: videoLink),
                             ),
+                            // const SizedBox(height: 16),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8, right: 8),
+                              child: LostFoundCard(),
+                            ),
+                            const SizedBox(
+                              height: 56,
+                            )
                           ],
                         );
                       }
